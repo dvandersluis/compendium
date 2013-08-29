@@ -1,12 +1,12 @@
-# Reporty
+# Compendium
 
-TODO: Write a gem description
+Ruby on Rails framework for making reporting easy.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'reporty'
+    gem 'compendium'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install reporty
+    $ gem install compendium
 
 ## Usage
 

@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in reporty.gemspec
+# Specify your gem's dependencies in compendium.gemspec
 gemspec
