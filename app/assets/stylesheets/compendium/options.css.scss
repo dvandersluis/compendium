@@ -1,0 +1,41 @@
+.option
+{
+  .option-label
+  {
+    margin: 0px 0px 0px 0px;
+    font-family: "Arial";
+    font-size: 14px;
+    font-weight: bold;
+    color: #575757;
+  }
+
+  .option-note
+  {
+    font-style: italic;
+    color: #575757;
+  }
+
+  .option-element-group
+  {
+    margin-top: 3px;
+  }
+
+  .option-radio
+  {
+    input[type=radio]
+    {
+      margin: 2px 6px 2px 0;
+
+      & + label
+      {
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+
+  & + &, & + input[type=submit]
+  {
+    margin-top: 15px;
+  }
+}

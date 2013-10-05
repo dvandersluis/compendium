@@ -1,0 +1,14 @@
+- content_for :stylesheets do
+  = stylesheet_link_tag 'compendium/options'
+
+= render_if_exists partial: 'report_header', path: 'compendium/reports'
+
+.options
+  = form_for report, as: :report, url: compendium_reports_run_path do |f|
+    - report.options.values.each do |option|
+      - expose option, Compendium::Presenters::Option do |opt|
+        .option
+          = opt.label(f)
+          .option-element-group= opt.input(self, f)
+
+    = f.submit t(:generate_report, scope: 'compendium.reports')

@@ -1,0 +1,5 @@
+en:
+  compendium:
+    reports:
+      invalid_report: "Invalid report!"
+      generate_report: "Generate Report"
