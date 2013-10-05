@@ -10,7 +10,8 @@ Gem::Specification.new do |gem|
   gem.email         = ["dvandersluis@selfmgmt.com"]
   gem.description   = %q{Ruby on Rails reporting framework}
   gem.summary       = %q{Ruby on Rails reporting framework}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/dvandersluis/compendium"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
