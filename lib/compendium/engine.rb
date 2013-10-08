@@ -1,6 +1,8 @@
 require 'compendium/engine/mount'
 
 module Compendium
-  class Engine < ::Rails::Engine
+  if defined?(Rails)
+    class Engine < ::Rails::Engine
+    end
   end
 end
