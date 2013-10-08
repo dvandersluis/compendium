@@ -1,6 +1,7 @@
 require 'compendium/open_hash'
 require 'active_support/string_inquirer'
 require 'active_support/core_ext/hash/indifferent_access'
+require 'active_support/core_ext/module/delegation'
 
 module Compendium
   class Option
@@ -10,10 +11,16 @@ module Compendium
     delegate :merge, :merge!, :[], to: :@options
 
     def initialize(hash = {})
+      raise ArgumentError, "name must be provided" unless hash.key?(:name)
+
       @name = hash.delete(:name).to_sym
       @default = hash.delete(:default)
-      @type = ActiveSupport::StringInquirer.new(hash.delete(:type).to_s)
+      self.type = hash.delete(:type)
       @options = hash.with_indifferent_access
+    end
+
+    def type=(type)
+      @type = ActiveSupport::StringInquirer.new(type.to_s)
     end
 
     def method_missing(name, *args, &block)

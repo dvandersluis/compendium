@@ -10,5 +10,9 @@ module Compendium
     def initialize(records)
       @records = records
     end
+
+    def keys
+      first.keys
+    end
   end
 end

@@ -1,7 +1,8 @@
 require_relative '../../config/initializers/ruby/numeric'
+require 'delegate'
 
 module Compendium
-  class Param < SimpleDelegator
+  class Param < ::SimpleDelegator
     def boolean?; false; end
     def date?; false; end
     def dropdown?; false; end

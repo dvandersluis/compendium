@@ -20,6 +20,14 @@ module Compendium
       @results
     end
 
+    def render_table(template, &block)
+      Compendium::Presenters::Table.new(template, self, &block).render
+    end
+
+    def render_chart(template, &block)
+      Compendium::Presenters::Chart.new(template, self, &block).render
+    end
+
     def ran?
       !@results.nil?
     end
@@ -38,6 +46,10 @@ module Compendium
 
     def table?
       true
+    end
+
+    def set_metric(metric)
+      @metric = options[:metric] = metric
     end
 
   private

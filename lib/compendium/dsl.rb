@@ -4,8 +4,9 @@ require 'active_support/core_ext/class/attribute'
 module Compendium
   module DSL
     def self.extended(klass)
-      klass.inheritable_attr :queries, :options, default: {}
-      klass.inheritable_attr :metrics, default: []
+      klass.inheritable_attr :queries, default: {}
+      klass.inheritable_attr :options, default: {}
+      klass.inheritable_attr :metrics, default: {}
     end
 
     def query(name, opts = {}, &block)
@@ -20,11 +21,21 @@ module Compendium
       opts = args.extract_options!
       type = args.shift
 
-      if self.options[name]
-        self.options[name].type = type if type
-        self.options[name].merge!(opts)
+      if options[name]
+        options[name].type = type if type
+        options[name].merge!(opts)
       else
-        self.options[name] = Compendium::Option.new(opts.merge(name: name, type: type))
+        options[name] = Compendium::Option.new(opts.merge(name: name, type: type))
+      end
+    end
+
+    def metric(proc, opts = {})
+      raise ArgumentError, 'through option must be specified for metric' unless opts.key?(:through)
+
+      [opts[:through]].flatten.each do |query|
+        raise ArgumentError, "query #{query} is not defined" unless queries.key?(query)
+        metrics[query] = proc
+        queries[query].set_metric(proc)
       end
     end
 
@@ -58,11 +69,8 @@ module Compendium
         query.through = self.queries[opts[:through]]
       end
 
-      if opts.key?(:metric)
-        self.metrics << name
-      end
-
-      self.queries[name] = query
+      metrics[name] = opts[:metric] if opts.key?(:metric)
+      queries[name] = query
     end
   end
 end
