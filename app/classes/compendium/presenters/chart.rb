@@ -1,7 +1,5 @@
-module Compendium
-  module Presenters
-    class Chart < Base
+module Compendium::Presenters
+  class Chart < Query
 
-    end
   end
 end
