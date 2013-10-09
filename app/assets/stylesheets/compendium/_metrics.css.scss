@@ -1,0 +1,87 @@
+@import "compass/css3/border-radius";
+
+div.metrics
+{
+  div.metric
+  {
+    float: left;
+    margin: 10px;
+    padding: 5px;
+    border: 2px solid #575757;
+    width: 150px;
+    height: 150px;
+    font-size: 12px;
+    text-align: center;
+    color: #575757;
+    @include border-radius(10px);
+
+    .metric-label
+    {
+      height: 30%;
+      font-size: 150%;
+      padding-top: 10px;
+      padding-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .metric-data
+    {
+      height: 50%;
+      position: relative;
+      font-size: 600%;
+      font-weight: bold;
+      color: black;
+
+      .metric-data-inner
+      {
+        display: inline;
+        position: relative;
+        line-height: 0;
+        top: 50%;
+        margin: auto;
+        padding: 0;
+      }
+    }
+
+    .metric-label-small
+    {
+      height: 20%;
+      font_size: 90%;
+    }
+
+    &.small
+    {
+      width: 115px;
+      height: 115px;
+      font-size: 10px;
+
+      .metric-label
+      {
+        padding-top: 0px;
+      }
+
+      .metric-label-small
+      {
+        font-size: 100%;
+      }
+    }
+
+    &.big
+    {
+      border-width: 3px;
+      width: 280px;
+      height: 280px;
+      font-size: 22px;
+
+      .metric-label
+      {
+        padding-top: 25px;
+      }
+
+      .metric-label-small
+      {
+        margin-top: -25px;
+      }
+    }
+  }
+}
