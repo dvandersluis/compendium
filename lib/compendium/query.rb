@@ -3,21 +3,25 @@ require 'compendium/params'
 
 module Compendium
   class Query
-    attr_reader :name, :results
+    attr_reader :name, :results, :metrics
     attr_accessor :options, :proc, :through
 
     def initialize(name, options, proc)
       @name = name
       @options = options
       @proc = proc
-      @metric = options.fetch(:metric, nil)
+      @metrics = MetricSet.new
     end
 
     def run(params, context = self)
       collect_results(params, context)
-      collect_metric(context) if @metric
+      collect_metrics(context)
 
       @results
+    end
+
+    def add_metric(name, proc, options = {})
+      Compendium::Metric.new(name, self.name, proc, options).tap { |m| @metrics << m }
     end
 
     def render_table(template, &block)
@@ -32,10 +36,6 @@ module Compendium
       !@results.nil?
     end
 
-    def metric
-      @metric_result
-    end
-
     def nil?
       proc.nil?
     end
@@ -46,10 +46,6 @@ module Compendium
 
     def table?
       true
-    end
-
-    def set_metric(metric)
-      @metric = options[:metric] = metric
     end
 
   private
@@ -67,12 +63,8 @@ module Compendium
       @results = ResultSet.new(command) if command
     end
 
-    def collect_metric(context)
-      if @metric.is_a?(Symbol)
-        @metric_result = context.send(@metric, @results)
-      else
-        @metric_result = context.instance_exec(@results, &@metric) if @metric
-      end
+    def collect_metrics(context)
+      metrics.each{ |m| m.run(context, results) }
     end
 
     def fetch_results(command)

@@ -39,18 +39,31 @@ describe Compendium::DSL do
 
     before do
       subject.query :test
-      subject.metric metric_proc, through: :test
+      subject.metric :test_metric, metric_proc, through: :test
     end
 
-    its(:metrics) { should include :test }
-    specify { subject.metrics[:test].should == metric_proc }
+    it "should add the metric to the report's collection" do
+      subject.metrics.first.name.should == :test_metric
+    end
+
+    it "should add a metric to the given query" do
+      subject.queries[:test].metrics.first.name.should == :test_metric
+    end
+
+    it "should set the metric command" do
+      subject.queries[:test].metrics.first.command.should == metric_proc
+    end
+
+    it "should add the same object to the report and the query" do
+      subject.queries[:test].metrics.first.should === subject.metrics.first
+    end
 
     it "should raise an error if through is not specified" do
-      expect{ subject.metric metric_proc }.to raise_error ArgumentError, 'through option must be specified for metric'
+      expect{ subject.metric :test_metric, metric_proc }.to raise_error ArgumentError, 'through option must be specified for metric'
     end
 
     it "should raise an error if specified for an invalid query" do
-      expect{ subject.metric metric_proc, through: :fake }.to raise_error ArgumentError, 'query fake is not defined'
+      expect{ subject.metric :test_metric, metric_proc, through: :fake }.to raise_error ArgumentError, 'query fake is not defined'
     end
   end
 

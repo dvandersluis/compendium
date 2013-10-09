@@ -6,7 +6,7 @@ module Compendium
     def self.extended(klass)
       klass.inheritable_attr :queries, default: {}
       klass.inheritable_attr :options, default: {}
-      klass.inheritable_attr :metrics, default: {}
+      klass.inheritable_attr :metrics, default: MetricSet.new
     end
 
     def query(name, opts = {}, &block)
@@ -29,13 +29,12 @@ module Compendium
       end
     end
 
-    def metric(proc, opts = {})
+    def metric(name, proc, opts = {})
       raise ArgumentError, 'through option must be specified for metric' unless opts.key?(:through)
 
-      [opts[:through]].flatten.each do |query|
+      [opts.delete(:through)].flatten.each do |query|
         raise ArgumentError, "query #{query} is not defined" unless queries.key?(query)
-        metrics[query] = proc
-        queries[query].set_metric(proc)
+        metrics << queries[query].add_metric(name, proc, opts)
       end
     end
 

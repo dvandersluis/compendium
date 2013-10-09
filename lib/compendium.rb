@@ -6,6 +6,8 @@ module Compendium
   autoload :Chart,          'compendium/chart'
   autoload :ContextWrapper, 'compendium/context_wrapper'
   autoload :DSL,            'compendium/dsl'
+  autoload :MetricSet,      'compendium/metric_set'
+  autoload :Metric,         'compendium/metric'
   autoload :Option,         'compendium/option'
   autoload :Params,         'compendium/params'
   autoload :Query,          'compendium/query'
