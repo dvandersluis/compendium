@@ -5,6 +5,10 @@ module Compendium::Presenters
       @template = template
     end
 
+    def to_s
+      "#<#{self.class.name}:0x00#{'%x' % (object_id << 1)}>"
+    end
+
   private
 
     def self.presents(name)
