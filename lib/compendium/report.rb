@@ -41,18 +41,8 @@ module Compendium
     end
 
   private
+
     attr_accessor :context
 
-    def initialize_default_params
-      options.each do |name, args|
-        params[name] = if args[:default]
-          if args[:default].respond_to?(:call)
-            args[:default].call
-          else
-            args[:default]
-          end
-        end unless params.key?(name)
-      end
-    end
   end
 end
