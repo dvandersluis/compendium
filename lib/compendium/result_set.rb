@@ -8,11 +8,13 @@ module Compendium
     alias :all :records
 
     def initialize(records)
-      @records = records
+      @records = records.map! do |r|
+        r.respond_to?(:with_indifferent_access) ? r.with_indifferent_access : r
+      end
     end
 
     def keys
-      first.keys
+      records.is_a?(Array) ? first.keys : records.keys
     end
   end
 end

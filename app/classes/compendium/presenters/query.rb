@@ -2,11 +2,8 @@ module Compendium::Presenters
   class Query < Base
     presents :query
 
-    def initialize(template, object, &setup)
+    def initialize(template, object)
       super(template, object)
-
-      @settings = settings_class.new(results.keys)
-      yield @settings if block_given?
     end
 
     def render
@@ -14,6 +11,10 @@ module Compendium::Presenters
     end
 
   private
+
+    def results
+      query.results
+    end
 
     def settings_class
       Settings.const_get(self.class.name.demodulize) rescue Settings::Query

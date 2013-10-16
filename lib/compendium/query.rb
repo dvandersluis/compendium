@@ -24,12 +24,12 @@ module Compendium
       Compendium::Metric.new(name, self.name, proc, options).tap { |m| @metrics << m }
     end
 
-    def render_table(template, &block)
-      Compendium::Presenters::Table.new(template, self, &block).render
+    def render_table(template, *options, &block)
+      Compendium::Presenters::Table.new(template, self, *options, &block).render
     end
 
-    def render_chart(template, &block)
-      Compendium::Presenters::Chart.new(template, self, &block).render
+    def render_chart(template, *options, &block)
+      Compendium::Presenters::Chart.new(template, self, *options, &block).render
     end
 
     def ran?
@@ -38,14 +38,6 @@ module Compendium
 
     def nil?
       proc.nil?
-    end
-
-    def chart?
-      true
-    end
-
-    def table?
-      true
     end
 
   private

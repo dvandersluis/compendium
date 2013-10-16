@@ -7,6 +7,9 @@ module Compendium::Presenters
 
       @records = results.records
       @totals = @records.pop if has_totals_row?
+
+      @settings = settings_class.new(results.keys)
+      yield @settings if block_given?
     end
 
     def render
@@ -24,10 +27,6 @@ module Compendium::Presenters
     end
 
   private
-
-    def results
-      query.results
-    end
 
     def headings
       @settings.headings

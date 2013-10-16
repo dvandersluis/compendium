@@ -12,10 +12,8 @@ module Compendium
     def query(name, opts = {}, &block)
       define_query(name, opts, &block)
     end
-
-    def chart(name, opts = {}, &block)
-      define_query(name, opts, Chart, &block)
-    end
+    alias_method :chart, :query
+    alias_method :data, :query
 
     def option(name, *args)
       opts = args.extract_options!

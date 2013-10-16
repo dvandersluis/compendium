@@ -12,7 +12,7 @@ module Compendium::Presenters::Settings
       elsif !args.empty?
         @settings[name] = args.length == 1 ? args.first : args
       elsif name.to_s.end_with?('?')
-        prefix = name.to_s.gsub('/\?\z/', '')
+        prefix = name.to_s.gsub(/\?\z/, '')
         @settings.key?(prefix)
       else
         @settings[name]
