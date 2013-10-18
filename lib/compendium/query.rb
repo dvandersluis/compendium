@@ -43,11 +43,10 @@ module Compendium
   private
 
     def collect_results(params, context)
-      if through.nil?
-        args = params
+      args = if through.nil?
+        params
       else
-        through.run(params, context) unless through.ran?
-        args = through.results.records
+        collect_through_query_results(through, params, context)
       end
 
       command = context.instance_exec(args, &proc) if proc
@@ -65,6 +64,20 @@ module Compendium
       else
         ::ActiveRecord::Base.connection.select_all(command.respond_to?(:to_sql) ? command.to_sql : command)
       end
+    end
+
+    def collect_through_query_results(through, params, context)
+      results = {}
+
+      through = [through].flatten
+
+      through.each do |q|
+        q.run(params, context) unless q.ran?
+        results[q.name] = q.results.records
+      end
+
+      results = results[through.first.name] if through.size == 1
+      results
     end
   end
 end

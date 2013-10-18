@@ -62,8 +62,13 @@ module Compendium
       query = type.new(name, opts, block)
 
       if opts.key?(:through)
-        raise ArgumentError, "query #{opts[:through]} is not defined" unless self.queries.include?(opts[:through].to_sym)
-        query.through = self.queries[opts[:through]]
+        through = [opts[:through]].flatten
+
+        through.each do |q|
+          raise ArgumentError, "query #{q} is not defined" unless self.queries.include?(q.to_sym)
+        end
+
+        query.through = through.map{ |q| self.queries[q] }
       end
 
       metrics[name] = opts[:metric] if opts.key?(:metric)
