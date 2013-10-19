@@ -3,6 +3,7 @@ module Compendium
     helper Compendium::ReportsHelper
 
     before_filter :find_report
+    before_filter :run_report, only: :run
 
     def setup
       render locals: { report: @report_class.new(params[:report] || {}), prefix: @prefix }
@@ -10,7 +11,7 @@ module Compendium
 
     def run
       template = template_exists?(@prefix, get_template_prefixes) ? @prefix : 'run'
-      render action: template, locals: { report: @report_class.new(params[:report]).run(self) }
+      render action: template, locals: { report: @report }
     end
 
   private
@@ -26,6 +27,10 @@ module Compendium
         flash[:error] = t(:invalid_report)
         redirect_to action: :index
       end
+    end
+
+    def run_report
+      @report = @report_class.new(params[:report]).run(self)
     end
 
     def get_template_prefixes
