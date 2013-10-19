@@ -11,6 +11,15 @@ module Compendium
     def render(template, container)
       raise NotImplementedError
     end
+
+    # As more chart providers are added, this method will have to be extended to find them
+    def self.find_chart_provider
+      if defined?(AmCharts)
+        :AmCharts
+      else
+        self.name.demodulize.to_sym
+      end
+    end
   end
 
   module ChartProvider

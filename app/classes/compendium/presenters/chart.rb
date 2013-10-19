@@ -18,7 +18,8 @@ module Compendium::Presenters
   private
 
     def provider
-      Compendium::ChartProvider::AmCharts
+      provider = Compendium.config.chart_provider
+      provider.is_a?(Class) ? provider : Compendium::ChartProvider.const_get(provider)
     end
 
     def initialize_chart_provider(type, &setup)
