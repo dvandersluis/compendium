@@ -55,7 +55,7 @@ module Compendium
     end
 
     def collect_metrics(context)
-      metrics.each{ |m| m.run(context, results) }
+      metrics.each{ |m| m.run(context, results) } unless results.empty?
     end
 
     def fetch_results(command)
