@@ -2,6 +2,9 @@
 
 Ruby on Rails framework for making reporting easy.
 
+Makes use of the [accessible_tooltip](https://github.com/dvandersluis/accessible_tooltip) and
+[AmCharts.rb](https://github.com/dvandersluis/amcharts.rb) gems if present.
+
 ## Installation
 
 Add this line to your application's Gemfile:
