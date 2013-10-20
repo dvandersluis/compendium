@@ -31,7 +31,12 @@ describe Compendium::DSL do
     before { subject.chart(:chart) }
 
     its(:queries) { should include :chart }
-    specify { subject.queries[:chart].should be_chart }
+  end
+
+  describe "#data" do
+    before { subject.data(:data) }
+
+    its(:queries) { should include :data }
   end
 
   describe "#metric" do
@@ -42,20 +47,12 @@ describe Compendium::DSL do
       subject.metric :test_metric, metric_proc, through: :test
     end
 
-    it "should add the metric to the report's collection" do
-      subject.metrics.first.name.should == :test_metric
-    end
-
     it "should add a metric to the given query" do
       subject.queries[:test].metrics.first.name.should == :test_metric
     end
 
     it "should set the metric command" do
       subject.queries[:test].metrics.first.command.should == metric_proc
-    end
-
-    it "should add the same object to the report and the query" do
-      subject.queries[:test].metrics.first.should === subject.metrics.first
     end
 
     it "should raise an error if through is not specified" do

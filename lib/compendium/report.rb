@@ -19,9 +19,19 @@ module Compendium
     def run(context = nil)
       self.context = context
       self.results = {}
-      queries.values.each{ |q| self.results[q.name] = q.run(params, ContextWrapper.wrap(context, self)) }
+
+      queries.each{ |q| self.results[q.name] = q.run(params, ContextWrapper.wrap(context, self)) }
+
       self
     end
+
+    def metrics
+      Collection[Metric, queries.map{ |q| q.metrics.to_a }.flatten]
+    end
+
+  private
+
+    attr_accessor :context
 
     def method_missing(name, *args, &block)
       prefix = name.to_s.sub(/(?:_results|\?)\Z/, '').to_sym
@@ -39,10 +49,5 @@ module Compendium
       return true if name.to_s.end_with? '_results' and queries.keys.include?(prefix)
       super
     end
-
-  private
-
-    attr_accessor :context
-
   end
 end

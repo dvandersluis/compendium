@@ -1,3 +1,5 @@
+require 'active_support/core_ext/string/inflections'
+
 module Compendium
   # Abstract wrapper for rendering charts
   # To add a new chart provider, #initialize and #render must be implemented

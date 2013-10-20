@@ -1,5 +1,6 @@
 require 'compendium/result_set'
 require 'compendium/params'
+require 'collection_of'
 
 module Compendium
   class Query
@@ -10,7 +11,12 @@ module Compendium
       @name = name
       @options = options
       @proc = proc
-      @metrics = MetricSet.new
+      @metrics = ::Collection[Metric]
+    end
+
+    def initialize_clone(*)
+      super
+      @metrics = @metrics.clone
     end
 
     def run(params, context = self)
@@ -35,6 +41,7 @@ module Compendium
     def ran?
       !@results.nil?
     end
+    alias_method :has_run?, :ran?
 
     def nil?
       proc.nil?

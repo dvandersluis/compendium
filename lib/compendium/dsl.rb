@@ -1,12 +1,13 @@
+require 'collection_of'
+require 'inheritable_attr'
 require 'compendium/option'
 require 'active_support/core_ext/class/attribute'
 
 module Compendium
   module DSL
     def self.extended(klass)
-      klass.inheritable_attr :queries, default: {}
+      klass.inheritable_attr :queries, default: ::Collection[Query]
       klass.inheritable_attr :options, default: {}
-      klass.inheritable_attr :metrics, default: MetricSet.new
     end
 
     def query(name, opts = {}, &block)
@@ -32,7 +33,7 @@ module Compendium
 
       [opts.delete(:through)].flatten.each do |query|
         raise ArgumentError, "query #{query} is not defined" unless queries.key?(query)
-        metrics << queries[query].add_metric(name, proc, opts)
+        queries[query].add_metric(name, proc, opts)
       end
     end
 
@@ -72,7 +73,7 @@ module Compendium
       end
 
       metrics[name] = opts[:metric] if opts.key?(:metric)
-      queries[name] = query
+      queries << query
     end
   end
 end

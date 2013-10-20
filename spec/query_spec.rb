@@ -2,11 +2,22 @@ require 'compendium/query'
 
 describe Compendium::Query do
   describe "#run" do
-    before { described_class.any_instance.stub(:fetch_results) { |cmd| cmd } }
+    let(:query) { described_class.new(:test, {}, -> * { [1, 2, 3] }) }
+    before { query.stub(:fetch_results) { |c| c } }
 
     it "should return the result of the query" do
-      query = Compendium::Query.new(:test, {}, -> *_ { 123 })
-      query.run(nil).should == 123
+      query.run(nil).should == [1, 2, 3]
+    end
+
+    it "should mark the query as having ran" do
+      query.run(nil)
+      query.should have_run
+    end
+
+    it "should not affect any cloned queries" do
+      q2 = query.clone
+      query.run(nil)
+      q2.should_not have_run
     end
   end
 

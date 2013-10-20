@@ -40,6 +40,13 @@ describe Compendium::Metric do
         subject.options[:if] = ->{ false }
         subject.run(ctx, data).should be_nil
       end
+
+      it "should clear the result if the proc evaluates to false" do
+        subject.options[:if] = ->{ false }
+        subject.result = 123
+        subject.run(ctx, data)
+        subject.result.should be_nil
+      end
     end
 
     context "when an unless proc is given" do
@@ -53,6 +60,13 @@ describe Compendium::Metric do
       it "should not calculate the metric if the proc evaluates to true" do
         subject.options[:unless] = ->{ true }
         subject.run(ctx, data).should be_nil
+      end
+
+      it "should clear the result if the proc evaluates to false" do
+        subject.options[:unless] = ->{ true }
+        subject.result = 123
+        subject.run(ctx, data)
+        subject.result.should be_nil
       end
     end
   end
