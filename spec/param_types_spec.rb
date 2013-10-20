@@ -7,6 +7,13 @@ describe Compendium::Param do
   it { should_not be_date }
   it { should_not be_dropdown }
   it { should_not be_radio }
+
+  describe "#==" do
+    it "should compare to the param's value" do
+      subject.stub(value: :test_value)
+      subject.should == :test_value
+    end
+  end
 end
 
 describe Compendium::ParamWithChoices do

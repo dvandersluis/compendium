@@ -8,6 +8,11 @@ module Compendium
     def dropdown?; false; end
     def radio?; false; end
 
+    def ==(other)
+      return true if respond_to?(:value) and value == other
+      super
+    end
+
     # Need to explicitly delegate nil? to the object, otherwise it's always false
     # This is because SimpleDelegator is a non-nil object, and it only forwards non-defined methods!
     def nil?
