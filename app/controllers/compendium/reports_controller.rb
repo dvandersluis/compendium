@@ -6,7 +6,7 @@ module Compendium
     before_filter :run_report, only: :run
 
     def setup
-      render locals: { report: @report_class.new(params[:report] || {}), prefix: @prefix }
+      render locals: { report: setup_report, prefix: @prefix }
     end
 
     def run
@@ -14,7 +14,7 @@ module Compendium
       render action: template, locals: { report: @report }
     end
 
-  private
+    private
 
     def find_report
       @prefix = params[:report_name]
@@ -27,6 +27,10 @@ module Compendium
         flash[:error] = t(:invalid_report)
         redirect_to action: :index
       end
+    end
+
+    def setup_report
+      @report_class.new(params[:report] || {})
     end
 
     def run_report
