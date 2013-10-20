@@ -56,10 +56,19 @@ describe Compendium::BooleanParam do
   it { should_not be_dropdown }
   it { should_not be_radio }
 
+  it "should pass along 0 and 1" do
+    described_class.new(0).should == 0
+    described_class.new(1).should == 1
+  end
+
+  it "should convert a numeric string to a number" do
+    described_class.new('0').should == 0
+    described_class.new('1').should == 1
+  end
+
   it "should return 0 for a truthy value" do
     described_class.new(true).should == 0
     described_class.new(:abc).should == 0
-    described_class.new(1).should == 0
   end
 
   it "should return 1 for a falsey value" do
@@ -71,12 +80,23 @@ describe Compendium::BooleanParam do
     it "should return true for a truthy value" do
       described_class.new(true).value.should == true
       described_class.new(:abc).value.should == true
-      described_class.new(1).value.should == true
+      described_class.new(0).value.should == true
     end
 
     it "should return false for a falsey value" do
       described_class.new(false).value.should == false
       described_class.new(nil).value.should == false
+      described_class.new(1).value.should == false
+    end
+  end
+
+  describe "#!" do
+    it "should return false if the boolean is true" do
+      !described_class.new(true).should == false
+    end
+
+    it "should return true if the boolean is false" do
+
     end
   end
 end
