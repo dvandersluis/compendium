@@ -6,7 +6,7 @@ module Compendium::Presenters
       super(template, object)
 
       @data = results.records
-      @data.pop if query.options[:totals]
+      @data = @data[0...-1] if query.options[:totals]
 
       @container = container || query.name
 
