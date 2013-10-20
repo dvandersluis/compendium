@@ -69,7 +69,7 @@ module Compendium
           raise ArgumentError, "query #{q} is not defined" unless self.queries.include?(q.to_sym)
         end
 
-        query.through = through.map{ |q| self.queries[q] }
+        query.through = through
       end
 
       metrics[name] = opts[:metric] if opts.key?(:metric)

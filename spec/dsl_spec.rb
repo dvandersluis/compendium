@@ -22,9 +22,22 @@ describe Compendium::DSL do
   end
 
   describe "#query" do
-    before { subject.query(:test) }
+    subject do
+      Class.new(Compendium::Report) do
+        query :test
+      end
+    end
 
     its(:queries) { should include :test }
+
+    it "should relate the new query back to the report instance" do
+      r = subject.new
+      r.test.report.should == r
+    end
+
+    it "should not relate a query to the report class" do
+      subject.test.report.should be_nil
+    end
   end
 
   describe "#chart" do

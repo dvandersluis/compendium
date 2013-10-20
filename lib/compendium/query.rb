@@ -5,7 +5,7 @@ require 'collection_of'
 module Compendium
   class Query
     attr_reader :name, :results, :metrics
-    attr_accessor :options, :proc, :through
+    attr_accessor :options, :proc, :through, :report
 
     def initialize(name, options, proc)
       @name = name
@@ -76,7 +76,7 @@ module Compendium
     def collect_through_query_results(through, params, context)
       results = {}
 
-      through = [through].flatten
+      through = [through].flatten.map(&method(:get_through_query))
 
       through.each do |q|
         q.run(params, context) unless q.ran?
@@ -85,6 +85,10 @@ module Compendium
 
       results = results[through.first.name] if through.size == 1
       results
+    end
+
+    def get_through_query(name)
+      report.queries[name]
     end
   end
 end

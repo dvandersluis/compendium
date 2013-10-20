@@ -14,6 +14,9 @@ module Compendium
 
     def initialize(params = {})
       @params = Params.new(params, options)
+
+      # When creating a new report, map each query back to the report
+      queries.each { |q| q.report = self }
     end
 
     def run(context = nil)

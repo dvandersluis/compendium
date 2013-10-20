@@ -46,7 +46,7 @@ describe Compendium::Report do
     let!(:report2) { report_class.new }
 
     before do
-      subject.test.stub(:fetch_results) { |c| c }
+      Compendium::Query.any_instance.stub(:fetch_results) { |c| c }
       subject.run
     end
 
@@ -64,6 +64,30 @@ describe Compendium::Report do
 
     it "should not affect the class collections" do
       report_class.test.results.should be_nil
+    end
+
+    context "with through queries" do
+      let(:report_class) do
+        Class.new(Compendium::Report) do
+          option :first, :boolean, default: false
+          query(:test) { |params| !!params[:first] ? [100, 200, 400, 800] : [1600, 3200, 6400]}
+          query(:through, through: :test) { |results| [results.first] }
+        end
+      end
+
+      subject { report_class.new(first: true) }
+
+      its('through.results') { should == [100] }
+
+      it "should not mark other instances' queries as ran" do
+        report2.test.should_not have_run
+      end
+
+      it "should not affect other instances" do
+        report2.queries.each { |q| q.stub(:fetch_results) { |c| c } }
+        report2.run
+        report2.through.results.should == [1600]
+      end
     end
   end
 end
