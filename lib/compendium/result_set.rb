@@ -16,5 +16,9 @@ module Compendium
     def keys
       records.is_a?(Array) ? first.keys : records.keys
     end
+
+    def as_json(options = {})
+      records.map{ |r| r.except(*options[:except]) }
+    end
   end
 end
