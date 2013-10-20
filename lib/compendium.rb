@@ -16,6 +16,8 @@ module Compendium
 
   autoload :Param,                  'compendium/param_types'
   autoload :BooleanParam,           'compendium/param_types'
+  autoload :DateParam,              'compendium/param_types'
+  autoload :DropdownParam,          'compendium/param_types'
   autoload :ParamWithChoices,       'compendium/param_types'
   autoload :RadioParam,             'compendium/param_types'
 
