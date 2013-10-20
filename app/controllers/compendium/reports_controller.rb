@@ -21,7 +21,7 @@ module Compendium
       @report_name = "#{@prefix}_report"
 
       begin
-        require(@report_name) unless Module.const_defined?(@report_name.classify)
+        require(@report_name) unless Rails.env.development? or Module.const_defined?(@report_name.classify)
         @report_class = @report_name.camelize.constantize
       rescue LoadError
         flash[:error] = t(:invalid_report)
