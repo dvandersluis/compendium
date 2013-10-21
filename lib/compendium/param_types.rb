@@ -9,7 +9,7 @@ module Compendium
     def radio?; false; end
 
     def ==(other)
-      return true if respond_to?(:value) and value == other
+      return true if (value == other rescue false)
       super
     end
 
