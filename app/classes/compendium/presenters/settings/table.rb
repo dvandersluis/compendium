@@ -7,8 +7,16 @@ module Compendium::Presenters::Settings
       @headings = Hash[headings.zip(headings)].with_indifferent_access
     end
 
-    def override_heading(col, label)
-      @headings[col] = label
+    def override_heading(*args, &block)
+      if block_given?
+        @headings.each do |key, val|
+          res = yield val
+          @headings[key] = res if res
+        end
+      else
+        col, label = args
+        @headings[col] = label
+      end
     end
 
     def format(column, &block)
