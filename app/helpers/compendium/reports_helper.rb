@@ -14,7 +14,7 @@ module Compendium
 
     def render_if_exists(options = {})
       if lookup_context.template_exists?(options[:partial] || options[:template], options[:path], options.key?(:partial))
-        render options
+        render(options)
       end
     end
   end

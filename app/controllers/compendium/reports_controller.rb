@@ -1,12 +1,13 @@
 module Compendium
   class ReportsController < ::ApplicationController
     helper Compendium::ReportsHelper
+    include Compendium::ReportsHelper
 
     before_filter :find_report
     before_filter :run_report, only: :run
 
     def setup
-      render locals: { report: setup_report, prefix: @prefix }
+      render_setup
     end
 
     def run
@@ -14,7 +15,7 @@ module Compendium
       render action: template, locals: { report: @report }
     end
 
-    private
+  private
 
     def find_report
       @prefix = params[:report_name]
@@ -27,6 +28,11 @@ module Compendium
         flash[:error] = t(:invalid_report)
         redirect_to action: :index
       end
+    end
+
+    def render_setup(opts = {})
+      locals = { report: setup_report, prefix: @prefix }
+      render_if_exists(opts.merge(locals: locals)) || render(locals: locals)
     end
 
     def setup_report
