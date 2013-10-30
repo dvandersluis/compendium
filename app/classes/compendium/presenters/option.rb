@@ -48,15 +48,15 @@ module Compendium::Presenters
           out << date_field(form)
 
         when :dropdown
-          raise ArgumentError, MISSING_CHOICES_ERROR unless option.choices?
+          raise ArgumentError, MISSING_CHOICES_ERROR unless option.choices
 
-          options = option.choices
-          options = ctx.instance_exec(&options) if options.respond_to?(:call)
-          out << dropdown(form, options)
+          choices = option.choices
+          choices = ctx.instance_exec(&choices) if choices.respond_to?(:call)
+          out << dropdown(form, choices, option.options)
 
         when :boolean, :radio
           choices = if option.radio?
-            raise ArgumentError, MISSING_CHOICES_ERROR unless option.choices?
+            raise ArgumentError, MISSING_CHOICES_ERROR unless option.choices
             option.choices
           else
             %w(true false)
@@ -80,9 +80,9 @@ module Compendium::Presenters
       end
     end
 
-    def dropdown(form, choices = {})
+    def dropdown(form, choices = {}, options = {})
       content_tag('div', class: 'option-dropdown') do
-        form.select option.name, choices
+        form.select option.name, choices, options.symbolize_keys
       end
     end
 

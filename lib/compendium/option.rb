@@ -5,7 +5,7 @@ require 'active_support/core_ext/module/delegation'
 
 module Compendium
   class Option
-    attr_reader :name, :type, :default, :options
+    attr_reader :name, :type, :default, :choices, :options
 
     delegate :boolean?, :date?, :dropdown?, :radio?, :text?, to: :type
     delegate :merge, :merge!, :[], to: :@options
@@ -15,6 +15,7 @@ module Compendium
 
       @name = hash.delete(:name).to_sym
       @default = hash.delete(:default)
+      @choices = hash.delete(:choices)
       self.type = hash.delete(:type)
       @options = hash.with_indifferent_access
     end
