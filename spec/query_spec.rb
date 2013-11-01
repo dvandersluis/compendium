@@ -19,6 +19,11 @@ describe Compendium::Query do
       query.run(nil)
       q2.should_not have_run
     end
+
+    it "should return an empty result set if running an query with no proc" do
+      query = described_class.new(:blank, {}, nil)
+      query.run(nil).should be_empty
+    end
   end
 
   describe "#nil?" do

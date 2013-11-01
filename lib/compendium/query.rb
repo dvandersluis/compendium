@@ -69,8 +69,14 @@ module Compendium
       if options.key?(:through) or options.fetch(:collect, nil) == :active_record
         command
       else
-        ::ActiveRecord::Base.connection.select_all(command.respond_to?(:to_sql) ? command.to_sql : command)
+        execute_command(command)
       end
+    end
+
+    def execute_command(command)
+      return [] if command.nil?
+      command = command.to_sql if command.respond_to?(:to_sql)
+      ::ActiveRecord::Base.connection.select_all(command)
     end
 
     def collect_through_query_results(through, params, context)
