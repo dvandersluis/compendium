@@ -19,11 +19,25 @@ module Compendium
       queries.each { |q| q.report = self }
     end
 
-    def run(context = nil)
+    def run(context = nil, options = {})
       self.context = context
       self.results = {}
 
-      queries.each{ |q| self.results[q.name] = q.run(params, ContextWrapper.wrap(context, self)) }
+      only = options.delete(:only)
+      except = options.delete(:except)
+
+      raise ArgumentError, 'cannot specify only and except options at the same time' if only && except
+      ([only] + [except]).flatten.compact.each { |q| raise ArgumentError, 'invalid query #{q}' unless queries.include?(q) }
+
+      queries_to_run = if only
+        queries.slice(only)
+      elsif except
+        queries.except(except)
+      else
+        queries
+      end
+
+      queries_to_run.each{ |q| self.results[q.name] = q.run(params, ContextWrapper.wrap(context, self)) }
 
       self
     end
