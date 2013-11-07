@@ -1,6 +1,30 @@
 require 'compendium/query'
 
 describe Compendium::Query do
+  describe "#initialize" do
+    let(:options) { double("Options") }
+    let(:proc) { double("Proc") }
+
+    context "when supplying a report" do
+      let(:r) { Compendium::Report.new }
+      subject { described_class.new(r, :test, options, proc)}
+
+      its(:report) { should == r }
+      its(:name) { should == :test }
+      its(:options) { should == options }
+      its(:proc) { should == proc }
+    end
+
+    context "when not supplying a report" do
+      subject { described_class.new(:test, options, proc)}
+
+      its(:report) { should be_nil }
+      its(:name) { should == :test }
+      its(:options) { should == options }
+      its(:proc) { should == proc }
+    end
+  end
+
   describe "#run" do
     let(:query) { described_class.new(:test, {}, -> * { [1, 2, 3] }) }
     before { query.stub(:fetch_results) { |c| c } }

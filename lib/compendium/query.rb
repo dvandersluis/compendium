@@ -7,10 +7,12 @@ module Compendium
     attr_reader :name, :results, :metrics
     attr_accessor :options, :proc, :through, :report
 
-    def initialize(name, options, proc)
-      @name = name
-      @options = options
-      @proc = proc
+    def initialize(*args)
+      @report = args.shift if arg_is_report?(args.first)
+
+      raise ArgumentError, "wrong number of arguments (#{args.size + (@report ? 1 : 0)} for 3..4)" unless args.size == 3
+
+      @name, @options, @proc = args
       @metrics = ::Collection[Metric]
     end
 
@@ -95,6 +97,10 @@ module Compendium
 
     def get_through_query(name)
       report.queries[name]
+    end
+
+    def arg_is_report?(arg)
+      arg.is_a?(Report) or (arg.is_a?(Class) and arg < Report)
     end
   end
 end
