@@ -1,5 +1,7 @@
 require 'compendium/result_set'
 require 'compendium/params'
+require 'compendium/presenters/chart'
+require 'compendium/presenters/table'
 require 'collection_of'
 require_relative '../../config/initializers/ruby/hash'
 
@@ -34,11 +36,11 @@ module Compendium
     end
 
     def render_table(template, *options, &block)
-      Compendium::Presenters::Table.new(template, self, *options, &block).render
+      Compendium::Presenters::Table.new(template, self, *options, &block).render unless empty?
     end
 
     def render_chart(template, *options, &block)
-      Compendium::Presenters::Chart.new(template, self, *options, &block).render
+      Compendium::Presenters::Chart.new(template, self, *options, &block).render unless empty?
     end
 
     def ran?
@@ -46,8 +48,14 @@ module Compendium
     end
     alias_method :has_run?, :ran?
 
+    # A query is nil if it has no proc
     def nil?
       proc.nil?
+    end
+
+    # A query is empty if it has no results
+    def empty?
+      results.empty?
     end
 
   private

@@ -94,4 +94,36 @@ describe Compendium::Query do
       Compendium::Query.new(:test, {}, ->{}).should_not be_nil
     end
   end
+
+  describe "#render_chart" do
+    let(:template) { double("Template") }
+    subject { described_class.new(:test, {}, -> * {}) }
+
+    it "should return nil if the query has no results" do
+      subject.stub(empty?: true)
+      subject.render_chart(template).should be_nil
+    end
+
+    it "should initialize a new Chart presenter if the query has results" do
+      subject.stub(empty?: false)
+      Compendium::Presenters::Chart.should_receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
+      subject.render_chart(template)
+    end
+  end
+
+  describe "#render_table" do
+    let(:template) { double("Template") }
+    subject { described_class.new(:test, {}, -> * {}) }
+
+    it "should return nil if the query has no results" do
+      subject.stub(empty?: true)
+      subject.render_table(template).should be_nil
+    end
+
+    it "should initialize a new Table presenter if the query has results" do
+      subject.stub(empty?: false)
+      Compendium::Presenters::Table.should_receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
+      subject.render_table(template)
+    end
+  end
 end

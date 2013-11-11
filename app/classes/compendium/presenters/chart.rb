@@ -1,3 +1,5 @@
+require 'compendium/presenters/query'
+
 module Compendium::Presenters
   class Chart < Query
     attr_reader :data, :chart_provider
