@@ -8,7 +8,7 @@ require_relative '../../config/initializers/ruby/hash'
 module Compendium
   class Query
     attr_reader :name, :results, :metrics
-    attr_accessor :options, :proc, :through, :report
+    attr_accessor :options, :proc, :report
 
     def initialize(*args)
       @report = args.shift if arg_is_report?(args.first)
@@ -61,17 +61,7 @@ module Compendium
   private
 
     def collect_results(params, context)
-      if through.nil?
-        args = params
-      else
-        args = collect_through_query_results(through, params, context)
-
-        # If none of the through queries have any results, we shouldn't try to execute the query, because it
-        # depends on the results of its parents.
-        return @results = ResultSet.new([]) if args.compact.empty?
-      end
-
-      command = context.instance_exec(args, &proc) if proc
+      command = context.instance_exec(params, &proc) if proc
       command = fetch_results(command)
       @results = ResultSet.new(command) if command
     end
@@ -81,11 +71,7 @@ module Compendium
     end
 
     def fetch_results(command)
-      if options.key?(:through) or options.fetch(:collect, nil) == :active_record
-        command
-      else
-        execute_command(command)
-      end
+      (options.fetch(:collect, nil) == :active_record) ? command : execute_command(command)
     end
 
     def execute_command(command)
@@ -96,24 +82,6 @@ module Compendium
 
     def execute_query(command)
       ::ActiveRecord::Base.connection.select_all(command)
-    end
-
-    def collect_through_query_results(through, params, context)
-      results = {}
-
-      through = [through].flatten.map(&method(:get_through_query))
-
-      through.each do |q|
-        q.run(params, context) unless q.ran?
-        results[q.name] = q.results.records
-      end
-
-      results = results[through.first.name] if through.size == 1
-      results
-    end
-
-    def get_through_query(name)
-      report.queries[name]
     end
 
     def arg_is_report?(arg)

@@ -13,6 +13,7 @@ module Compendium
   autoload :Query,                  'compendium/query'
   autoload :ResultSet,              'compendium/result_set'
   autoload :Report,                 'compendium/report'
+  autoload :ThroughQuery,           'compendium/through_query'
 
   autoload :Param,                  'compendium/param_types'
   autoload :BooleanParam,           'compendium/param_types'

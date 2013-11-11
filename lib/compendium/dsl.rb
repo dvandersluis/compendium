@@ -59,18 +59,17 @@ module Compendium
 
   private
 
-    def define_query(name, opts, type = Query, &block)
+    def define_query(name, opts, &block)
       name = name.to_sym
-      query = type.new(name, opts, block)
 
       if opts.key?(:through)
+        # Ensure each through query is defined
         through = [opts[:through]].flatten
+        through.each { |q| raise ArgumentError, "query #{q} is not defined" unless self.queries.include?(q.to_sym) }
 
-        through.each do |q|
-          raise ArgumentError, "query #{q} is not defined" unless self.queries.include?(q.to_sym)
-        end
-
-        query.through = through
+        query = ThroughQuery.new(name, through, opts, block)
+      else
+        query = Query.new(name, opts, block)
       end
 
       metrics[name] = opts[:metric] if opts.key?(:metric)
