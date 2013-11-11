@@ -48,6 +48,41 @@ describe Compendium::Query do
       query = described_class.new(:blank, {}, nil)
       query.run(nil).should be_empty
     end
+
+    context 'through queries' do
+      let(:parent_query1) { described_class.new(:parent1, {}, -> * { }) }
+      let(:parent_query2) { described_class.new(:parent2, {}, -> * { }) }
+      let(:parent_query3) { described_class.new(:parent3, {}, -> * { [[1, 2, 3]] }) }
+
+      subject { described_class.new(:sub, {}, -> records { records.first }) }
+
+      before do
+        subject.stub(:get_through_query).with(:parent1).and_return(parent_query1)
+        subject.stub(:get_through_query).with(:parent2).and_return(parent_query2)
+        subject.stub(:get_through_query).with(:parent3).and_return(parent_query3)
+        described_class.any_instance.stub(:execute_query) { |cmd| cmd }
+      end
+
+      it "should not try to run a through query if the parent query has no results" do
+        subject.through = :parent1
+
+        expect { subject.run(nil) }.to_not raise_error
+        subject.results.should be_empty
+      end
+
+      it "should not try to run a through query with multiple parents all of which have no results" do
+        subject.through = [:parent1, :parent2]
+
+        expect { subject.run(nil) }.to_not raise_error
+        subject.results.should be_empty
+      end
+
+      it "should allow non blank queries" do
+        subject.through = :parent3
+        subject.run(nil)
+        subject.results.should == [1, 2, 3]
+      end
+    end
   end
 
   describe "#nil?" do

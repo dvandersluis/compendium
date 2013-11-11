@@ -1,6 +1,7 @@
 require 'compendium/result_set'
 require 'compendium/params'
 require 'collection_of'
+require_relative '../../config/initializers/ruby/hash'
 
 module Compendium
   class Query
@@ -52,10 +53,14 @@ module Compendium
   private
 
     def collect_results(params, context)
-      args = if through.nil?
-        params
+      if through.nil?
+        args = params
       else
-        collect_through_query_results(through, params, context)
+        args = collect_through_query_results(through, params, context)
+
+        # If none of the through queries have any results, we shouldn't try to execute the query, because it
+        # depends on the results of its parents.
+        return @results = ResultSet.new([]) if args.compact.empty?
       end
 
       command = context.instance_exec(args, &proc) if proc
@@ -78,6 +83,10 @@ module Compendium
     def execute_command(command)
       return [] if command.nil?
       command = command.to_sql if command.respond_to?(:to_sql)
+      execute_query(command)
+    end
+
+    def execute_query(command)
       ::ActiveRecord::Base.connection.select_all(command)
     end
 
