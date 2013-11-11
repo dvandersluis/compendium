@@ -22,6 +22,7 @@ module Compendium
 
       if options[name]
         options[name].type = type if type
+        options[name].default = opts.delete(:default) if opts.key?(:default)
         options[name].merge!(opts)
       else
         options[name] = Compendium::Option.new(opts.merge(name: name, type: type))

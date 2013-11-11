@@ -5,7 +5,7 @@ require 'active_support/core_ext/module/delegation'
 
 module Compendium
   class Option
-    attr_reader :name, :type, :default, :choices, :options
+    attr_accessor :name, :type, :default, :choices, :options
 
     delegate :boolean?, :date?, :dropdown?, :radio?, :text?, to: :type
     delegate :merge, :merge!, :[], to: :@options

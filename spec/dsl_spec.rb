@@ -19,6 +19,12 @@ describe Compendium::DSL do
       subject.options[:starting_on].should be_boolean
       subject.options[:starting_on].should_not be_date
     end
+
+    it "should allow overriding default value" do
+      proc = -> { Date.new(2013, 6, 1) }
+      subject.option :starting_on, :date, default: proc
+      subject.options[:starting_on].default.should == proc
+    end
   end
 
   describe "#query" do
