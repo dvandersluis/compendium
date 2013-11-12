@@ -33,13 +33,10 @@ describe Compendium::ThroughQuery do
     let(:parent2) { Compendium::Query.new(:parent2, {}, -> * { }) }
     let(:parent3) { Compendium::Query.new(:parent3, {}, -> * { [[1, 2, 3]] }) }
 
-    before do
-      subject.stub(:get_through_query) { |name| send(name) }
-      Compendium::Query.any_instance.stub(:execute_query) { |cmd| cmd }
-    end
+    before { parent3.stub(:execute_query) { |cmd| cmd } }
 
     context "with a single parent" do
-      subject { described_class.new(:sub, :parent1, {}, -> r { r.first }) }
+      subject { described_class.new(:sub, parent1, {}, -> r { r.first }) }
 
       it "should not try to run a through query if the parent query has no results" do
         expect { subject.run(nil) }.to_not raise_error
@@ -48,7 +45,7 @@ describe Compendium::ThroughQuery do
     end
 
     context "with multiple parents" do
-      subject { described_class.new(:sub, [:parent1, :parent2], {}, -> r { r.first }) }
+      subject { described_class.new(:sub, [parent1, parent2], {}, -> r { r.first }) }
 
       it "should not try to run a through query with multiple parents all of which have no results" do
         expect { subject.run(nil) }.to_not raise_error
@@ -56,10 +53,19 @@ describe Compendium::ThroughQuery do
       end
 
       it "should allow non blank queries" do
-        subject.through = :parent3
+        subject.through = parent3
         subject.run(nil)
         subject.results.should == [1, 2, 3]
       end
+    end
+
+    context "when the through option is an actual query" do
+      subject { described_class.new(:sub, parent3, {}, -> r { r.first }) }
+
+      before { subject.run(nil) }
+
+      its(:through) { should == parent3 }
+      its(:results) { should == [1, 2, 3] }
     end
   end
 end

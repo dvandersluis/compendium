@@ -40,8 +40,8 @@ module Compendium
       results
     end
 
-    def get_through_query(name)
-      report.queries[name]
+    def get_through_query(query)
+      query.is_a?(Query) ? query : report.queries[query]
     end
   end
 end
