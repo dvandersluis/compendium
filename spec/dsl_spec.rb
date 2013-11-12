@@ -56,10 +56,31 @@ describe Compendium::DSL do
     end
 
     context "when given a collection option" do
-      before { report_class.query :collection, collection: [] }
       subject { report_class.queries[:collection] }
 
-      it { should be_a Compendium::CollectionQuery }
+      context "that is an enumerable" do
+        before { report_class.query :collection, collection: [] }
+
+        it { should be_a Compendium::CollectionQuery }
+      end
+
+      context "that is a symbol" do
+        let(:query) { double("Query") }
+
+        before do
+          Compendium::Query.any_instance.stub(:get_associated_query).with(:query).and_return(query)
+          report_class.query :collection, collection: :query
+        end
+
+        its(:collection) { should == query }
+      end
+
+      context "that is a query" do
+        let(:query) { Compendium::Query.new(:query, {}, ->{}) }
+        before { report_class.query :collection, collection: query }
+
+        its(:collection) { should == query }
+      end
     end
   end
 
