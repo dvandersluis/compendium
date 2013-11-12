@@ -1,3 +1,5 @@
+require 'compendium/presenters/base'
+
 module Compendium::Presenters
   class Query < Base
     presents :query

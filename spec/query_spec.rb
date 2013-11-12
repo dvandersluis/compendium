@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'compendium/query'
 
 describe Compendium::Query do

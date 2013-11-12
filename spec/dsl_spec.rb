@@ -28,11 +28,13 @@ describe Compendium::DSL do
   end
 
   describe "#query" do
-    subject do
+    let(:report_class) do
       Class.new(Compendium::Report) do
         query :test
       end
     end
+
+    subject { report_class }
 
     its(:queries) { should include :test }
 
@@ -43,6 +45,21 @@ describe Compendium::DSL do
 
     it "should not relate a query to the report class" do
       subject.test.report.should be_nil
+    end
+
+    context "when given a through option" do
+      before { report_class.query :through, through: :test }
+      subject { report_class.queries[:through] }
+
+      it { should be_a Compendium::ThroughQuery }
+      its(:through) { should == [:test] }
+    end
+
+    context "when given a collection option" do
+      before { report_class.query :collection, collection: [] }
+      subject { report_class.queries[:collection] }
+
+      it { should be_a Compendium::CollectionQuery }
     end
   end
 

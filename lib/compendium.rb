@@ -5,6 +5,7 @@ require 'active_support/configurable'
 module Compendium
   autoload :AbstractChartProvider,  'compendium/abstract_chart_provider'
   autoload :ChartProvider,          'compendium/abstract_chart_provider'
+  autoload :CollectionQuery,        'compendium/collection_query'
   autoload :ContextWrapper,         'compendium/context_wrapper'
   autoload :DSL,                    'compendium/dsl'
   autoload :Metric,                 'compendium/metric'

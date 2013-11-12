@@ -25,7 +25,7 @@ module Compendium
     end
 
     def run(params, context = self)
-      collect_results(params, context)
+      collect_results(context, params)
       collect_metrics(context)
 
       @results
@@ -60,8 +60,8 @@ module Compendium
 
   private
 
-    def collect_results(params, context)
-      command = context.instance_exec(params, &proc) if proc
+    def collect_results(context, *params)
+      command = context.instance_exec(*params, &proc) if proc
       command = fetch_results(command)
       @results = ResultSet.new(command) if command
     end
@@ -86,6 +86,10 @@ module Compendium
 
     def arg_is_report?(arg)
       arg.is_a?(Report) or (arg.is_a?(Class) and arg < Report)
+    end
+
+    def get_associated_query(query)
+      query.is_a?(Query) ? query : report.queries[query]
     end
   end
 end

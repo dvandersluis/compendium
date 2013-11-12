@@ -12,14 +12,14 @@ module Compendium
 
   private
 
-    def collect_results(params, context)
+    def collect_results(context, params)
       args = collect_through_query_results(params, context)
 
       # If none of the through queries have any results, we shouldn't try to execute the query, because it
       # depends on the results of its parents.
       return @results = ResultSet.new([]) if args.compact.empty?
 
-      super(args, context)
+      super(context, args)
     end
 
     def fetch_results(command)
@@ -29,7 +29,7 @@ module Compendium
     def collect_through_query_results(params, context)
       results = {}
 
-      queries = [through].flatten.map(&method(:get_through_query))
+      queries = [through].flatten.map(&method(:get_associated_query))
 
       queries.each do |q|
         q.run(params, context) unless q.ran?
@@ -38,10 +38,6 @@ module Compendium
 
       results = results[queries.first.name] if queries.size == 1
       results
-    end
-
-    def get_through_query(query)
-      query.is_a?(Query) ? query : report.queries[query]
     end
   end
 end
