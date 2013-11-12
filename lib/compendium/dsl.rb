@@ -29,7 +29,9 @@ module Compendium
       end
     end
 
-    def metric(name, proc, opts = {})
+    def metric(name, *args, &block)
+      proc = args.first.is_a?(Proc) ? args.first : block
+      opts = args.extract_options!
       raise ArgumentError, 'through option must be specified for metric' unless opts.key?(:through)
 
       [opts.delete(:through)].flatten.each do |query|
