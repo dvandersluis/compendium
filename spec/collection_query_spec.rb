@@ -32,9 +32,15 @@ describe Compendium::CollectionQuery do
       let(:q) { Compendium::Query.new(:q, {}, -> * { { one: 1, two: 2, three: 3 } }) }
       subject { described_class.new(:collection, { collection: q }, -> _, item { [ item * 2 ] }) }
 
-      before{ subject.run(nil) }
+      before { subject.run(nil) if example.metadata.fetch(:run_query, true) }
 
       its(:results) { should == [[:one, [2]], [:two, [4]], [:three, [6]]] }
+
+      it "should not re-run the query if it has already ran", run_query: false do
+        q.run(nil)
+        q.should_not_receive(:run)
+        subject.run(nil)
+      end
     end
   end
 end

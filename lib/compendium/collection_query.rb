@@ -26,7 +26,12 @@ module Compendium
   private
 
     def get_collection_values(context, params)
-      self.collection.is_a?(Query) ? self.collection.run(params, context) : self.collection
+      if self.collection.is_a?(Query)
+        self.collection.run(params, context) unless self.collection.ran?
+        self.collection.results
+      else
+        self.collection
+      end
     end
 
     def prepare_collection(collection)

@@ -2,7 +2,7 @@ require 'active_support/core_ext/module/delegation'
 
 module Compendium
   class ResultSet
-    delegate :first, :last, :to_a, :empty?, :each, :map, :inject, :[], :count, :length, :size, :==, to: :records
+    delegate :first, :last, :to_a, :empty?, :each, :map, :inject, :select, :detect, :[], :count, :length, :size, :==, to: :records
 
     attr_reader :records
     alias :all :records
