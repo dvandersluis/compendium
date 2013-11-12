@@ -32,7 +32,7 @@ module Compendium
 
     def render_setup(opts = {})
       locals = { report: setup_report, prefix: @prefix }
-      render_if_exists(opts.merge(locals: locals)) || render(locals: locals)
+      opts.empty? ? render(locals: locals) : render_if_exists(opts.merge(locals: locals)) || render(locals: locals)
     end
 
     def setup_report
