@@ -129,4 +129,28 @@ describe Compendium::Report do
       end
     end
   end
+
+  describe "predicate methods" do
+    before do
+      OneReport = Class.new(Compendium::Report)
+      TwoReport = Class.new(Compendium::Report)
+      ThreeReport = Class.new
+    end
+
+    after do
+      Object.send(:remove_const, :OneReport)
+      Object.send(:remove_const, :TwoReport)
+      Object.send(:remove_const, :ThreeReport)
+    end
+
+    it { should respond_to(:one?) }
+    it { should respond_to(:two?) }
+    it { should_not respond_to(:three?) }
+
+    it { should_not be_one }
+    it { should_not be_two }
+
+    specify { OneReport.should be_one }
+    specify { TwoReport.should be_two }
+  end
 end

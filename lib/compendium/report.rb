@@ -8,8 +8,29 @@ module Compendium
 
     extend Compendium::DSL
 
-    def self.inherited(report)
-      Compendium.reports << report
+    class << self
+      def inherited(report)
+        Compendium.reports << report
+      end
+
+      # Define predicate methods for getting the report type
+      # ie. r.spending? checks that r == SpendingReport
+      def method_missing(name, *args, &block)
+        prefix = name.to_s.gsub(/[?!]\z/, '')
+        report_class = "#{prefix}_report".classify.constantize rescue nil
+
+        return self == report_class if name.to_s.end_with?('?') and Compendium.reports.include?(report_class)
+
+        super
+      end
+
+      def respond_to_missing?(name, include_private = false)
+        prefix = name.to_s.gsub(/[?!]\z/, '')
+        report_class = "#{prefix}_report".classify.constantize rescue nil
+
+        return true if name.to_s.end_with?('?') and Compendium.reports.include?(report_class)
+        super
+      end
     end
 
     def initialize(params = {})
