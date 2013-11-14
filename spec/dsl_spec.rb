@@ -72,7 +72,7 @@ describe Compendium::DSL do
           report_class.query :collection, collection: :query
         end
 
-        its(:collection) { should == query }
+        its(:collection) { should == :query }
       end
 
       context "that is a query" do
