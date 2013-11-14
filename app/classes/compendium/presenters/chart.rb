@@ -1,13 +1,17 @@
 require 'compendium/presenters/query'
+require 'active_support/core_ext/array/extract_options'
 
 module Compendium::Presenters
   class Chart < Query
-    attr_reader :data, :chart_provider
+    attr_reader :data, :container, :chart_provider
 
-    def initialize(template, object, type, container = nil, &setup)
+    def initialize(template, object, *args, &setup)
+      options = args.extract_options!
+      type, container = args
+
       super(template, object)
 
-      @data = results.records
+      @data = options[:index] ? results.records[options[:index]] : results.records
       @data = @data[0...-1] if query.options[:totals]
 
       @container = container || query.name
