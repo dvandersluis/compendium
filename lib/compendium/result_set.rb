@@ -1,4 +1,5 @@
 require 'active_support/core_ext/module/delegation'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module Compendium
   class ResultSet
@@ -11,6 +12,8 @@ module Compendium
       @records = records.map do |r|
         r.respond_to?(:with_indifferent_access) ? r.with_indifferent_access : r
       end
+
+      @records = Hash[@records] if records.is_a?(Hash)
     end
 
     def keys
