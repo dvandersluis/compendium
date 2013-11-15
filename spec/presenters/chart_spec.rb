@@ -10,7 +10,7 @@ describe Compendium::Presenters::Chart do
   describe '#initialize' do
     let(:template) { double('Template') }
     let(:query) { double('Query', name: 'test_query', results: results, options: {}) }
-    let(:results) { double('Results', records: []) }
+    let(:results) { Compendium::ResultSet.new([]) }
 
     context 'when all params are given' do
       subject{ described_class.new(template, query, :pie, :container) }

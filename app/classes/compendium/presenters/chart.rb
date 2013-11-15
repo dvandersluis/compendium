@@ -11,7 +11,8 @@ module Compendium::Presenters
 
       super(template, object)
 
-      @data = options[:index] ? results.records[options[:index]] : results.records
+      @data = options[:index] ? results.records[options[:index]] : results
+      @data = @data.records if @data.is_a?(Compendium::ResultSet)
       @data = @data[0...-1] if query.options[:totals]
 
       @container = container || query.name
