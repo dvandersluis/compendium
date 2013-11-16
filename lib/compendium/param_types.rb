@@ -32,7 +32,7 @@ module Compendium
         raise IndexError if (!obj.nil? and index.nil?) or index.to_i.abs > @choices.length - 1
       end
 
-      super(index || 0)
+      super(index)
     end
 
     def value

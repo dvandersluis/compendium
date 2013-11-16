@@ -25,6 +25,16 @@ describe Compendium::DSL do
       subject.option :starting_on, :date, default: proc
       subject.options[:starting_on].default.should == proc
     end
+
+    it "should add validations" do
+      subject.option :foo, validates: { presence: true }
+      subject.params_class.validators_on(:foo).should_not be_empty
+    end
+
+    it "should not add validations if no validates option is given" do
+      subject.params_class.should_not_receive :validates
+      subject.option :foo
+    end
   end
 
   describe "#query" do

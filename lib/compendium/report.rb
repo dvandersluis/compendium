@@ -11,6 +11,11 @@ module Compendium
     class << self
       def inherited(report)
         Compendium.reports << report
+
+        # Each Report object has its own Params class so that validations can be added without affecting other
+        # reports. However, validations also need to be inherited, so when inheriting a report, subclass its
+        # params_class
+        report.params_class = Class.new(self.params_class)
       end
 
       # Define predicate methods for getting the report type
@@ -34,7 +39,7 @@ module Compendium
     end
 
     def initialize(params = {})
-      @params = Params.new(params, options)
+      @params = self.class.params_class.new(params, options)
 
       # When creating a new report, map each query back to the report
       queries.each { |q| q.report = self }

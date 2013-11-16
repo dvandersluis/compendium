@@ -153,4 +153,18 @@ describe Compendium::Report do
     specify { OneReport.should be_one }
     specify { TwoReport.should be_two }
   end
+
+  describe "parameters" do
+    let(:report_class) { Class.new(subject) }
+    let(:report_class2) { Class.new(report_class) }
+
+    it "should include ancestors params" do
+      report_class.params_class.ancestors.should include subject.params_class
+    end
+
+    it "should inherit validations" do
+      report_class.params_class.validates :foo, presence: true
+      report_class2.params_class.validators_on(:foo).should_not be_nil
+    end
+  end
 end

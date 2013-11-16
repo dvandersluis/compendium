@@ -20,6 +20,8 @@ module Compendium
       opts = args.extract_options!
       type = args.shift
 
+      add_params_validations(name, opts.delete(:validates))
+
       if options[name]
         options[name].type = type if type
         options[name].default = opts.delete(:default) if opts.key?(:default)
@@ -38,6 +40,15 @@ module Compendium
         raise ArgumentError, "query #{query} is not defined" unless queries.key?(query)
         queries[query].add_metric(name, proc, opts)
       end
+    end
+
+    # Each Report will have its own descendant of Params in order to safely add validations
+    def params_class
+      @params_class ||= Class.new(Params)
+    end
+
+    def params_class=(klass)
+      @params_class = klass
     end
 
     # Allow defined queries to be redefined by name, eg:
@@ -80,6 +91,11 @@ module Compendium
 
       metrics[name] = opts[:metric] if opts.key?(:metric)
       queries << query
+    end
+
+    def add_params_validations(name, validations)
+      return if validations.blank?
+      self.params_class.validates name, validations
     end
   end
 end

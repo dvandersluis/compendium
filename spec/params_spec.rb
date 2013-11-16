@@ -25,4 +25,16 @@ describe Compendium::Params do
     @params = {}
     subject.ending_on.should be_nil
   end
+
+  describe "#validations" do
+    subject { described_class.new({}, options) }
+
+    before do
+      described_class.validates :ending_on, presence: true
+      subject.valid?
+    end
+
+    it { should_not be_valid }
+    its('errors.keys') { should include :ending_on }
+  end
 end
