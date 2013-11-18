@@ -1,5 +1,6 @@
 require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/hash/slice'
+require 'active_support/core_ext/module/delegation'
 require 'compendium/dsl'
 
 module Compendium
@@ -7,6 +8,8 @@ module Compendium
     attr_accessor :params, :results
 
     extend Compendium::DSL
+
+    delegate :valid?, :errors, to: :params
 
     class << self
       def inherited(report)

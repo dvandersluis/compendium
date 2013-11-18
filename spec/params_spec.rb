@@ -29,10 +29,11 @@ describe Compendium::Params do
   end
 
   describe "#validations" do
-    subject { described_class.new({}, options) }
+    let(:report_class) { Class.new(described_class) }
+    subject { report_class.new({}, options) }
 
     before do
-      described_class.validates :ending_on, presence: true
+      report_class.validates :ending_on, presence: true
       subject.valid?
     end
 

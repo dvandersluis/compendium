@@ -167,4 +167,22 @@ describe Compendium::Report do
       report_class2.params_class.validators_on(:foo).should_not be_nil
     end
   end
+
+  describe "#valid?" do
+    let(:report_class) do
+      Class.new(described_class) do
+        option :id, :dropdown, choices: (0..10).to_a, validates: { presence: true }
+      end
+    end
+
+    it "should return true if there are no validation failures" do
+      r = report_class.new(id: 5)
+      r.should be_valid
+    end
+
+    it "should return false if there are validation failures" do
+      r = report_class.new(id: nil)
+      r.should_not be_valid
+    end
+  end
 end

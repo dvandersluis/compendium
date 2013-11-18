@@ -15,6 +15,10 @@ module Compendium
       super(prepare_hash_from_options(hash))
     end
 
+    def self.model_name
+      ActiveModel::Name.new(Compendium::Params)
+    end
+
   protected
 
     def prepare_hash_from_options(params)
