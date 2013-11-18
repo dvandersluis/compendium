@@ -5,7 +5,7 @@ module Compendium::Presenters
     presents :option
 
     def name
-      t(option.name)
+      t("options.#{option.name}", cascade: { offset: 2 })
     end
 
     def label(form)
