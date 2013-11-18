@@ -16,7 +16,7 @@ module Compendium
     end
 
     def self.model_name
-      ActiveModel::Name.new(Compendium::Params)
+      ActiveModel::Name.new(Compendium::Params, Compendium, 'compendium.params')
     end
 
   protected

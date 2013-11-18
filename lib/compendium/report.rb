@@ -19,6 +19,11 @@ module Compendium
         # reports. However, validations also need to be inherited, so when inheriting a report, subclass its
         # params_class
         report.params_class = Class.new(self.params_class)
+        report.params_class.class_eval %Q{
+          def self.model_name
+            ActiveModel::Name.new(Compendium::Params, Compendium, "compendium.params.#{report.name.underscore}")
+          end
+        }
       end
 
       # Define predicate methods for getting the report type
