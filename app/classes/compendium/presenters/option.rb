@@ -21,10 +21,12 @@ module Compendium::Presenters
       out << content_tag(:span, label, class: 'option-label')
 
       if option.note?
-        note = t(option.note == true ? :"#{option.name}_note" : option.note)
+        key = option.note == true ? :"#{option.name}_note" : option.note
+        note = t("options.#{key}", cascade: { offset: 2 })
+        title = t("options.#{option.name}_note_title", default: '', cascade: { offset: 2 })
 
         if defined?(AccessibleTooltip)
-          return accessible_tooltip(:help, label: out, title: t("#{option.name}_note_title", default: '')) { note }
+          return accessible_tooltip(:help, label: out, title: title) { note }
         else
           out << content_tag(:div, note, class: 'option-note')
         end
