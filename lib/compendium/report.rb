@@ -1,6 +1,7 @@
 require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/module/delegation'
+require 'active_support/core_ext/string/inflections'
 require 'compendium/dsl'
 
 module Compendium
@@ -21,7 +22,7 @@ module Compendium
         report.params_class = Class.new(self.params_class)
         report.params_class.class_eval %Q{
           def self.model_name
-            ActiveModel::Name.new(Compendium::Params, Compendium, "compendium.params.#{report.name.underscore}")
+            ActiveModel::Name.new(Compendium::Params, Compendium, "compendium.params.#{report.name.underscore rescue 'report'}")
           end
         }
       end

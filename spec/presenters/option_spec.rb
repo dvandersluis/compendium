@@ -15,7 +15,7 @@ describe Compendium::Presenters::Option do
 
   describe "#name" do
     it "should pass the name through I18n" do
-      template.should_receive(:t).with(:test_option)
+      template.should_receive(:t).with('options.test_option', anything)
       subject.name
     end
   end
