@@ -35,6 +35,13 @@ describe Compendium::DSL do
       subject.params_class.should_not_receive :validates
       subject.option :foo
     end
+
+    it "should not bleed overridden options into the superclass" do
+      r = Class.new(subject)
+      r.option :starting_on, :boolean
+      r.option :new, :date
+      subject.options[:starting_on].should be_date
+    end
   end
 
   describe "#query" do

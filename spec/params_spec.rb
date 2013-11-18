@@ -1,13 +1,15 @@
 require 'compendium/params'
 
 describe Compendium::Params do
-  let(:options) { {
-    starting_on: Compendium::Option.new(name: :starting_on, type: :date, default: ->{ Date.today }),
-    ending_on: Compendium::Option.new(name: :ending_on, type: :date),
-    report_type: Compendium::Option.new(name: :report_type, type: :radio, choices: [:big, :small]),
-    boolean: Compendium::Option.new(name: :boolean, type: :boolean),
-    another_boolean: Compendium::Option.new(name: :another_boolean, type: :boolean)
-  } }
+  let(:options) {
+    opts = Collection[Compendium::Option]
+    opts << Compendium::Option.new(name: :starting_on, type: :date, default: ->{ Date.today })
+    opts << Compendium::Option.new(name: :ending_on, type: :date)
+    opts << Compendium::Option.new(name: :report_type, type: :radio, choices: [:big, :small])
+    opts << Compendium::Option.new(name: :boolean, type: :boolean)
+    opts << Compendium::Option.new(name: :another_boolean, type: :boolean)
+    opts
+  }
 
   subject{ described_class.new(@params, options) }
 

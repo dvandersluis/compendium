@@ -20,10 +20,10 @@ module Compendium
     def prepare_hash_from_options(params)
       params = params.slice(*options.keys)
 
-      options.each do |option_name, metadata|
+      options.each do |option|
         begin
-          klass = "Compendium::#{"#{metadata.type}Param".classify}".constantize
-          params[option_name] = klass.new(get_default_value(params[option_name], metadata.default), metadata.choices)
+          klass = "Compendium::#{"#{option.type}Param".classify}".constantize
+          params[option.name] = klass.new(get_default_value(params[option.name], option.default), option.choices)
         rescue IndexError
           raise IndexError, "invalid index for #{option_name}"
         end

@@ -7,7 +7,7 @@ module Compendium
   module DSL
     def self.extended(klass)
       klass.inheritable_attr :queries, default: ::Collection[Query]
-      klass.inheritable_attr :options, default: {}
+      klass.inheritable_attr :options, default: ::Collection[Option]
     end
 
     def query(name, opts = {}, &block)
@@ -27,7 +27,7 @@ module Compendium
         options[name].default = opts.delete(:default) if opts.key?(:default)
         options[name].merge!(opts)
       else
-        options[name] = Compendium::Option.new(opts.merge(name: name, type: type))
+        options << Compendium::Option.new(opts.merge(name: name, type: type))
       end
     end
 

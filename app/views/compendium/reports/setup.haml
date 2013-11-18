@@ -5,7 +5,7 @@
 
 .options
   = form_for report, as: :report, url: compendium_reports_run_path do |f|
-    - report.options.values.each do |option|
+    - report.options.each do |option|
       - expose option, Compendium::Presenters::Option do |opt|
         .option
           = opt.label(f)
