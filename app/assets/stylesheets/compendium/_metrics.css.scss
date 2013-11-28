@@ -14,6 +14,7 @@ div.metrics
     text-align: center;
     color: #575757;
     @include border-radius(10px);
+    vertical-align: middle;
 
     .metric-label
     {
@@ -31,6 +32,7 @@ div.metrics
       font-size: 600%;
       font-weight: bold;
       color: black;
+      line-height: 57px;
 
       .metric-data-inner
       {
@@ -86,6 +88,7 @@ div.metrics
       .metric-data
       {
         top: -10px;
+        line-height: 140px;
       }
     }
   }
