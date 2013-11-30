@@ -36,7 +36,7 @@ module Compendium
 
       queries.each do |q|
         q.run(params, context) unless q.ran?
-        results[q.name] = q.results.records
+        results[q.name] = q.results.records.dup
       end
 
       results = results[queries.first.name] if queries.size == 1

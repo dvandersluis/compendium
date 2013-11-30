@@ -53,6 +53,12 @@ describe Compendium::ThroughQuery do
       q.run(params).should == [[1, 2, 3]]
     end
 
+    it "should not affect its parent query" do
+      q = described_class.new(:through, parent3, {}, -> r { r.map!{ |i| i * 2 } })
+      q.run(nil).should == [[1, 2, 3, 1, 2, 3]]
+      parent3.results.should == [[1, 2, 3]]
+    end
+
     context "with a single parent" do
       subject { described_class.new(:sub, parent1, {}, -> r { r.first }) }
 
