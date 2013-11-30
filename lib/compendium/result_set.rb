@@ -9,8 +9,12 @@ module Compendium
     alias :all :records
 
     def initialize(records)
-      @records = records.map do |r|
-        r.respond_to?(:with_indifferent_access) ? r.with_indifferent_access : r
+      @records = if records.respond_to?(:map)
+        records.map do |r|
+          r.respond_to?(:with_indifferent_access) ? r.with_indifferent_access : r
+        end
+      else
+        [records]
       end
 
       @records = Hash[@records] if records.is_a?(Hash)

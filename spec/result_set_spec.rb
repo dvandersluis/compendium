@@ -19,5 +19,10 @@ describe Compendium::ResultSet do
       let(:results) { { one: 1, two: 2 } }
       it { should == { one: 1, two: 2 } }
     end
+
+    context "when given a scalar" do
+      let(:results) { 3 }
+      it { should == [3] }
+    end
   end
 end

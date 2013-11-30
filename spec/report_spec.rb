@@ -39,7 +39,9 @@ describe Compendium::Report do
             [params[:first].__getobj__, params[:second].__getobj__]
           end
 
-          metric :test_metric, -> results { results.to_a.max }, through: :test
+          metric :lambda_metric, -> results { results.to_a.max }, through: :test
+          metric(:block_metric, through: :test) { |results| results.to_a.max }
+          metric(:implicit_metric) { [1, 2, 3].count }
         end
       end
 
@@ -53,14 +55,25 @@ describe Compendium::Report do
 
       its('test_results.records') { should == [Date.new(2010, 10, 10), Date.new(2011, 11, 11)] }
 
-      it "should run its metrics" do
-        subject.test.metrics[:test_metric].result.should == Date.new(2011, 11, 11)
-        subject.metrics[:test_metric].result.should == Date.new(2011, 11, 11)
+      it "should allow metric results to be accessed through a query" do
+        subject.test.metrics[:lambda_metric].result.should == Date.new(2011, 11, 11)
+      end
+
+      it "should run its metrics defined as a lambda" do
+        subject.metrics[:lambda_metric].result.should == Date.new(2011, 11, 11)
+      end
+
+      it "should run its metrics defined as a block" do
+        subject.metrics[:block_metric].result.should == Date.new(2011, 11, 11)
+      end
+
+      it "should run its implicit metrics" do
+        subject.metrics[:implicit_metric].result.should == 3
       end
 
       it "should not affect other instances of the report class" do
         report2.test.results.should be_nil
-        report2.metrics[:test_metric].result.should be_nil
+        report2.metrics[:lambda_metric].result.should be_nil
       end
 
       it "should not affect the class collections" do

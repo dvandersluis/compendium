@@ -129,25 +129,33 @@ describe Compendium::DSL do
       subject.queries[:test].metrics.first.command.should == metric_proc
     end
 
-    it "should raise an error if through is not specified" do
-      expect{ subject.metric :test_metric, metric_proc }.to raise_error ArgumentError, 'through option must be specified for metric'
-    end
-
-    it "should raise an error if specified for an invalid query" do
-      expect{ subject.metric :test_metric, metric_proc, through: :fake }.to raise_error ArgumentError, 'query fake is not defined'
-    end
-
-    it "should allow metrics to be defined with a block" do
-      subject.metric :block_metric, through: :test do
-        123
+    context "when through is specified" do
+      it "should raise an error if specified for an invalid query" do
+        expect{ subject.metric :test_metric, metric_proc, through: :fake }.to raise_error ArgumentError, 'query fake is not defined'
       end
 
-      subject.queries[:test].metrics[:block_metric].run(self, nil).should == 123
+      it "should allow metrics to be defined with a block" do
+        subject.metric :block_metric, through: :test do
+          123
+        end
+
+        subject.queries[:test].metrics[:block_metric].run(self, nil).should == 123
+      end
+
+      it "should allow metrics to be defined with a lambda" do
+        subject.metric :block_metric, -> * { 123 }, through: :test
+        subject.queries[:test].metrics[:block_metric].run(self, nil).should == 123
+      end
     end
 
-    it "should allow metrics to be defined with a lambda" do
-      subject.metric :block_metric, -> * { 123 }, through: :test
-      subject.queries[:test].metrics[:block_metric].run(self, nil).should == 123
+    context "when through is not specified" do
+      before { subject.metric(:no_through_metric) { |data| data } }
+
+      its(:queries) { should include :__metric_no_through_metric }
+
+      it "should return the result of the query as the result of the metric" do
+        subject.queries[:__metric_no_through_metric].metrics[:no_through_metric].run(self, [123]).should == 123
+      end
     end
   end
 
