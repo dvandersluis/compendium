@@ -122,10 +122,45 @@ describe Compendium::Report do
         subject.second.should_not have_run
       end
 
+      it "should allow multiple queries to be specified by :only" do
+        report_class.query(:third) {}
+        subject.run(nil, only: [:first, :third])
+        subject.first.should have_run
+        subject.second.should_not have_run
+        subject.third.should have_run
+      end
+
+      it "should not run through queries related to a query specified by only if not also specified" do
+        report_class.query(:through, through: :first) {}
+        subject.run(nil, only: :first)
+        subject.through.should_not have_run
+      end
+
+      it "should run through queries related to a query specified by only if also specified" do
+        report_class.query(:through, through: :first) {}
+        subject.run(nil, only: [:first, :through])
+        subject.through.should have_run
+      end
+
       it "should not run queries specified by :except" do
         subject.run(nil, except: :first)
         subject.first.should_not have_run
         subject.second.should have_run
+      end
+
+      it "should allow multiple queries to be specified by :except" do
+        report_class.query(:third) {}
+        subject.run(nil, except: [:first, :third])
+        subject.first.should_not have_run
+        subject.second.should have_run
+        subject.third.should_not have_run
+      end
+
+      it "should not run through queries excepted related to a query even if the main query is not excepted" do
+        report_class.query(:through, through: :first) {}
+        subject.run(nil, except: :through)
+        subject.through.should_not have_run
+        subject.first.should have_run
       end
     end
   end

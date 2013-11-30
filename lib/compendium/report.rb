@@ -58,16 +58,16 @@ module Compendium
       self.context = context
       self.results = {}
 
-      only = options.delete(:only)
-      except = options.delete(:except)
+      only = [options.delete(:only)].flatten.compact
+      except = [options.delete(:except)].flatten.compact
 
-      raise ArgumentError, 'cannot specify only and except options at the same time' if only && except
-      ([only] + [except]).flatten.compact.each { |q| raise ArgumentError, 'invalid query #{q}' unless queries.include?(q) }
+      raise ArgumentError, 'cannot specify only and except options at the same time' if !only.empty? and !except.empty?
+      (only + except).flatten.each { |q| raise ArgumentError, "invalid query #{q}" unless queries.include?(q) }
 
-      queries_to_run = if only
-        queries.slice(only)
-      elsif except
-        queries.except(except)
+      queries_to_run = if !only.empty?
+        queries.slice(*only)
+      elsif !except.empty?
+        queries.except(*except)
       else
         queries
       end
