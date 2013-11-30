@@ -35,6 +35,24 @@ describe Compendium::ThroughQuery do
 
     before { parent3.stub(:execute_query) { |cmd| cmd } }
 
+    it "should pass along the params if the proc collects it" do
+      params = { one: 1, two: 2 }
+      q = described_class.new(:through, parent3, {}, -> r, params { params })
+      q.run(params).should == params
+    end
+
+    it "should pass along the params if the proc has a splat argument" do
+      params = { one: 1, two: 2 }
+      q = described_class.new(:through, parent3, {}, -> *args { args })
+      q.run(params).should == [[[1, 2, 3]], params.with_indifferent_access]
+    end
+
+    it "should not pass along the params if the proc doesn't collects it" do
+      params = { one: 1, two: 2 }
+      q = described_class.new(:through, parent3, {}, -> r { r })
+      q.run(params).should == [[1, 2, 3]]
+    end
+
     context "with a single parent" do
       subject { described_class.new(:sub, parent1, {}, -> r { r.first }) }
 

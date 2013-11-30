@@ -13,13 +13,16 @@ module Compendium
   private
 
     def collect_results(context, params)
-      args = collect_through_query_results(params, context)
+      results = collect_through_query_results(params, context)
 
       # If none of the through queries have any results, we shouldn't try to execute the query, because it
       # depends on the results of its parents.
-      return @results = ResultSet.new([]) if args.compact.empty?
+      return @results = ResultSet.new([]) if results.compact.empty?
 
-      super(context, args)
+      # If the proc collects two arguments, pass results and params, otherwise just results
+      args = !proc || proc.arity == 1 ? [results] : [results, params]
+
+      super(context, *args)
     end
 
     def fetch_results(command)
