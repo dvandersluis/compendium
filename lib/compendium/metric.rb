@@ -20,6 +20,10 @@ module Compendium
     end
     alias_method :has_ran?, :ran?
 
+    def render(template, *options, &block)
+      Compendium::Presenters::Metric.new(template, self, *options, &block).render
+    end
+
   private
 
     def condition_failed?(ctx)
