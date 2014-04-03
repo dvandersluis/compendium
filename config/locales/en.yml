@@ -2,4 +2,5 @@ en:
   compendium:
     reports:
       invalid_report: "Invalid report!"
+      invalid_report_query: "Invalid query!"
       generate_report: "Generate Report"

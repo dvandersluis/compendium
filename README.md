@@ -1,4 +1,4 @@
-# Compendium
+# Compendium [![Gem Version](https://badge.fury.io/rb/compendium.svg)](http://badge.fury.io/rb/compendium)
 
 Ruby on Rails framework for making reporting easy.
 
@@ -67,6 +67,14 @@ within your `config/routes.rb` file
 ```ruby
 mount_compendium at: '/report', controller: 'reports' # controller defaults to compendium/reports
 ```
+
+### Rendering report results as JSON
+
+While the default action when running a report is to render a view with the results, Compendium reports can be rendered
+as JSON. If using the default routes provided by `mount_compendium` (assuming compendium was mounted at `/report`),
+`POST`ing to <code>report/<i>report_name</i>.json</code> will return the report results as JSON. You can also collect
+the results of a single query (instead of the entire report) by `POST`ing to
+<code>report/<i>report_name</i>/<i>query_name</i>.json</code>.
 
 ### Interaction with other gems
 * If [accessible_tooltip](https://github.com/dvandersluis/accessible_tooltip) is present, option notes will be rendered

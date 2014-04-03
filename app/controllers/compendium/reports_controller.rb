@@ -4,6 +4,7 @@ module Compendium
     include Compendium::ReportsHelper
 
     before_filter :find_report
+    before_filter :find_query
     before_filter :validate_options, only: :run
     before_filter :run_report, only: :run
 
@@ -12,8 +13,16 @@ module Compendium
     end
 
     def run
-      template = template_exists?(@prefix, get_template_prefixes) ? @prefix : 'run'
-      render action: template, locals: { report: @report }
+      respond_to do |format|
+        format.json do
+          render json: @query ? @query.results : @report.results
+        end
+
+        format.any do
+          template = template_exists?(@prefix, get_template_prefixes) ? @prefix : 'run'
+          render action: template, locals: { report: @report }
+        end
+      end
     end
 
   private
@@ -32,6 +41,16 @@ module Compendium
       end
     end
 
+    def find_query
+      return unless params[:query]
+      @query = @report.queries[params[:query]]
+
+      unless @query
+        flash[:error] = t(:invalid_report_query)
+        redirect_to action: :setup, report_name: params[:report_name]
+      end
+    end
+
     def render_setup(opts = {})
       locals = { report: @report, prefix: @prefix }
       opts.empty? ? render(action: :setup, locals: locals) : render_if_exists(opts.merge(locals: locals)) || render(action: :setup, locals: locals)
@@ -46,7 +65,7 @@ module Compendium
     end
 
     def run_report
-      @report.run(self)
+      @report.run(self, @query ? { only: @query.name } : {})
     end
 
     def get_template_prefixes
