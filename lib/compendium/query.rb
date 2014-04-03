@@ -7,7 +7,7 @@ require_relative '../../config/initializers/ruby/hash'
 
 module Compendium
   class Query
-    attr_reader :name, :results, :metrics
+    attr_reader :name, :results, :metrics, :filters
     attr_accessor :options, :proc, :report
 
     def initialize(*args)
@@ -17,6 +17,7 @@ module Compendium
 
       @name, @options, @proc = args
       @metrics = ::Collection[Metric]
+      @filters = ::Collection[Proc]
     end
 
     def initialize_clone(*)
@@ -33,6 +34,10 @@ module Compendium
 
     def add_metric(name, proc, options = {})
       Compendium::Metric.new(name, self.name, proc, options).tap { |m| @metrics << m }
+    end
+
+    def add_filter(filter)
+      @filters << filter
     end
 
     def render_table(template, *options, &block)
@@ -62,8 +67,9 @@ module Compendium
 
     def collect_results(context, *params)
       command = context.instance_exec(*params, &proc) if proc
-      command = fetch_results(command)
-      @results = ResultSet.new(command) if command
+      results = fetch_results(command)
+      results = filter_results(results, *params) if filters.any?
+      @results = ResultSet.new(results) if results
     end
 
     def collect_metrics(context)
@@ -72,6 +78,20 @@ module Compendium
 
     def fetch_results(command)
       (options.fetch(:collect, nil) == :active_record) ? command : execute_command(command)
+    end
+
+    def filter_results(results, params)
+      return unless results
+
+      filters.each do |f|
+        if f.arity == 2
+          results = f.call(results, params)
+        else
+          results = f.call(results)
+        end
+      end
+
+      results
     end
 
     def execute_command(command)

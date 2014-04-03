@@ -24,6 +24,15 @@ class MyReport < Compendium::Report
     Items.where(delivered: true, purchased_at: (params[:starting_on]..params[:ending_on]))
   end
 
+  # Define a filter to modify the results from specified query (in this case :deliveries)
+  # For example, this can be useful to translate columns prior to rendering, as it will apply
+  # for all render types (table, chart, JSON)
+  filter :deliveries do |results, params|
+    results.each do |row|
+      row['price'] = sprintf('$%.2f', row['price'])
+    end
+  end
+
   # Define a query which collects data by using AR directly
   query :on_hand_inventory, collect: :active_record do |params|
     Items.where(in_stock: true)

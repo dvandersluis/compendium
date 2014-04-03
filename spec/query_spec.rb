@@ -49,6 +49,17 @@ describe Compendium::Query do
       query = described_class.new(:blank, {}, nil)
       query.run(nil).should be_empty
     end
+
+    it "should filter the result set if a filter is provided" do
+      query.add_filter(-> data { data.reject(&:odd?) })
+      query.run(nil).should == [2]
+    end
+
+    it "should run multiple filters if given" do
+      query.add_filter(-> data { data.reject(&:odd?) })
+      query.add_filter(-> data { data.reject(&:even?) })
+      query.run(nil).should == []
+    end
   end
 
   describe "#nil?" do

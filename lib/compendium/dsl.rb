@@ -49,6 +49,11 @@ module Compendium
       end
     end
 
+    def filter(query_name, &block)
+      raise ArgumentError, "query #{query_name} is not defined" unless queries.key?(query_name)
+      queries[query_name].add_filter(block)
+    end
+
     # Each Report will have its own descendant of Params in order to safely add validations
     def params_class
       @params_class ||= Class.new(Params)
