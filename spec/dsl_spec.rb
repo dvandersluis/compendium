@@ -178,6 +178,14 @@ describe Compendium::DSL do
       subject.filter :test, &->{ :another_filter }
       subject.queries[:test].filters.count.should == 2
     end
+
+    it "should allow a filter to be applied to multiple queries at once" do
+      subject.query :query1
+      subject.query :query2
+      subject.filter :query1, :query2, &filter_proc
+      subject.queries[:query1].filters.should include filter_proc
+      subject.queries[:query2].filters.should include filter_proc
+    end
   end
 
   it "should allow previously defined queries to be redefined by name" do

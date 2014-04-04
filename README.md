@@ -27,6 +27,7 @@ class MyReport < Compendium::Report
   # Define a filter to modify the results from specified query (in this case :deliveries)
   # For example, this can be useful to translate columns prior to rendering, as it will apply
   # for all render types (table, chart, JSON)
+  # Note: A filter can be applied to multiple queries at once
   filter :deliveries do |results, params|
     results.each do |row|
       row['price'] = sprintf('$%.2f', row['price'])

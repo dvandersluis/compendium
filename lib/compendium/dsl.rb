@@ -49,9 +49,11 @@ module Compendium
       end
     end
 
-    def filter(query_name, &block)
-      raise ArgumentError, "query #{query_name} is not defined" unless queries.key?(query_name)
-      queries[query_name].add_filter(block)
+    def filter(*query_names, &block)
+      query_names.each do |query_name|
+        raise ArgumentError, "query #{query_name} is not defined" unless queries.key?(query_name)
+        queries[query_name].add_filter(block)
+      end
     end
 
     # Each Report will have its own descendant of Params in order to safely add validations
