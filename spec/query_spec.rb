@@ -76,9 +76,10 @@ describe Compendium::Query do
     let(:template) { double("Template") }
     subject { described_class.new(:test, {}, -> * {}) }
 
-    it "should return nil if the query has no results" do
+    it "should initialize a new Chart presenter if the query has no results" do
       subject.stub(empty?: true)
-      subject.render_chart(template).should be_nil
+      Compendium::Presenters::Chart.should_receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
+      subject.render_chart(template)
     end
 
     it "should initialize a new Chart presenter if the query has results" do

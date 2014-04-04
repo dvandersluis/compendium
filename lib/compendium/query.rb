@@ -45,7 +45,9 @@ module Compendium
     end
 
     def render_chart(template, *options, &block)
-      Compendium::Presenters::Chart.new(template, self, *options, &block).render unless empty?
+      # A query can be rendered regardless of if it has data or not
+      # Rendering a chart with no result set builds a chart scaffold which can be updated through AJAX
+      Compendium::Presenters::Chart.new(template, self, *options, &block).render
     end
 
     def ran?
@@ -60,7 +62,7 @@ module Compendium
 
     # A query is empty if it has no results
     def empty?
-      results.empty?
+      results.blank?
     end
 
   private
