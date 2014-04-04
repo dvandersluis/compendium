@@ -14,17 +14,9 @@ module Compendium
       raise NotImplementedError
     end
 
-    # As more chart providers are added, this method will have to be extended to find them
+    # Chart providers need to override this method to add a hook for themselves
     def self.find_chart_provider
-      if defined?(AmCharts)
-        :AmCharts
-      else
-        self.name.demodulize.to_sym
-      end
+      nil
     end
-  end
-
-  module ChartProvider
-    autoload :AmCharts, 'compendium/chart_provider/amcharts'
   end
 end

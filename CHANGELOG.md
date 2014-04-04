@@ -1,7 +1,8 @@
 # Change Log
 
-## 1.0.8 (unreleased)
+## 1.1.0 (unreleased)
 * Added query filters (allow a result set to be filtered to remove/translate/etc. data)
+* Extract chart providers into their own gems
 
 ## 1.0.7
 * Added the ability to render a report or a specific query of a report as JSON
