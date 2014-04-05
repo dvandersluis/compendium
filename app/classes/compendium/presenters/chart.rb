@@ -6,14 +6,20 @@ module Compendium::Presenters
     attr_reader :data, :container, :chart_provider
 
     def initialize(template, object, *args, &setup)
+      super(template, object)
+
       options = args.extract_options!
       type, container = args
 
-      super(template, object)
-
-      @data = options[:index] ? results.records[options[:index]] : results
-      @data = @data.records if @data.is_a?(Compendium::ResultSet)
-      @data = @data[0...-1] if query.options[:totals]
+      if query.ran?
+        @data = options[:index] ? results.records[options[:index]] : results
+        @data = @data.records if @data.is_a?(Compendium::ResultSet)
+        @data = @data[0...-1] if query.options[:totals]
+      else
+        # If the query hasn't run yet, render a chart that loads its data remotely (ie. through AJAX)
+        # ie. if rendering a query from a report class directly
+        @data = query.url
+      end
 
       @container = container || query.name
 

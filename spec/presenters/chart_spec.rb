@@ -9,7 +9,7 @@ describe Compendium::Presenters::Chart do
 
   describe '#initialize' do
     let(:template) { double('Template') }
-    let(:query) { double('Query', name: 'test_query', results: results, options: {}) }
+    let(:query) { double('Query', name: 'test_query', results: results, ran?: true, options: {}) }
     let(:results) { Compendium::ResultSet.new([]) }
 
     context 'when all params are given' do
@@ -32,6 +32,13 @@ describe Compendium::Presenters::Chart do
 
       its(:data) { should == results.records[:one] }
       its(:container) { should == 'test_query' }
+    end
+
+    context "when the query has not been run" do
+      before { query.stub(ran?: false, url: '/path/to/query.json') }
+      subject{ described_class.new(template, query, :pie) }
+
+      its(:data) { should == '/path/to/query.json' }
     end
   end
 end
