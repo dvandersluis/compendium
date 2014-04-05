@@ -60,6 +60,32 @@ describe Compendium::Query do
       query.add_filter(-> data { data.reject(&:even?) })
       query.run(nil).should == []
     end
+
+    context "when the query belongs to a report class" do
+      let(:report) do
+        Class.new(Compendium::Report) do
+          query(:test) { [1, 2, 3] }
+        end
+      end
+
+      subject { report.queries[:test] }
+
+      before { described_class.any_instance.stub(:fetch_results) { |c| c } }
+
+      it "should return its results" do
+        subject.run(nil).should == [1, 2, 3]
+      end
+
+      it "should not affect the report" do
+        subject.run(nil)
+        report.queries[:test].results.should be_nil
+      end
+
+      it "should not affect future instances of the report" do
+        subject.run(nil)
+        report.new.queries[:test].results.should be_nil
+      end
+    end
   end
 
   describe "#nil?" do

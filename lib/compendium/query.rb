@@ -26,8 +26,18 @@ module Compendium
     end
 
     def run(params, context = self)
-      collect_results(context, params)
-      collect_metrics(context)
+      if report.is_a?(Class)
+        # If running a query directly from a class rather than an instance, the class's query should
+        # not be affected/modified, so run the query without a reference back to the report.
+        # Otherwise, if the class is subsequently instantiated, the instance will already have results.
+        dup.tap{ |q| q.report = nil }.run(params, context)
+      else
+        collect_results(context, params)
+        collect_metrics(context)
+
+        @results
+      end
+    end
 
       @results
     end

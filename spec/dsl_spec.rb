@@ -60,8 +60,8 @@ describe Compendium::DSL do
       r.test.report.should == r
     end
 
-    it "should not relate a query to the report class" do
-      subject.test.report.should be_nil
+    it "should relate a query to the report class" do
+      subject.test.report.should == subject
     end
 
     context "when given a through option" do

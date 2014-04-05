@@ -102,6 +102,7 @@ module Compendium
       end
 
       query = query_type.new(*params)
+      query.report = self
 
       metrics[name] = opts[:metric] if opts.key?(:metric)
       queries << query
