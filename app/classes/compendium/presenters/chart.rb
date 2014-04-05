@@ -11,7 +11,9 @@ module Compendium::Presenters
       options = args.extract_options!
       type, container = args
 
-      if query.ran?
+      # You can force the chart to render remote data, even if the query has already run
+      # by passing in the remote: true option
+      if query.ran? && !options.fetch(:remote, false)
         @data = options[:index] ? results.records[options[:index]] : results
         @data = @data.records if @data.is_a?(Compendium::ResultSet)
         @data = @data[0...-1] if query.options[:totals]
@@ -19,6 +21,7 @@ module Compendium::Presenters
         # If the query hasn't run yet, render a chart that loads its data remotely (ie. through AJAX)
         # ie. if rendering a query from a report class directly
         @data = query.url
+        @params = { report: options[:params] } if options[:params]
       end
 
       @container = container || query.name
@@ -38,7 +41,7 @@ module Compendium::Presenters
     end
 
     def initialize_chart_provider(type, &setup)
-      @chart_provider = provider.new(type, @data, &setup)
+      @chart_provider = provider.new(type, @data, @params, &setup)
     end
   end
 end

@@ -12,7 +12,8 @@ module Compendium
     #   Accepted types might vary by provider.
     # @param data_or_url [Enumerable or String] The data or URL to the data you wish to render.
     #   Providers may not support loading data remotely.
-    def initialize(type, data_or_url, &setup_proc)
+    # @param params [Hash] If data_or_url is a URL, the params to use for the AJAX request
+    def initialize(type, data_or_url, params = {}, &setup_proc)
       raise NotImplementedError
     end
 
