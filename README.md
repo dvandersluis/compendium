@@ -86,11 +86,24 @@ as JSON. If using the default routes provided by `mount_compendium` (assuming co
 the results of a single query (instead of the entire report) by `POST`ing to
 <code>report/<i>report_name</i>/<i>query_name</i>.json</code>.
 
+### Chart Providers
+
+As of 1.1.0, chart providers have been extracted out of the main repository and are available as their own gems. If you want to render queries as a chart, a chart provider gem is needed.
+
+If multiple chart providers are installed, you can select the one you wish you use with the following initializer:
+
+```ruby
+Compendium.configure do |config|
+  config.chart_provider = :AmCharts # or any other provider name
+end
+```
+
+The following providers are available (If you would like to contribute a chart provider, please let me know and I'll add it to the list):
+* [compendium-amcharts](https://github.com/dvandersluis/compendium-amcharts) - makes use of [AmCharts.rb](https://github.com/dvandersluis/amcharts.rb)
+
 ### Interaction with other gems
 * If [accessible_tooltip](https://github.com/dvandersluis/accessible_tooltip) is present, option notes will be rendered
 in a tooltip rather than as straight text.
-* [AmCharts.rb](https://github.com/dvandersluis/amcharts.rb) is currently the only chart provider (please create a pull
-request if you'd like to create another one...)
 
 ## Installation
 
