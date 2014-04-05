@@ -11,6 +11,7 @@ module Compendium
     extend Compendium::DSL
 
     delegate :valid?, :errors, to: :params
+    delegate :name, :url, to: :class
 
     class << self
       def inherited(report)
@@ -25,6 +26,15 @@ module Compendium
             ActiveModel::Name.new(Compendium::Params, Compendium, "compendium.params.#{report.name.underscore rescue 'report'}")
           end
         }
+      end
+
+      def name
+        super.underscore.gsub(/_report$/,'').to_sym
+      end
+
+      # Get a URL for this report (format: :json set by default)
+      def url(params = {})
+        path_helper(params)
       end
 
       # Define predicate methods for getting the report type
@@ -44,6 +54,16 @@ module Compendium
 
         return true if name.to_s.end_with?('?') and Compendium.reports.include?(report_class)
         super
+      end
+
+    private
+
+      def path_helper(params)
+        unless Rails.application.routes.url_helpers.method_defined? :compendium_reports_run_path
+          raise ActionController::RoutingError, "compendium_reports_run_path must be defined"
+        end
+
+        Rails.application.routes.url_helpers.compendium_reports_run_path(self.name, params.reverse_merge(format: :json))
       end
     end
 

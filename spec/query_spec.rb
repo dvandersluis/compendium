@@ -130,4 +130,15 @@ describe Compendium::Query do
       subject.render_table(template)
     end
   end
+
+  describe "#url" do
+    let(:report) { double("Report") }
+    subject { described_class.new(:test, {}, ->{}) }
+    before { subject.report = report }
+
+    it "should build a URL using its report's URL" do
+      report.should_receive(:url).with(query: :test)
+      subject.url
+    end
+  end
 end

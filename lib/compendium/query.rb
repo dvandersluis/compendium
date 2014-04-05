@@ -39,7 +39,9 @@ module Compendium
       end
     end
 
-      @results
+    # Get a URL for this query (format: :json set by default)
+    def url(params = {})
+      report.url(params.merge(query: self.name))
     end
 
     def add_metric(name, proc, options = {})

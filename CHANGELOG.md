@@ -4,6 +4,7 @@
 * Added query filters (allow a result set to be filtered to remove/translate/etc. data)
 * Extract chart providers into their own gems
 * Allow queries to be rendered as charts without having been run yet (to set up for a future AJAX load)
+* Added `Report#url` and `Query#url` methods to get the JSON URL
 
 ## 1.0.7
 * Added the ability to render a report or a specific query of a report as JSON
