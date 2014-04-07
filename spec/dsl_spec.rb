@@ -99,6 +99,21 @@ describe Compendium::DSL do
         its(:collection) { should == query }
       end
     end
+
+    context "when given a count option" do
+      subject{ report_class.queries[:counted] }
+
+      context "set to true" do
+        before { report_class.query :counted, count: true }
+        it { should be_a Compendium::CountQuery }
+      end
+
+      context "set to false" do
+        before { report_class.query :counted, count: false }
+        it { should be_a Compendium::Query }
+        it { should_not be_a Compendium::CountQuery }
+      end
+    end
   end
 
   describe "#chart" do

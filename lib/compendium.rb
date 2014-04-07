@@ -7,6 +7,7 @@ module Compendium
   autoload :ChartProvider,          'compendium/abstract_chart_provider'
   autoload :CollectionQuery,        'compendium/collection_query'
   autoload :ContextWrapper,         'compendium/context_wrapper'
+  autoload :CountQuery,             'compendium/count_query'
   autoload :DSL,                    'compendium/dsl'
   autoload :Metric,                 'compendium/metric'
   autoload :Option,                 'compendium/option'

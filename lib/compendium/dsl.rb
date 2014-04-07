@@ -99,6 +99,8 @@ module Compendium
 
         query_type = ThroughQuery
         params.insert(1, through)
+      elsif opts.fetch(:count, false)
+        query_type = CountQuery
       end
 
       query = query_type.new(*params)
