@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'compendium/presenters/chart'
 
 describe Compendium::Presenters::Chart do
-  let(:template) { double('Template', forgery_protection_strategy: nil, request_forgery_protection_token: :authenticity_token, form_authenticity_token: "ABCDEFGHIJ").as_null_object }
+  let(:template) { double('Template', protect_against_forgery?: false, request_forgery_protection_token: :authenticity_token, form_authenticity_token: "ABCDEFGHIJ").as_null_object }
   let(:query) { double('Query', name: 'test_query', results: results, ran?: true, options: {}).as_null_object }
   let(:results) { Compendium::ResultSet.new([]) }
 
@@ -43,7 +43,7 @@ describe Compendium::Presenters::Chart do
       its(:params) { should == { report: { foo: 'bar' } } }
 
       context "when CSRF protection is enabled" do
-        before { template.stub(forgery_protection_strategy: double('CSRF')) }
+        before { template.stub(protect_against_forgery?: true) }
 
         its(:params) { should include authenticity_token: "ABCDEFGHIJ" }
       end

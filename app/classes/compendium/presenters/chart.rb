@@ -62,7 +62,7 @@ module Compendium::Presenters
     end
 
     def protected_against_csrf?
-      !@template.controller.forgery_protection_strategy.nil?
+      @template.controller.send(:protect_against_forgery?)
     end
 
     def form_authenticity_param
