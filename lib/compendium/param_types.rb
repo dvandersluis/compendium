@@ -3,6 +3,7 @@ require 'delegate'
 
 module Compendium
   class Param < ::SimpleDelegator
+    def scalar?; false; end
     def boolean?; false; end
     def date?; false; end
     def dropdown?; false; end
@@ -37,6 +38,17 @@ module Compendium
 
     def value
       @choices[self]
+    end
+  end
+
+  class ScalarParam < Param
+    def initialize(obj, *)
+      super obj
+    end
+
+    # A scalar param just keeps track of a value with no modifications
+    def scalar?
+      true
     end
   end
 

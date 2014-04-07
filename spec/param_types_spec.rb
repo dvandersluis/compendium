@@ -3,6 +3,7 @@ require 'compendium/param_types'
 describe Compendium::Param do
   subject{ described_class.new(:test) }
 
+  it { should_not be_scalar }
   it { should_not be_boolean }
   it { should_not be_date }
   it { should_not be_dropdown }
@@ -13,6 +14,20 @@ describe Compendium::Param do
       subject.stub(value: :test_value)
       subject.should == :test_value
     end
+  end
+end
+
+describe Compendium::ScalarParam do
+  subject{ described_class.new(123) }
+
+  it { should be_scalar }
+  it { should_not be_boolean }
+  it { should_not be_date }
+  it { should_not be_dropdown }
+  it { should_not be_radio }
+
+  it "should not change values" do
+    subject.should == 123
   end
 end
 
@@ -58,6 +73,7 @@ end
 describe Compendium::BooleanParam do
   subject{ described_class.new(true) }
 
+  it { should_not be_scalar }
   it { should be_boolean }
   it { should_not be_date }
   it { should_not be_dropdown }
@@ -111,6 +127,7 @@ end
 describe Compendium::DateParam do
   subject{ described_class.new(Date.today) }
 
+  it { should_not be_scalar }
   it { should_not be_boolean }
   it { should be_date }
   it { should_not be_dropdown }
@@ -131,6 +148,7 @@ end
 describe Compendium::DropdownParam do
   subject{ described_class.new(0, %w(a b c)) }
 
+  it { should_not be_scalar }
   it { should_not be_boolean }
   it { should_not be_date }
   it { should be_dropdown }
@@ -140,6 +158,7 @@ end
 describe Compendium::RadioParam do
   subject{ described_class.new(0, %w(a b c)) }
 
+  it { should_not be_scalar }
   it { should_not be_boolean }
   it { should_not be_date }
   it { should_not be_dropdown }

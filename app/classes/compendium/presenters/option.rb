@@ -46,6 +46,9 @@ module Compendium::Presenters
       out = ActiveSupport::SafeBuffer.new
 
       case option.type.to_sym
+        when :scalar
+          out << scalar_field(form)
+
         when :date
           out << date_field(form)
 
@@ -79,6 +82,12 @@ module Compendium::Presenters
         else
           form.text_field option.name
         end
+      end
+    end
+
+    def scalar_field(form)
+      content_tag('div', class: 'option-scalar') do
+        form.text_field option.name
       end
     end
 

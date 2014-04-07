@@ -7,7 +7,7 @@ module Compendium
   class Option
     attr_accessor :name, :type, :default, :choices, :options
 
-    delegate :boolean?, :date?, :dropdown?, :radio?, :text?, to: :type
+    delegate :boolean?, :date?, :dropdown?, :radio?, :scalar?, to: :type
     delegate :merge, :merge!, :[], to: :@options
 
     def initialize(hash = {})

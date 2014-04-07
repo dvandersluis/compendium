@@ -23,6 +23,7 @@ module Compendium
   autoload :DropdownParam,          'compendium/param_types'
   autoload :ParamWithChoices,       'compendium/param_types'
   autoload :RadioParam,             'compendium/param_types'
+  autoload :ScalarParam,            'compendium/param_types'
 
   def self.reports
     @reports ||= []
