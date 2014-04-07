@@ -11,7 +11,7 @@ module Compendium
     extend Compendium::DSL
 
     delegate :valid?, :errors, to: :params
-    delegate :name, :url, to: :class
+    delegate :report_name, :url, to: 'self.class'
 
     class << self
       def inherited(report)
@@ -28,8 +28,8 @@ module Compendium
         }
       end
 
-      def name
-        super.underscore.gsub(/_report$/,'').to_sym
+      def report_name
+        name.underscore.gsub(/_report$/,'').to_sym
       end
 
       # Get a URL for this report (format: :json set by default)
@@ -59,11 +59,13 @@ module Compendium
     private
 
       def path_helper(params)
-        unless Rails.application.routes.url_helpers.method_defined? :compendium_reports_run_path
-          raise ActionController::RoutingError, "compendium_reports_run_path must be defined"
-        end
+        raise ActionController::RoutingError, "compendium_reports_run_path must be defined" unless route_helper_defined?
+        Rails.application.routes.url_helpers.compendium_reports_run_path(self.report_name, params.reverse_merge(format: :json))
+      end
 
-        Rails.application.routes.url_helpers.compendium_reports_run_path(self.name, params.reverse_merge(format: :json))
+      def route_helper_defined?
+        @route_helpers ||= Module.new { include Rails.application.routes.url_helpers }
+        @route_helpers.method_defined?(:compendium_reports_run_path)
       end
     end
 

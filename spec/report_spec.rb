@@ -28,9 +28,9 @@ describe Compendium::Report do
     its(:metrics) { should_not equal report2.metrics }
   end
 
-  describe ".name" do
+  describe ".report_name" do
     subject { TestReport = Class.new(described_class) }
-    its(:name) { should == :test }
+    its(:report_name) { should == :test }
   end
 
   describe "#run" do
