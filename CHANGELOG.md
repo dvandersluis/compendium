@@ -1,9 +1,13 @@
 # Change Log
 
+## 1.1.2
+* Allow direct access to a chart object without having to render it (useful if the provider allows chart settings to be updated after initialization)
+* Delegate missing methods from ChartProvider classes to the chart
+
 ## 1.1.1
 * Fix crash regressions in Rails 3
 * Added `CountQuery` query type which calls count on the result of the given block (for instance a query which is
-  grouped by day and then counted).
+  grouped by day and then counted)
 * Added `ScalarParam` param type for collecting arbitrary data
 
 ## 1.1.0
