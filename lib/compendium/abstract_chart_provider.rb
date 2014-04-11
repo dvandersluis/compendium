@@ -5,6 +5,8 @@ module Compendium
   # To add a new chart provider, #initialize and #render must be implemented
   # Custom providers should also override Compendium::AbstractChartProvider.find_chart_provider (but fallback to super)
 
+  module ChartProvider; end
+
   class AbstractChartProvider
     attr_reader :chart
 

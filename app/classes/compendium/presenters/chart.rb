@@ -36,6 +36,7 @@ module Compendium::Presenters
 
     def provider
       provider = Compendium.config.chart_provider
+      require "compendium/#{provider.downcase}"
       provider.is_a?(Class) ? provider : Compendium::ChartProvider.const_get(provider)
     end
 
