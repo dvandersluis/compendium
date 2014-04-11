@@ -27,5 +27,17 @@ module Compendium
     def self.find_chart_provider
       nil
     end
+
+  private
+
+    def method_missing(name, *args, &block)
+      return chart.send(name, *args, &block) if chart.respond_to?(name)
+      super
+    end
+
+    def respond_to_missing?(name, include_private = false)
+      return true if chart.respond_to?(name)
+      super
+    end
   end
 end
