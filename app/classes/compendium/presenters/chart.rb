@@ -70,5 +70,15 @@ module Compendium::Presenters
       return {} unless protected_against_csrf?
       { @template.controller.request_forgery_protection_token => @template.controller.send(:form_authenticity_token) }
     end
+
+    def method_missing(name, *args, &block)
+      return chart_provider.send(name, *args, &block) if chart_provider.respond_to?(name)
+      super
+    end
+
+    def respond_to_missing?(name, include_private = false)
+      return true if chart_provider.respond_to?(name)
+      super
+    end
   end
 end

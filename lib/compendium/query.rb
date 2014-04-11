@@ -56,10 +56,16 @@ module Compendium
       Compendium::Presenters::Table.new(template, self, *options, &block).render unless empty?
     end
 
+    # Allow access to the chart object without having to explicitly render it
+    def chart(template, *options, &block)
+      # Access the actual chart object
+      Compendium::Presenters::Chart.new(template, self, *options, &block)
+    end
+
     def render_chart(template, *options, &block)
       # A query can be rendered regardless of if it has data or not
       # Rendering a chart with no result set builds a chart scaffold which can be updated through AJAX
-      Compendium::Presenters::Chart.new(template, self, *options, &block).render
+      chart(template, *options, &block).render
     end
 
     def ran?
