@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'compendium'
 require 'compendium/dsl'
 
@@ -112,6 +113,23 @@ describe Compendium::DSL do
         before { report_class.query :counted, count: false }
         it { should be_a Compendium::Query }
         it { should_not be_a Compendium::CountQuery }
+      end
+    end
+
+    context 'when given a sum option' do
+      subject{ report_class.queries[:summed] }
+
+      context 'set to a truthy value' do
+        before { report_class.query :summed, sum: :assoc_count }
+
+        it { should be_a Compendium::SumQuery }
+        its(:column) { should == :assoc_count }
+      end
+
+      context 'set to false' do
+        before { report_class.query :summed, sum: false }
+        it { should be_a Compendium::Query }
+        it { should_not be_a Compendium::SumQuery }
       end
     end
   end

@@ -1,5 +1,6 @@
 require 'compendium/result_set'
 require 'compendium/params'
+require 'compendium/metric'
 require 'compendium/presenters/chart'
 require 'compendium/presenters/table'
 require 'collection_of'

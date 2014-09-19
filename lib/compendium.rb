@@ -15,6 +15,7 @@ module Compendium
   autoload :Query,                  'compendium/query'
   autoload :ResultSet,              'compendium/result_set'
   autoload :Report,                 'compendium/report'
+  autoload :SumQuery,               'compendium/sum_query'
   autoload :ThroughQuery,           'compendium/through_query'
 
   autoload :Param,                  'compendium/param_types'

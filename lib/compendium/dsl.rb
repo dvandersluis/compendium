@@ -101,6 +101,9 @@ module Compendium
         params.insert(1, through)
       elsif opts.fetch(:count, false)
         query_type = CountQuery
+      elsif opts.fetch(:sum, false)
+        query_type = SumQuery
+        params.insert(1, opts[:sum])
       end
 
       query = query_type.new(*params)
