@@ -1,5 +1,6 @@
 module Compendium
   module ReportsHelper
+  private
     def expose(*args)
       klass = args.pop if args.last.is_a?(Class)
       klass ||= "Compendium::Presenters::#{args.first.class}".constantize
