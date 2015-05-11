@@ -1,12 +1,22 @@
 .option
 {
-  .option-label
+  @mixin label-font
   {
-    margin: 0px 0px 0px 0px;
     font-family: "Arial";
     font-size: 14px;
     font-weight: bold;
     color: #575757;
+  }
+
+  .label
+  {
+    @include label-font;
+  }
+
+  .option-label
+  {
+    margin: 0px 0px 0px 0px;
+    @include label-font;
   }
 
   .option-note

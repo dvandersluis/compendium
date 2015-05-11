@@ -9,30 +9,29 @@ module Compendium::Presenters
     end
 
     def label(form)
-      label = case option.type.to_sym
-        when :boolean, :radio
-          name
-
-        else
-          form.label option.name, name
-      end
-
-      out = ActiveSupport::SafeBuffer.new
-      out << content_tag(:span, label, class: 'option-label')
-
       if option.note?
         key = option.note == true ? :"#{option.name}_note" : option.note
         note = t("options.#{key}", cascade: { offset: 2 })
-        title = t("options.#{option.name}_note_title", default: '', cascade: { offset: 2 })
-
-        if defined?(AccessibleTooltip)
-          return accessible_tooltip(:help, label: out, title: title) { note }
-        else
-          out << content_tag(:div, note, class: 'option-note')
-        end
       end
 
-      out
+      if option.note? && defined?(AccessibleTooltip)
+        title = t("options.#{option.name}_note_title", default: '', cascade: { offset: 2 })
+        tooltip = accessible_tooltip(:help, label: name, title: title) { note }
+        return form.label option.name, tooltip
+      else
+        label = case option.type.to_sym
+          when :boolean, :radio
+            name
+
+          else
+            form.label option.name, name
+        end
+
+        out = ActiveSupport::SafeBuffer.new
+        out << content_tag(:span, label, class: 'option-label')
+        out << content_tag(:div, note, class: 'option-note') if option.note?
+        out
+      end
     end
 
     def note
