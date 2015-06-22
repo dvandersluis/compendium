@@ -222,20 +222,46 @@ describe Compendium::Report do
   end
 
   describe "#valid?" do
-    let(:report_class) do
-      Class.new(described_class) do
-        option :id, :dropdown, choices: (0..10).to_a, validates: { presence: true }
+    context 'built-in validations' do
+      let(:report_class) do
+        Class.new(described_class) do
+          option :id, :dropdown, choices: (0..10).to_a, validates: { presence: true }
+        end
+      end
+
+      it "should return true if there are no validation failures" do
+        r = report_class.new(id: 5)
+        r.should be_valid
+      end
+
+      it "should return false if there are validation failures" do
+        r = report_class.new(id: nil)
+        r.should_not be_valid
+        r.errors.keys.should include :id
       end
     end
 
-    it "should return true if there are no validation failures" do
-      r = report_class.new(id: 5)
-      r.should be_valid
-    end
+    context 'custom validation' do
+      let(:report_class) do
+        Class.new(described_class) do
+          option :number, :scalar
 
-    it "should return false if there are validation failures" do
-      r = report_class.new(id: nil)
-      r.should_not be_valid
+          validate do
+            errors.add(:number, :invalid_number) unless number.even?
+          end
+        end
+      end
+
+      it "should return true if there are no validation failures" do
+        r = report_class.new(number: 4)
+        r.should be_valid
+      end
+
+      it "should return false if there are validation failures" do
+        r = report_class.new(number: 5)
+        r.should_not be_valid
+        r.errors.keys.should include :number
+      end
     end
   end
 end

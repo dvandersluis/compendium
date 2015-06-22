@@ -14,6 +14,8 @@ module Compendium
     delegate :report_name, :url, to: 'self.class'
 
     class << self
+      delegate :validate, to: :params_class
+      
       def inherited(report)
         Compendium.reports << report
 
