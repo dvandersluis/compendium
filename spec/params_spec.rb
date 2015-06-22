@@ -8,6 +8,7 @@ describe Compendium::Params do
     opts << Compendium::Option.new(name: :report_type, type: :radio, choices: [:big, :small])
     opts << Compendium::Option.new(name: :boolean, type: :boolean)
     opts << Compendium::Option.new(name: :another_boolean, type: :boolean)
+    opts << Compendium::Option.new(name: :number, type: :scalar)
     opts
   }
 
@@ -30,14 +31,28 @@ describe Compendium::Params do
 
   describe "#validations" do
     let(:report_class) { Class.new(described_class) }
-    subject { report_class.new({}, options) }
 
-    before do
-      report_class.validates :ending_on, presence: true
-      subject.valid?
+    context 'presence' do
+      subject { report_class.new({}, options) }
+
+      before do
+        report_class.validates :ending_on, presence: true
+        subject.valid?
+      end
+
+      it { should_not be_valid }
+      its('errors.keys') { should include :ending_on }
     end
 
-    it { should_not be_valid }
-    its('errors.keys') { should include :ending_on }
+    context 'numericality' do
+      subject { report_class.new({ number: 'abcd' }, options) }
+      before do
+        report_class.validates :number, numericality: true
+        subject.valid?
+      end
+
+      it { should_not be_valid }
+      its('errors.keys') { should include :number }
+    end
   end
 end

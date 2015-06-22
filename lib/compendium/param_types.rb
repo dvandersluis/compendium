@@ -19,6 +19,14 @@ module Compendium
     def nil?
       __getobj__.nil?
     end
+
+    def to_f
+      Kernel.Float(__getobj__)
+    end
+
+    def to_i
+      Kernel.Integer(__getobj__)
+    end
   end
 
   class ParamWithChoices < Param
