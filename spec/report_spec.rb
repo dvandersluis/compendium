@@ -264,4 +264,36 @@ describe Compendium::Report do
       end
     end
   end
+
+  describe '.filter' do
+    let(:filter_proc) { -> * {} }
+
+    let(:report_class) do
+      Class.new(described_class) do
+        query :main_query
+      end
+    end
+
+    let(:subclass1) do
+      k = Class.new(report_class)
+      k.filter(:main_query, &filter_proc)
+      k
+    end
+
+    let(:subclass2) { Class.new(report_class) }
+    let(:subclass3) { Class.new(subclass1) }
+
+    it 'should add filters to the specified query' do
+      subclass1.main_query.filters.should include filter_proc
+    end
+
+    it 'should add filters by inheritence' do
+      subclass3.main_query.filters.should include filter_proc
+    end
+
+    it 'should not bleed filters from a subclass into other subclasses' do
+      subclass1
+      subclass2.main_query.filters.should be_empty
+    end
+  end
 end

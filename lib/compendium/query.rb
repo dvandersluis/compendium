@@ -24,6 +24,7 @@ module Compendium
     def initialize_clone(*)
       super
       @metrics = @metrics.clone
+      @filters = @filters.clone
     end
 
     def run(params, context = self)
