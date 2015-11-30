@@ -46,9 +46,14 @@ describe Compendium::DSL do
   end
 
   describe "#query" do
+    let(:proc1) { -> { :proc1 } }
+    let(:proc2) { -> { :proc2 } }
+
     let(:report_class) do
+      proc1 = proc1
+
       Class.new(Compendium::Report) do
-        query :test
+        query :test, &proc1
       end
     end
 
@@ -63,6 +68,36 @@ describe Compendium::DSL do
 
     it "should relate a query to the report class" do
       subject.test.report.should == subject
+    end
+
+    context 'when overriding an existing query' do
+      before do
+        subject.query :test, &proc2
+        subject.query :another_test, count: true
+      end
+
+      it 'should delete the existing query' do
+        subject.queries.count.should == 2
+      end
+
+      it 'should only have one query with each name' do
+        subject.queries.map(&:name).should =~ [:test, :another_test]
+      end
+
+      it 'should use the new proc' do
+        subject.test.proc.should == proc2
+      end
+
+      it 'should not allow replacing a query with a different type' do
+        expect { subject.query :test, count: true }.to raise_error { Compendium::CannotRedefineQueryType }
+        subject.test.should be_instance_of Compendium::Query
+      end
+
+      it 'should allow replacing a query with the same type' do
+        subject.query :another_test, count: true, &proc2
+        subject.another_test.proc.should == proc2
+        subject.another_test.should be_instance_of Compendium::CountQuery
+      end
     end
 
     context "when given a through option" do

@@ -4,6 +4,8 @@ require 'compendium/option'
 require 'active_support/core_ext/class/attribute'
 
 module Compendium
+  CannotRedefineQueryType = Class.new(StandardError)
+
   module DSL
     def self.extended(klass)
       klass.inheritable_attr :queries, default: ::Collection[Query]
@@ -110,7 +112,14 @@ module Compendium
       query.report = self
 
       metrics[name] = opts[:metric] if opts.key?(:metric)
+
+      if queries[name]
+        raise CannotRedefineQueryType unless queries[name].instance_of?(query_type)
+        queries.delete(name)
+      end
+
       queries << query
+
       query
     end
 
