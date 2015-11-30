@@ -48,7 +48,7 @@ module Compendium::Presenters
       params = {}
       params[:report] = options[:params] if options[:params]
 
-      if remote? and protected_against_csrf?
+      if remote? && protected_against_csrf?
         # If we're loading remotely, and CSRF protection is enabled,
         # automatically include the CSRF token in AJAX params
         params.merge!(form_authenticity_param)

@@ -67,7 +67,7 @@ module Compendium::Presenters
         @settings.formatters[k].call(v)
       else
         if v.numeric?
-          if v.zero? and @settings.display_zero_as?
+          if v.zero? && @settings.display_zero_as?
             @settings.display_zero_as
           else
             sprintf(@settings.number_format || '%0.2f', v)

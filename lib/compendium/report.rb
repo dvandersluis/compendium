@@ -45,7 +45,7 @@ module Compendium
         prefix = name.to_s.gsub(/[?!]\z/, '')
         report_class = "#{prefix}_report".classify.constantize rescue nil
 
-        return self == report_class if name.to_s.end_with?('?') and Compendium.reports.include?(report_class)
+        return self == report_class if name.to_s.end_with?('?') && Compendium.reports.include?(report_class)
 
         super
       end
@@ -54,7 +54,7 @@ module Compendium
         prefix = name.to_s.gsub(/[?!]\z/, '')
         report_class = "#{prefix}_report".classify.constantize rescue nil
 
-        return true if name.to_s.end_with?('?') and Compendium.reports.include?(report_class)
+        return true if name.to_s.end_with?('?') && Compendium.reports.include?(report_class)
         super
       end
 
@@ -85,7 +85,7 @@ module Compendium
       only = [options.delete(:only)].flatten.compact
       except = [options.delete(:except)].flatten.compact
 
-      raise ArgumentError, 'cannot specify only and except options at the same time' if !only.empty? and !except.empty?
+      raise ArgumentError, 'cannot specify only and except options at the same time' if !only.empty? && !except.empty?
       (only + except).flatten.each { |q| raise ArgumentError, "invalid query #{q}" unless queries.include?(q) }
 
       queries_to_run = if !only.empty?
@@ -113,16 +113,16 @@ module Compendium
       prefix = name.to_s.sub(/(?:_results|\?)\Z/, '').to_sym
 
       return queries[name] if queries.keys.include?(name)
-      return results[prefix] if name.to_s.end_with? '_results' and queries.keys.include?(prefix)
+      return results[prefix] if name.to_s.end_with?('_results') && queries.keys.include?(prefix)
       return params[name] if options.keys.include?(name)
-      return !!params[prefix] if name.to_s.end_with? '?' and options.keys.include?(prefix)
+      return !!params[prefix] if name.to_s.end_with?('?') && options.keys.include?(prefix)
       super
     end
 
     def respond_to_missing?(name, include_private = false)
       prefix = name.to_s.sub(/_results\Z/, '').to_sym
       return true if queries.keys.include?(name)
-      return true if name.to_s.end_with? '_results' and queries.keys.include?(prefix)
+      return true if name.to_s.end_with?('_results') && queries.keys.include?(prefix)
       super
     end
   end

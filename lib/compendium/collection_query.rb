@@ -37,7 +37,7 @@ module Compendium
     end
 
     def prepare_collection(collection)
-      return collection if collection.is_a?(Query) or collection.is_a?(Symbol)
+      return collection if collection.is_a?(Query) || collection.is_a?(Symbol)
       collection.is_a?(Hash) ? collection : Hash[collection.zip(collection)]
     end
   end

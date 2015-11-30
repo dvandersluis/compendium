@@ -27,7 +27,7 @@ module Compendium
   private
 
     def condition_failed?(ctx)
-      (options.key?(:if) and !ctx.instance_exec(&options[:if])) or (options.key?(:unless) and ctx.instance_exec(&options[:unless]))
+      (options.key?(:if) && !ctx.instance_exec(&options[:if])) || (options.key?(:unless) && ctx.instance_exec(&options[:unless]))
     end
   end
 end

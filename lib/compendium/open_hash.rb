@@ -45,7 +45,7 @@ module Compendium
           return self[method[1..-1]] if self.key?(method[1..-1].to_sym)
 
         else
-          return self[method] if key?(method) or !respond_to?(method)
+          return self[method] if key?(method) || !respond_to?(method)
       end
 
       super

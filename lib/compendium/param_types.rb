@@ -38,7 +38,7 @@ module Compendium
         index = obj
       else
         index = obj.numeric? ? obj.to_i : @choices.index(obj)
-        raise IndexError if (!obj.nil? and index.nil?) or index.to_i.abs > @choices.length - 1
+        raise IndexError if (!obj.nil? && index.nil?) || index.to_i.abs > @choices.length - 1
       end
 
       super(index)
@@ -63,7 +63,7 @@ module Compendium
   class BooleanParam < Param
     def initialize(obj, *)
       # If given 0, 1, or a version thereof (ie. "0"), pass it along
-      return super obj.to_i if obj.numeric? and (0..1).cover?(obj.to_i)
+      return super obj.to_i if obj.numeric? && (0..1).cover?(obj.to_i)
       super !!obj ? 0 : 1
     end
 

@@ -37,7 +37,7 @@ module Compendium
     end
 
     def get_default_value(current, default)
-      if current.blank? and !default.blank?
+      if current.blank? && !default.blank?
         default.respond_to?(:call) ? default.call : default
       else
         current

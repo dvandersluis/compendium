@@ -32,7 +32,7 @@ module Compendium
       @report_name = "#{@prefix}_report"
 
       begin
-        require(@report_name) unless Rails.env.development? or Module.const_defined?(@report_name.classify)
+        require(@report_name) unless Rails.env.development? || Module.const_defined?(@report_name.classify)
         @report_class = @report_name.camelize.constantize
         @report = setup_report
       rescue LoadError
@@ -61,7 +61,7 @@ module Compendium
     end
 
     def validate_options
-      render_setup and return unless @report.valid?
+      render_setup && return unless @report.valid?
     end
 
     def run_report
