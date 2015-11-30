@@ -36,7 +36,7 @@ describe Compendium::SumQuery do
 
     it "should raise an error if the proc does not respond to sum" do
       @counter = Class.new
-      expect { subject.run(nil, self) }.to raise_error Compendium::SumQuery::InvalidCommand
+      expect { subject.run(nil, self) }.to raise_error Compendium::InvalidCommand
     end
   end
 end

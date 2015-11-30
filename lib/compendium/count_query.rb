@@ -4,7 +4,6 @@ module Compendium
   # A CountQuery is a Query which runs an SQL count statement
   # Often useful in conjunction with a grouped query
   class CountQuery < Query
-    InvalidCommand = Class.new(StandardError)
 
   private
 

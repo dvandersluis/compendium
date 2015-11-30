@@ -4,8 +4,6 @@ require 'compendium/option'
 require 'active_support/core_ext/class/attribute'
 
 module Compendium
-  CannotRedefineQueryType = Class.new(StandardError)
-
   module DSL
     def self.extended(klass)
       klass.inheritable_attr :queries, default: ::Collection[Query]

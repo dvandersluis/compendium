@@ -1,4 +1,5 @@
 require 'compendium/engine'
+require 'compendium/errors'
 require 'compendium/version'
 require 'active_support/configurable'
 

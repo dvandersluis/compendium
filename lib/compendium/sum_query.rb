@@ -5,7 +5,6 @@ module Compendium
   # Often useful in conjunction with a grouped query and counter cache
   # (alternately, see CountQuery)
   class SumQuery < Query
-    InvalidCommand = Class.new(StandardError)
 
     attr_accessor :column
 

@@ -35,7 +35,7 @@ describe Compendium::CountQuery do
 
     it "should raise an error if the proc does not respond to count" do
       @counter = Class.new
-      expect { subject.run(nil, self) }.to raise_error Compendium::CountQuery::InvalidCommand
+      expect { subject.run(nil, self) }.to raise_error Compendium::InvalidCommand
     end
   end
 end
