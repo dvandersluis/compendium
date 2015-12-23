@@ -169,6 +169,8 @@ as JSON. If using the default routes provided by `mount_compendium` (assuming co
 the results of a single query (instead of the entire report) by `POST`ing to
 <code>report/<i>report_name</i>/<i>query_name</i>.json</code>.
 
+## Displaying Report Results
+
 ### Chart Providers
 
 As of 1.1.0, chart providers have been extracted out of the main repository and are available as their own gems. If you want to render queries as a chart, a chart provider gem is needed.
@@ -183,6 +185,39 @@ end
 
 The following providers are available (If you would like to contribute a chart provider, please let me know and I'll add it to the list):
 * [compendium-amcharts](https://github.com/dvandersluis/compendium-amcharts) - makes use of [AmCharts.rb](https://github.com/dvandersluis/amcharts.rb)
+
+### Rendering a table
+
+In addition to charts, you can output a query as a table. When a query is rendered as a table, each row is output with columns in the query order (so you may want to use an explicit `select` in your query to order the columns as required). If the query is set up with `totals: true`, a totals row will be added to the bottom of the table.
+
+A query is rendered from a view, and is passed in the view context as the first parameter. Optionally, a block can be passed to customize the table:
+
+```ruby
+my_query.render_table(self) do |t|
+  # Column headings by default are the column name passed through I18n,
+  # but can be overridden:
+
+  # ... with a block...
+  t.override_heading do |heading|
+    # ...
+  end
+
+  # ... or one at a time...
+  t.override_heading :col, "My Column"
+
+  # Records where a cell is 0 or nil can have the value overridden to something else:
+  t.display_zero_as "N/A"
+  t.display_nil_as "NULL"
+
+  # You can specify how to format numbers:
+  t.number_format "%0.1f"
+
+  # You can also specify formatting on a per-column basis:
+  t.format(:col) do |value|
+    "#{(value / 50) * 100}%"
+  end
+end
+```
 
 ### Interaction with other gems
 * If [accessible_tooltip](https://github.com/dvandersluis/accessible_tooltip) is present, option notes will be rendered
