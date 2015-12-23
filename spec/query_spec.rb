@@ -27,8 +27,14 @@ describe Compendium::Query do
   end
 
   describe "#run" do
-    let(:query) { described_class.new(:test, {}, -> * { [1, 2, 3] }) }
-    before { query.stub(:fetch_results) { |c| c } }
+    let(:command) { -> * { [1, 2, 3] } }
+    let(:query) do
+      described_class.new(:test, {}, command)
+    end
+
+    before do
+      query.stub(:fetch_results) { |c| c }
+    end
 
     it "should return the result of the query" do
       query.run(nil).should == [1, 2, 3]
@@ -59,6 +65,36 @@ describe Compendium::Query do
       query.add_filter(-> data { data.reject(&:odd?) })
       query.add_filter(-> data { data.reject(&:even?) })
       query.run(nil).should == []
+    end
+
+    context 'ordering' do
+      let(:cmd) do
+        cmd = double('Command')
+        cmd.stub(order: cmd, reverse_order: cmd)
+        cmd
+      end
+
+      let(:command) do
+        -> c { -> * { c } }.(cmd)
+      end
+
+      before { query.options[:order] = 'col1' }
+
+      it 'should order the query' do
+        cmd.should_receive(:order)
+        query.run(nil)
+      end
+
+      it 'should not reverse the order by default' do
+        cmd.should_not_receive(:reverse_order)
+        query.run(nil)
+      end
+
+      it 'should reverse order if the query is given reverse: true' do
+        query.options[:reverse] = true
+        cmd.should_receive(:reverse_order)
+        query.run(nil)
+      end
     end
 
     context "when the query belongs to a report class" do

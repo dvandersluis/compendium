@@ -89,6 +89,8 @@ module Compendium
 
     def collect_results(context, *params)
       command = context.instance_exec(*params, &proc) if proc
+      command = order_command(command) if options[:order]
+
       results = fetch_results(command)
       results = filter_results(results, *params) if filters.any?
       @results = ResultSet.new(results) if results
@@ -116,6 +118,14 @@ module Compendium
       results
     end
 
+    def order_command(command)
+      return command unless command.respond_to?(:order)
+
+      command = command.order(options[:order])
+      command = command.reverse_order if options.fetch(:reverse, false)
+      command
+    end
+
     def execute_command(command)
       return [] if command.nil?
       command = command.to_sql if command.respond_to?(:to_sql)
@@ -127,7 +137,7 @@ module Compendium
     end
 
     def arg_is_report?(arg)
-      arg.is_a?(Report) or (arg.is_a?(Class) and arg < Report)
+      arg.is_a?(Report) || (arg.is_a?(Class) && arg < Report)
     end
 
     def get_associated_query(query)

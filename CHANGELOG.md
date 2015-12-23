@@ -2,6 +2,8 @@
 
 ## Future
 * Add settings to `render_table` to specify the CSS classes to use for each element.
+* Allow queries to be ordered and reversed via query options (:order and :reverse)
+* Add default orders for count and sum queries
 * Fix redefining a query so that it actually overrides the previous query instead of creating a new one with the same name
 
 ## 1.1.3

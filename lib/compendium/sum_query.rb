@@ -1,3 +1,4 @@
+require 'compendium/errors'
 require 'compendium/query'
 
 module Compendium
@@ -12,6 +13,8 @@ module Compendium
       @report = args.shift if arg_is_report?(args.first)
       @column = args.slice!(1)
       super(*args)
+
+      @options.reverse_merge!(order: "SUM(#{@column})", reverse: true)
     end
 
   private
