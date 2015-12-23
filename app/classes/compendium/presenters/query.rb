@@ -1,4 +1,6 @@
 require 'compendium/presenters/base'
+require 'compendium/presenters/settings/query'
+require 'compendium/presenters/settings/table'
 
 module Compendium::Presenters
   class Query < Base

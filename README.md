@@ -219,6 +219,28 @@ my_query.render_table(self) do |t|
 end
 ```
 
+#### CSS Classes
+
+By default, Compendium uses the following four CSS classes when rendering a table:
+
+| Element               | Element Type | Class Name |
+|-----------------------|--------------|------------|
+| Table                 | `table`      | `results`  |
+| Table header          | `tr`         | `headings` |
+| Table data            | `tr`         | `data`     |
+| Table footer (totals) | `tr`         | `totals`   |
+
+Each class can be overridden when setting up the table:
+
+```ruby
+my_query.render_table(self) do |t|
+  t.table_class   'my_table_class'
+  t.header_class  'my_header_class'
+  t.row_class     'my_row_class'
+  t.totals_class  'my_totals_class'
+end
+```
+
 ### Interaction with other gems
 * If [accessible_tooltip](https://github.com/dvandersluis/accessible_tooltip) is present, option notes will be rendered
 in a tooltip rather than as straight text.
