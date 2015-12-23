@@ -1,5 +1,15 @@
 # Change Log
 
+## Future
+* Add settings to `render_table` to specify the CSS classes to use for each element.
+* Fix redefining a query so that it actually overrides the previous query instead of creating a new one with the same name
+
+## 1.1.3
+* Add `SumQuery` query type
+* Fix option tooltip covering input elements in IE [rvracaric]
+* Allow custom param validations to be specified
+* Fix filters being overridden by subclassed queries
+
 ## 1.1.2
 * Allow direct access to a chart object without having to render it (useful if the provider allows chart settings to be updated after initialization)
 * Delegate missing methods from ChartProvider classes to the chart
