@@ -185,6 +185,7 @@ end
 
 The following providers are available (If you would like to contribute a chart provider, please let me know and I'll add it to the list):
 * [compendium-amcharts](https://github.com/dvandersluis/compendium-amcharts) - makes use of [AmCharts.rb](https://github.com/dvandersluis/amcharts.rb)
+* [compendium-highcharts](https://github.com/cimtico/compendium-highcharts) - makes use of [lazy_high_charts](https://github.com/michelson/lazy_high_charts) [thanks to [cimtico](https://github.com/cimtico)]
 
 ### Rendering a table
 
