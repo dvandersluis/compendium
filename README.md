@@ -1,4 +1,4 @@
-# Compendium [![Gem Version](https://badge.fury.io/rb/compendium.svg)](http://badge.fury.io/rb/compendium)
+# Compendium [![Gem Version](https://badge.fury.io/rb/compendium.svg)](http://badge.fury.io/rb/compendium) [![Build Status](https://travis-ci.org/dvandersluis/compendium.svg?branch=master)](https://travis-ci.org/dvandersluis/compendium)
 
 Ruby on Rails framework for making reporting easy.
 
