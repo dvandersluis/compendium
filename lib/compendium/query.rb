@@ -4,7 +4,6 @@ require 'compendium/metric'
 require 'compendium/presenters/chart'
 require 'compendium/presenters/table'
 require 'collection_of'
-require_relative '../../config/initializers/ruby/hash'
 
 module Compendium
   class Query
