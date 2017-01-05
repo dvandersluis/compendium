@@ -41,7 +41,7 @@ module Compendium::Presenters
     end
 
     def build_heading_row
-      build_row(headings, @settings.header_class, :th) { |key, val| t(val) }
+      build_row(headings, @settings.header_class, :th) { |_, val| formatted_heading(val) }
     end
 
     def build_totals_row
@@ -60,6 +60,10 @@ module Compendium::Presenters
 
         out
       end
+    end
+
+    def formatted_heading(v)
+      v.is_a?(Symbol) ? t(v) : v
     end
 
     def formatted_value(k, v)

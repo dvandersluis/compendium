@@ -14,13 +14,14 @@ module Compendium::Presenters::Settings
       row_class       'data'
       totals_class    'totals'
 
+      headings.map!(&:to_sym)
       @headings = Hash[headings.zip(headings)].with_indifferent_access
     end
 
     def override_heading(*args, &block)
       if block_given?
         @headings.each do |key, val|
-          res = yield val
+          res = yield val.to_s
           @headings[key] = res if res
         end
       else
