@@ -15,7 +15,7 @@ module Compendium
 
     class << self
       delegate :validate, to: :params_class
-      
+
       def inherited(report)
         Compendium.reports << report
 
@@ -82,8 +82,8 @@ module Compendium
       self.context = context
       self.results = {}
 
-      only = [options.delete(:only)].flatten.compact
-      except = [options.delete(:except)].flatten.compact
+      only = Array.wrap(options.delete(:only)).compact
+      except = Array.wrap(options.delete(:except)).compact
 
       raise ArgumentError, 'cannot specify only and except options at the same time' if !only.empty? && !except.empty?
       (only + except).flatten.each { |q| raise ArgumentError, "invalid query #{q}" unless queries.include?(q) }

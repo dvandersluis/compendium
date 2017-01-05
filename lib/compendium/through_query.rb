@@ -17,7 +17,7 @@ module Compendium
 
       # If none of the through queries have any results, we shouldn't try to execute the query, because it
       # depends on the results of its parents.
-      return @results = ResultSet.new([]) if results.compact.empty?
+      return @results = ResultSet.new([]) if any_results?(results)
 
       # If the proc collects two arguments, pass results and params, otherwise just results
       args = !proc || proc.arity == 1 ? [results] : [results, params]
@@ -32,7 +32,7 @@ module Compendium
     def collect_through_query_results(params, context)
       results = {}
 
-      queries = [through].flatten.map(&method(:get_associated_query))
+      queries = Array.wrap(through).map(&method(:get_associated_query))
 
       queries.each do |q|
         q.run(params, context) unless q.ran?
@@ -41,6 +41,11 @@ module Compendium
 
       results = results[queries.first.name] if queries.size == 1
       results
+    end
+
+    def any_results?(results)
+      results = results.values if results.is_a? Hash
+      results.all?(&:blank?)
     end
   end
 end
