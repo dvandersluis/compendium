@@ -10,12 +10,14 @@ module Compendium
       klass.inheritable_attr :options, default: ::Collection[Option]
     end
 
+    # Define a query
     def query(name, opts = {}, &block)
       define_query(name, opts, &block)
     end
     alias_method :chart, :query
     alias_method :data, :query
 
+    # Define a parameter for the report
     def option(name, *args)
       opts = args.extract_options!
       type = args.shift
@@ -31,6 +33,8 @@ module Compendium
       end
     end
 
+    # Define a metric from a query or implicitly
+    # A metric is a derived statistic from a report, for instance a count of rows
     def metric(name, *args, &block)
       proc = args.first.is_a?(Proc) ? args.first : block
       opts = args.extract_options!
@@ -49,6 +53,10 @@ module Compendium
       end
     end
 
+    # Define a filter to modify the results from specified query (in this case :deliveries)
+    # For example, this can be useful to translate columns prior to rendering, as it will apply
+    # for all render types (table, chart, JSON)
+    # Multiple queries can be set up with the same filter
     def filter(*query_names, &block)
       query_names.each do |query_name|
         raise ArgumentError, "query #{query_name} is not defined" unless queries.key?(query_name)
