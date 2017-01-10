@@ -27,7 +27,7 @@ describe Compendium::Query do
   end
 
   describe "#run" do
-    let(:command) { -> * { [1, 2, 3] } }
+    let(:command) { -> * { [{ value: 1 }, { value: 2 }] } }
     let(:query) do
       described_class.new(:test, {}, command)
     end
@@ -37,7 +37,9 @@ describe Compendium::Query do
     end
 
     it "should return the result of the query" do
-      query.run(nil).should == [1, 2, 3]
+      results = query.run(nil)
+      results.should be_a Compendium::ResultSet
+      results.to_a.should == [{ 'value' => 1 }, { 'value' => 2 }]
     end
 
     it "should mark the query as having ran" do
@@ -57,14 +59,14 @@ describe Compendium::Query do
     end
 
     it "should filter the result set if a filter is provided" do
-      query.add_filter(-> data { data.reject(&:odd?) })
-      query.run(nil).should == [2]
+      query.add_filter(-> data { data.reject{ |d| d[:value].odd? } })
+      query.run(nil).to_a.should == [{ 'value' => 2 }]
     end
 
     it "should run multiple filters if given" do
-      query.add_filter(-> data { data.reject(&:odd?) })
-      query.add_filter(-> data { data.reject(&:even?) })
-      query.run(nil).should == []
+      query.add_filter(-> data { data.reject{ |d| d[:value].odd? } })
+      query.add_filter(-> data { data.reject{ |d| d[:value].even? } })
+      query.run(nil).should be_empty
     end
 
     context 'ordering' do

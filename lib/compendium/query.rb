@@ -106,6 +106,8 @@ module Compendium
     def filter_results(results, params)
       return unless results
 
+      results.map! &:with_indifferent_access
+
       filters.each do |f|
         if f.arity == 2
           results = f.call(results, params)
