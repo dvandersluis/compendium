@@ -7,35 +7,6 @@ describe Compendium::Presenters::Table do
   let(:query) { double('Query', results: results, options: {}) }
   let(:table) { described_class.new(template, query) }
 
-  context 'settings' do
-    subject { table.settings }
-
-    context 'default settings' do
-      its(:number_format) { should == '%0.2f' }
-      its(:table_class) { should == 'results' }
-      its(:header_class) { should == 'headings' }
-      its(:row_class) { should == 'data' }
-      its(:totals_class) { should == 'totals' }
-      its(:display_nil_as) { should be_nil }
-    end
-
-    context 'overriding settings' do
-      let(:table) do
-        described_class.new(nil, query) do |t|
-          t.number_format '%0.1f'
-          t.table_class 'report_table'
-          t.header_class 'report_heading'
-          t.display_nil_as 'N/A'
-        end
-      end
-
-      its(:number_format) { should == '%0.1f' }
-      its(:table_class) { should == 'report_table' }
-      its(:header_class) { should == 'report_heading' }
-      its(:display_nil_as) { should == 'N/A' }
-    end
-  end
-
   context 'render' do
     before do
       template.stub(:content_tag) { |element, *, &block| block.nil? ? element : table.instance_exec(&block) }

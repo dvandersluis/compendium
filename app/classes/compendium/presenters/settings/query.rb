@@ -6,6 +6,10 @@ module Compendium::Presenters::Settings
       @settings = {}.with_indifferent_access
     end
 
+    def update(&block)
+      instance_exec(self, &block)
+    end
+
     def method_missing(name, *args, &block)
       if block_given?
         @settings[name] = block.call(*args)
