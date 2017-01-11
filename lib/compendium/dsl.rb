@@ -58,9 +58,16 @@ module Compendium
     # for all render types (table, chart, JSON)
     # Multiple queries can be set up with the same filter
     def filter(*query_names, &block)
-      query_names.each do |query_name|
-        raise ArgumentError, "query #{query_name} is not defined" unless queries.key?(query_name)
-        queries[query_name].add_filter(block)
+      each_query(query_names) do |query|
+        query.add_filter(block)
+      end
+    end
+
+    # Allow default table settings to be defined for a query.
+    # These settings are used when rendering a query to an HTML table or to CSV
+    def table(*query_names, &block)
+      each_query(query_names) do |query|
+        query.table_settings = block
       end
     end
 
@@ -93,6 +100,13 @@ module Compendium
     end
 
   private
+
+    def each_query(query_names, &block)
+      query_names.each do |query_name|
+        raise ArgumentError, "query #{query_name} is not defined" unless queries.key?(query_name)
+        yield queries[query_name]
+      end
+    end
 
     def define_query(name, opts, &block)
       params = [name.to_sym, opts, block]

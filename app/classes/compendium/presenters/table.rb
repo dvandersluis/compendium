@@ -8,7 +8,9 @@ module Compendium::Presenters
       @records = results.records
       @totals = @records.pop if has_totals_row?
 
-      @settings = settings_class.new(results.keys)
+      @settings = settings_class.new(query)
+      @settings.set_headings(results.keys)
+      @settings.update(&query.table_settings) if query.table_settings
       yield @settings if block_given?
     end
 

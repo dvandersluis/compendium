@@ -4,8 +4,10 @@ module Compendium::Presenters::Settings
   class Table < Query
     attr_reader :headings
 
-    def initialize(headings)
-      super()
+    def initialize(*)
+      super
+
+      @headings = {}
 
       # Set default values for settings
       number_format       '%0.2f'
@@ -14,7 +16,9 @@ module Compendium::Presenters::Settings
       row_class           'data'
       totals_class        'totals'
       skipped_total_cols  []
+    end
 
+    def set_headings(headings)
       headings.map!(&:to_sym)
       @headings = Hash[headings.zip(headings)].with_indifferent_access
     end

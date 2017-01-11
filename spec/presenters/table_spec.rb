@@ -4,7 +4,7 @@ require 'compendium/presenters/table'
 describe Compendium::Presenters::Table do
   let(:template) { double('Template') }
   let(:results) { double('Results', records: [{ one: 1, two: 2 }, { one: 3, two: 4 }], keys: [:one, :two]) }
-  let(:query) { double('Query', results: results, options: {}) }
+  let(:query) { double('Query', results: results, options: {}, table_settings: nil) }
   let(:table) { described_class.new(template, query) }
 
   context 'render' do

@@ -1,9 +1,13 @@
 module Compendium::Presenters::Settings
   class Query
-    delegate :[], :fetch, to: :@settings
+    attr_reader :query
 
-    def initialize
+    delegate :[], :fetch, to: :@settings
+    delegate :report, to: :query, allow_nil: true
+
+    def initialize(query = nil)
       @settings = {}.with_indifferent_access
+      @query = query
     end
 
     def update(&block)

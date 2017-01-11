@@ -8,7 +8,7 @@ require 'collection_of'
 module Compendium
   class Query
     attr_reader :name, :results, :metrics, :filters
-    attr_accessor :options, :proc, :report
+    attr_accessor :options, :proc, :report, :table_settings
 
     def initialize(*args)
       @report = args.shift if arg_is_report?(args.first)
