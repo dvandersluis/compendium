@@ -8,11 +8,12 @@ module Compendium::Presenters::Settings
       super()
 
       # Set default values for settings
-      number_format   '%0.2f'
-      table_class     'results'
-      header_class    'headings'
-      row_class       'data'
-      totals_class    'totals'
+      number_format       '%0.2f'
+      table_class         'results'
+      header_class        'headings'
+      row_class           'data'
+      totals_class        'totals'
+      skipped_total_cols  []
 
       headings.map!(&:to_sym)
       @headings = Hash[headings.zip(headings)].with_indifferent_access
@@ -37,6 +38,10 @@ module Compendium::Presenters::Settings
 
     def formatters
       (@settings[:formatters] || {})
+    end
+
+    def skip_total_for(*cols)
+      @settings[:skipped_total_cols].concat(cols.map(&:to_sym))
     end
   end
 end

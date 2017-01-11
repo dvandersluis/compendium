@@ -45,8 +45,10 @@ module Compendium::Presenters
     end
 
     def build_totals_row
-      totals[totals.keys.first] = t(:total)
-      build_row(totals, @settings.totals_class, :th) { |key, val| formatted_value(key, val) }
+      totals[totals.keys.first] = translate(:total)
+      build_row(totals, @settings.totals_class, :th) do |key, val|
+        formatted_value(key, val) unless settings.skipped_total_cols.include?(key.to_sym)
+      end
     end
 
     def build_row(row, row_class, cell_type = :td)

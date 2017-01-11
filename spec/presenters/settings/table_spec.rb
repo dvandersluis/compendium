@@ -15,6 +15,7 @@ describe Compendium::Presenters::Settings::Table do
     its(:row_class) { should == 'data' }
     its(:totals_class) { should == 'totals' }
     its(:display_nil_as) { should be_nil }
+    its(:skipped_total_cols) { should be_empty }
   end
 
   context 'overriding default settings' do
@@ -40,6 +41,24 @@ describe Compendium::Presenters::Settings::Table do
       end
 
       subject.number_format.should == '%0.3f'
+    end
+  end
+
+  describe '#skip_total_for' do
+    it 'should add columns to the setting' do
+      subject.skip_total_for :foo, :bar
+      subject.skipped_total_cols.should == [:foo, :bar]
+    end
+
+    it 'should be callable multiple times' do
+      subject.skip_total_for :foo, :bar
+      subject.skip_total_for :quux
+      subject.skipped_total_cols.should == [:foo, :bar, :quux]
+    end
+
+    it 'should not care about type' do
+      subject.skip_total_for 'foo'
+      subject.skipped_total_cols.should == [:foo]
     end
   end
 end
