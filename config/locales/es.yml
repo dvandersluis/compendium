@@ -1,0 +1,8 @@
+es:
+  compendium:
+    total: "Total"
+
+    reports:
+      invalid_report: "¡Informe no válido!"
+      invalid_report_query: "¡Consulta no válida!"
+      generate_report: "Generar informe"

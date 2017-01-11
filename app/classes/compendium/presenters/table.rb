@@ -63,7 +63,7 @@ module Compendium::Presenters
     end
 
     def formatted_heading(v)
-      v.is_a?(Symbol) ? t(v) : v
+      v.is_a?(Symbol) ? translate(v) : v
     end
 
     def formatted_value(k, v)
@@ -80,6 +80,12 @@ module Compendium::Presenters
           @settings.display_nil_as
         end
       end || v
+    end
+
+    def translate(v, opts = {})
+      opts.reverse_merge!(scope: settings.i18n_scope) if settings.i18n_scope?
+      opts[:default] = -> * { I18n.t(v, scope: 'compendium') }
+      I18n.t(v, opts)
     end
   end
 end

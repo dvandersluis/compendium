@@ -1,5 +1,7 @@
 en:
   compendium:
+    total: "Total"
+
     reports:
       invalid_report: "Invalid report!"
       invalid_report_query: "Invalid query!"

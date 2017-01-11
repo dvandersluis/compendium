@@ -1,0 +1,8 @@
+fr:
+  compendium:
+    total: "Total"
+
+    reports:
+      invalid_report: "Rapport invalide!"
+      invalid_report_query: "Requête invalide!"
+      generate_report: "Générer Rapport"

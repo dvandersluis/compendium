@@ -10,7 +10,7 @@ describe Compendium::Presenters::Table do
   context 'render' do
     before do
       template.stub(:content_tag) { |element, *, &block| block.nil? ? element : table.instance_exec(&block) }
-      template.stub(:t) { |key| key }
+      I18n.stub(:t) { |key| key }
     end
 
     it 'should use the table class given in settings' do
