@@ -18,6 +18,17 @@ module Compendium
           render json: @query ? @query.results : @report.results
         end
 
+        format.csv do
+          if @query
+            filename = @query.name.to_s.parameterize + '-' + Time.current.strftime('%Y%m%d%H%I%S')
+            response.headers['Content-Disposition'] = 'attachment; filename="' + filename + '.csv"'
+            render text: @query.render_csv
+          else
+            flash[:error] = t(:query_required_for_csv, scope: 'compendium.reports')
+            redirect_to action: :setup, format: nil, report_name: params[:report_name]
+          end
+        end
+
         format.any do
           template = template_exists?(@prefix, get_template_prefixes) ? @prefix : 'run'
           render action: template, locals: { report: @report }
@@ -36,7 +47,7 @@ module Compendium
         @report_class = @report_name.camelize.constantize
         @report = setup_report
       rescue LoadError
-        flash[:error] = t(:invalid_report)
+        flash[:error] = t(:invalid_report, scope: 'compendium.reports')
         redirect_to action: :index
       end
     end
@@ -46,7 +57,7 @@ module Compendium
       @query = @report.queries[params[:query]]
 
       unless @query
-        flash[:error] = t(:invalid_report_query)
+        flash[:error] = t(:invalid_report_query, scope: 'compendium.reports')
         redirect_to action: :setup, report_name: params[:report_name]
       end
     end

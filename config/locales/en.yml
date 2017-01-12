@@ -6,3 +6,4 @@ en:
       invalid_report: "Invalid report!"
       invalid_report_query: "Invalid query!"
       generate_report: "Generate Report"
+      query_required_for_csv: "A query must be specified to export a CSV file!"
