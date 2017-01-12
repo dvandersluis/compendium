@@ -21,7 +21,7 @@ module Compendium::Presenters
     end
 
     def settings_class
-      Settings.const_get(self.class.name.demodulize) rescue Settings::Query
+      Settings.const_get(self.class.name.demodulize, false) rescue Settings::Query
     end
   end
 end

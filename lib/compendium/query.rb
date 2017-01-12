@@ -57,6 +57,10 @@ module Compendium
       Compendium::Presenters::Table.new(template, self, *options, &block).render unless empty?
     end
 
+    def render_csv(&block)
+      Compendium::Presenters::CSV.new(self, &block).render unless empty?
+    end
+
     # Allow access to the chart object without having to explicitly render it
     def chart(template, *options, &block)
       # Access the actual chart object

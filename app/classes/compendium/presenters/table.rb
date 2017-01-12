@@ -6,24 +6,28 @@ module Compendium::Presenters
       super
 
       @records = results.records
-      @totals = @records.pop if has_totals_row?
 
       @settings = settings_class.new(query)
       @settings.set_headings(results.keys)
       @settings.update(&query.table_settings) if query.table_settings
       yield @settings if block_given?
+
+      if has_totals_row?
+        @totals = @records.pop
+        totals[totals.keys.first] = translate(:total)
+      end
     end
 
     def render
       content_tag(:table, class: @settings.table_class) do
         table = ActiveSupport::SafeBuffer.new
-        table << content_tag(:thead, build_heading_row)
+        table << content_tag(:thead, build_row(headings, settings.header_class, :th, &heading_proc))
         table << content_tag(:tbody) do
           tbody = ActiveSupport::SafeBuffer.new
-          records.each { |row| tbody << build_data_row(row) }
+          records.each { |row| tbody << build_row(row, settings.row_class, &data_proc) }
           tbody
         end
-        table << content_tag(:tfoot, build_totals_row) if has_totals_row?
+        table << content_tag(:tfoot, build_row(totals, @settings.totals_class, :th, &totals_proc)) if has_totals_row?
         table
       end
     end
@@ -38,19 +42,16 @@ module Compendium::Presenters
       query.options.fetch(:totals, false)
     end
 
-    def build_data_row(row)
-      build_row(row, @settings.row_class) { |key, val| formatted_value(key, val) }
+    def data_proc
+      proc { |key, val| formatted_value(key, val) }
     end
 
-    def build_heading_row
-      build_row(headings, @settings.header_class, :th) { |_, val| formatted_heading(val) }
+    def heading_proc
+      proc { |_, val| formatted_heading(val) }
     end
 
-    def build_totals_row
-      totals[totals.keys.first] = translate(:total)
-      build_row(totals, @settings.totals_class, :th) do |key, val|
-        formatted_value(key, val) unless settings.skipped_total_cols.include?(key.to_sym)
-      end
+    def totals_proc
+      proc { |key, val| formatted_value(key, val) unless settings.skipped_total_cols.include?(key.to_sym) }
     end
 
     def build_row(row, row_class, cell_type = :td)
