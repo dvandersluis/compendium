@@ -105,6 +105,10 @@ module Compendium
       Collection[Metric, queries.map{ |q| q.metrics.to_a }.flatten]
     end
 
+    def exports?(type)
+      return exporters[type.to_sym]
+    end
+
   private
 
     attr_accessor :context

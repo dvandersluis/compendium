@@ -296,4 +296,27 @@ describe Compendium::Report do
       subclass2.main_query.filters.should be_empty
     end
   end
+
+  describe '#exports?' do
+    let(:report_class) do
+      Class.new(described_class) do
+        exports :csv, :main_query
+        exports :pdf, false
+      end
+    end
+
+    subject { report_class.new }
+
+    it 'should return true if there is an export for the given type' do
+      subject.exports?(:csv).should be_true
+    end
+
+    it 'should return false if there is no export for the given type explicitly' do
+      subject.exports?(:pdf).should be_false
+    end
+
+    it 'should return false if there is no export for the given type implicitly' do
+      subject.exports?(:xls).should be_false
+    end
+  end
 end

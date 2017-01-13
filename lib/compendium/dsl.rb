@@ -8,6 +8,7 @@ module Compendium
     def self.extended(klass)
       klass.inheritable_attr :queries, default: ::Collection[Query]
       klass.inheritable_attr :options, default: ::Collection[Option]
+      klass.inheritable_attr :exporters, default: {}
     end
 
     # Define a query
@@ -68,6 +69,17 @@ module Compendium
     def table(*query_names, &block)
       each_query(query_names) do |query|
         query.table_settings = block
+      end
+    end
+
+    # Define any exports the report has
+    def exports(type, *opts)
+      exporters[type] = if opts.empty?
+        true
+      elsif opts.length == 1
+        opts.first
+      else
+        opts
       end
     end
 

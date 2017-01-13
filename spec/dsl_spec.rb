@@ -278,6 +278,24 @@ describe Compendium::DSL do
     end
   end
 
+  describe '#exports' do
+    it 'should not have any exporters by default' do
+      subject.exporters.should be_empty
+    end
+
+    it 'should set the export to true if no options are given' do
+      subject.exports :csv
+      subject.exporters[:csv].should be_true
+    end
+
+    it 'should save any given options' do
+      subject.exports :csv, :main_query
+      subject.exports :pdf, :foo, :bar
+      subject.exporters[:csv].should == :main_query
+      subject.exporters[:pdf].should == [:foo, :bar]
+    end
+  end
+
   it "should allow previously defined queries to be redefined by name" do
     subject.query :test_query
     subject.test_query foo: :bar
