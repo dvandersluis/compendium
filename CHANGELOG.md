@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.2.0
 * Added the ability to render a query to CSV, and a controller action for downloading the CSV
 * Added `exports` report setting
 * Added `skip_totals_for` option to table settings to define columns to skip in the totals row

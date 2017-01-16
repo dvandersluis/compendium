@@ -1,3 +1,3 @@
 module Compendium
-  VERSION = "1.1.3.4"
+  VERSION = '1.2.0'
 end
