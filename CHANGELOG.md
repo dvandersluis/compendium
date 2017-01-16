@@ -1,6 +1,12 @@
 # Change Log
 
-## Future
+## Unreleased
+* Added the ability to render a query to CSV, and a controller action for downloading the CSV
+* Added `exports` report setting
+* Added `skip_totals_for` option to table settings to define columns to skip in the totals row
+* Added `i18n_scope` option to table settings
+* Added `Settings::Query#update` to update query settings with a block
+* Allow table settings to be specified on the report object
 * Add settings to `render_table` to specify the CSS classes to use for each element.
 * Allow queries to be ordered and reversed via query options (:order and :reverse)
 * Add default orders for count and sum queries

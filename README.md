@@ -161,13 +161,34 @@ within your `config/routes.rb` file
 mount_compendium at: '/report', controller: 'reports' # controller defaults to compendium/reports
 ```
 
-### Rendering report results as JSON
+### Rendering report results in other formats
+
+#### JSON
 
 While the default action when running a report is to render a view with the results, Compendium reports can be rendered
 as JSON. If using the default routes provided by `mount_compendium` (assuming compendium was mounted at `/report`),
-`POST`ing to <code>report/<i>report_name</i>.json</code> will return the report results as JSON. You can also collect
-the results of a single query (instead of the entire report) by `POST`ing to
+`GET`ing or `POST`ing to <code>report/<i>report_name</i>.json</code> will return the report results as JSON. You can also collect
+the results of a single query (instead of the entire report) by `GET`ing or `POST`ing to
 <code>report/<i>report_name</i>/<i>query_name</i>.json</code>.
+
+#### CSV
+
+A report can be exported as CSV. In order to enable CSV exports, a query needs to be defined as the exporter
+for the report. Note that only one query can be exported, because otherwise there's no way to ensure that the
+headings are consistent.
+
+```ruby
+class MyReport < Compendium::Report
+  exports :csv, :deliveries # Defines `deliveries` to be the query that is exported to CSV
+end
+```
+
+Note that if your report class subclasses another, and you want to disable a previously defined exporter, you can with `exports :csv, false`.
+
+When a report has a CSV exporter defined, an `Export CSV` button will appear on the default setup page. You can also directly export
+using the path `/report/:report_name/export.csv` (using `GET` or `POST`).
+
+Customization of the query can be done by setting table options for the query. See the [Rendering a table](#rendering-a-table) section below for more details.
 
 ## Displaying Report Results
 
@@ -189,34 +210,53 @@ The following providers are available (If you would like to contribute a chart p
 
 ### Rendering a table
 
-In addition to charts, you can output a query as a table. When a query is rendered as a table, each row is output with columns in the query order (so you may want to use an explicit `select` in your query to order the columns as required). If the query is set up with `totals: true`, a totals row will be added to the bottom of the table.
+> *Note: When table settings are defined for a query, they are applied both to rendering HTML tables, as well as CSV file exports.
+See [Rendering report results in other formats](#rendering-report-results-in-other-formats) above for more details.* 
 
-A query is rendered from a view, and is passed in the view context as the first parameter. Optionally, a block can be passed to customize the table:
+In addition to charts, you can output a query as a table. When a query is rendered as a table, each row is output with columns in the
+query order (so you may want to use an explicit `select` in your query to order the columns as required). If the query is set up with
+`totals: true`, a totals row will be added to the bottom of the table.
+
+In order to customize the table, you can add a `table` declaration to your report. Each query can have different table settings.
 
 ```ruby
-my_query.render_table(self) do |t|
-  # Column headings by default are the column name passed through I18n,
-  # but can be overridden:
-
-  # ... with a block...
-  t.override_heading do |heading|
-    # ...
+class MyReport < Compendium::Report
+  table :deliveries do
+    # The i18n scope to use for any translations can be specified:
+    i18n_scope 'reports.my_report'
+    
+    # Column headings by default are the column name passed through I18n,
+    # but can be overridden:
+  
+    # ... with a block...
+    override_heading do |heading|
+      # ...
+    end
+  
+    # ... or one at a time...
+    override_heading :col, 'My Column'
+  
+    # Records where a cell is 0 or nil can have the value overridden to something else:
+    display_zero_as 'N/A'
+    display_nil_as 'NULL'
+  
+    # You can specify how to format numbers:
+    number_format "%0.1f"
+  
+    # You can also specify formatting on a per-column basis:
+    format(:col) do |value|
+      "#{(value / 50) * 100}%"
+    end
   end
+end
+```
 
-  # ... or one at a time...
-  t.override_heading :col, "My Column"
+A query is rendered from a view, and is passed in the view context as the first parameter. Optionally, a block can be passed to
+override previously defined settings:
 
-  # Records where a cell is 0 or nil can have the value overridden to something else:
-  t.display_zero_as "N/A"
-  t.display_nil_as "NULL"
-
-  # You can specify how to format numbers:
-  t.number_format "%0.1f"
-
-  # You can also specify formatting on a per-column basis:
-  t.format(:col) do |value|
-    "#{(value / 50) * 100}%"
-  end
+```ruby
+my_query.render_table(self) do
+  display_zero_as 'nil' # Override the previous version just for this render
 end
 ```
 
