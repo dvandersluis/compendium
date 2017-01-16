@@ -69,6 +69,15 @@ describe Compendium::Query do
       query.run(nil).should be_empty
     end
 
+    it 'should allow the result set to be a single hash when filters are present' do
+      query = described_class.new(:test, {}, -> * { { value1: 1, value2: 2, value3: 3 } })
+      query.stub(:fetch_results) { |c| c }
+
+      query.add_filter(-> d { d })
+      query.run(nil)
+      query.results.records.should == { value1: 1, value2: 2, value3: 3 }.with_indifferent_access
+    end
+
     context 'ordering' do
       let(:cmd) do
         cmd = double('Command')

@@ -110,7 +110,11 @@ module Compendium
     def filter_results(results, params)
       return unless results
 
-      results.map! &:with_indifferent_access
+      if results.respond_to? :with_indifferent_access
+        results = results.with_indifferent_access
+      else
+        results.map! &:with_indifferent_access
+      end
 
       filters.each do |f|
         if f.arity == 2
