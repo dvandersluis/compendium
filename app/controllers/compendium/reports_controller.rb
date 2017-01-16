@@ -5,8 +5,8 @@ module Compendium
 
     before_filter :find_report
     before_filter :find_query
-    before_filter :validate_options, only: :run
-    before_filter :run_report, only: :run
+    before_filter :validate_options, only: [:run, :export]
+    before_filter :run_report, only: [:run, :export]
 
     def setup
       render_setup
@@ -18,20 +18,30 @@ module Compendium
           render json: @query ? @query.results : @report.results
         end
 
-        format.csv do
-          if @query
-            filename = @query.name.to_s.parameterize + '-' + Time.current.strftime('%Y%m%d%H%I%S')
-            response.headers['Content-Disposition'] = 'attachment; filename="' + filename + '.csv"'
-            render text: @query.render_csv
-          else
-            flash[:error] = t(:query_required_for_csv, scope: 'compendium.reports')
-            redirect_to action: :setup, format: nil, report_name: params[:report_name]
-          end
-        end
-
         format.any do
           template = template_exists?(@prefix, get_template_prefixes) ? @prefix : 'run'
           render action: template, locals: { report: @report }
+        end
+      end
+    end
+
+    def export
+      unless @report.exports?(request.format)
+        redirect_to action: :setup, format: nil
+        return
+      end
+
+      respond_to do |format|
+        format.csv do
+          filename = @report.report_name.to_s.parameterize + '-' + Time.current.strftime('%Y%m%d%H%I%S')
+          response.headers['Content-Disposition'] = 'attachment; filename="' + filename + '.csv"'
+
+          query = @report.queries[@report.exporters[:csv]]
+          render text: query.render_csv
+        end
+
+        format.any do
+          redirect_to action: :setup, format: nil
         end
       end
     end

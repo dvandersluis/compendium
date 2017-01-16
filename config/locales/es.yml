@@ -3,7 +3,9 @@ es:
     total: "Total"
 
     reports:
+      generate_report: "Generar informe"
+      export_csv: "Exportar CSV"
+
       invalid_report: "¡Informe no válido!"
       invalid_report_query: "¡Consulta no válida!"
-      generate_report: "Generar informe"
       query_required_for_csv: "¡Se debe especificar una consulta para exportar un archivo CSV!"
