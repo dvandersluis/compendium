@@ -1,5 +1,8 @@
 # Change Log
 
+## Unreleased
+* Remove haml implicit dependency 
+
 ## 1.2.0
 * Added the ability to render a query to CSV, and a controller action for downloading the CSV
 * Added `exports` report setting
