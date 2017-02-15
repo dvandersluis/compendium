@@ -25,6 +25,7 @@ module Compendium
     end
 
     def as_json(options = {})
+      return records unless records.first.respond_to?(:except)
       records.map{ |r| r.except(*options[:except]) }
     end
   end

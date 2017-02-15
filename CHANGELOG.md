@@ -1,7 +1,8 @@
 # Change Log
 
 ## Unreleased
-* Remove haml implicit dependency 
+* Fix crash when converting a ResultSet to JSON when the results is a flat array
+* Remove haml implicit dependency
 
 ## 1.2.0
 * Added the ability to render a query to CSV, and a controller action for downloading the CSV
