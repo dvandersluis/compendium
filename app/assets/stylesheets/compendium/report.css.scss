@@ -19,4 +19,10 @@
     font-weight: bold;
     color: #575757;
   }
+
+  .option.hidden
+  {
+    display: none;
+    visibility: hidden;
+  }
 }

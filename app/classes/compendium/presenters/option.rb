@@ -3,6 +3,7 @@ module Compendium::Presenters
     MISSING_CHOICES_ERROR = "choices must be specified"
 
     presents :option
+    delegate :hidden?, to: :option
 
     def name
       t("options.#{option.name}", cascade: { offset: 2 })
@@ -70,6 +71,10 @@ module Compendium::Presenters
       end
 
       out
+    end
+
+    def hidden_field(form)
+      form.hidden_field option.name
     end
 
   private

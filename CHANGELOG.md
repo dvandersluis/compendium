@@ -1,6 +1,7 @@
 # Change Log
 
 ## Unreleased
+* Allow report options to be hidden
 * Allow the collection in a CollectionQuery to be generated at report runtime using a proc
 
 ## 1.2.1

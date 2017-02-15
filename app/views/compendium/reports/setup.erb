@@ -10,12 +10,18 @@
 
     <% report.options.each do |option| %>
       <% expose option, Compendium::Presenters::Option do |opt| %>
-        <div class="option">
-          <%= opt.label(f) %>
-          <div class="option-element-group">
-            <%= opt.input(self, f) %>
+        <% if opt.hidden? %>
+          <div class="option hidden">
+            <%= opt.hidden_field(f) %>
           </div>
-        </div>
+        <% else %>
+          <div class="option">
+            <%= opt.label(f) %>
+            <div class="option-element-group">
+              <%= opt.input(self, f) %>
+            </div>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
 
