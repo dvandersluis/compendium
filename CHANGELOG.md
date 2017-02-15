@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.2.1
 * Fix crash when converting a ResultSet to JSON when the results is a flat array
 * Remove haml implicit dependency
 
