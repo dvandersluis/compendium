@@ -42,5 +42,22 @@ describe Compendium::CollectionQuery do
         subject.run(nil)
       end
     end
+
+    context 'when given a proc' do
+      let(:proc) { -> * { [1, 2, 3] } }
+      subject { described_class.new(:collection, { collection: proc }, -> _, key, item { [ item * 2 ] }) }
+
+      it 'should use the collection from the proc' do
+        subject.run(nil)
+        subject.results.should == { 1 => [2], 2 => [4], 3 => [6] }
+      end
+
+      context do
+        let(:proc) { -> * { raise ArgumentError } }
+        it 'should not run the proc until runtime' do
+          expect { subject }.to_not raise_error
+        end
+      end
+    end
   end
 end

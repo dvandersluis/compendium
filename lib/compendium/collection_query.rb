@@ -31,13 +31,15 @@ module Compendium
       if collection.is_a?(Query)
         collection.run(params, context) unless collection.ran?
         collection.results
+      elsif collection.is_a?(Proc)
+        prepare_collection(collection.call(params))
       else
         collection
       end
     end
 
     def prepare_collection(collection)
-      return collection if collection.is_a?(Query) || collection.is_a?(Symbol)
+      return collection if collection.is_a?(Query) || collection.is_a?(Symbol) || collection.is_a?(Proc)
       collection.is_a?(Hash) ? collection : Hash[collection.zip(collection)]
     end
   end

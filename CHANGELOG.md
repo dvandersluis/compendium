@@ -1,5 +1,8 @@
 # Change Log
 
+## Unreleased
+* Allow the collection in a CollectionQuery to be generated at report runtime using a proc
+
 ## 1.2.1
 * Fix crash when converting a ResultSet to JSON when the results is a flat array
 * Remove haml implicit dependency
