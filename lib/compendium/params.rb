@@ -24,7 +24,7 @@ module Compendium
 
       options.each do |option|
         begin
-          klass = "Compendium::#{"#{option.type}Param".classify}".constantize
+          klass = Compendium::ParamTypes.const_get(option.type.classify)
           params[option.name] = klass.new(get_default_value(params[option.name], option.default), option.choices)
         rescue IndexError
           raise IndexError, "invalid index for #{option_name}"

@@ -14,19 +14,12 @@ module Compendium
   autoload :Metric,                 'compendium/metric'
   autoload :Option,                 'compendium/option'
   autoload :Params,                 'compendium/params'
+  autoload :ParamTypes,             'compendium/param_types'
   autoload :Query,                  'compendium/query'
   autoload :ResultSet,              'compendium/result_set'
   autoload :Report,                 'compendium/report'
   autoload :SumQuery,               'compendium/sum_query'
   autoload :ThroughQuery,           'compendium/through_query'
-
-  autoload :Param,                  'compendium/param_types'
-  autoload :BooleanParam,           'compendium/param_types'
-  autoload :DateParam,              'compendium/param_types'
-  autoload :DropdownParam,          'compendium/param_types'
-  autoload :ParamWithChoices,       'compendium/param_types'
-  autoload :RadioParam,             'compendium/param_types'
-  autoload :ScalarParam,            'compendium/param_types'
 
   def self.reports
     @reports ||= []
