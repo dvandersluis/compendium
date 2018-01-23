@@ -24,5 +24,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'collection_of', '1.0.6'
   gem.add_dependency 'inheritable_attr', '>= 1.0.0'
   gem.add_development_dependency 'rake', '> 11.0.1', '< 12'
-  gem.add_development_dependency 'rspec', '~> 2.0', '< 2.99'
+  gem.add_development_dependency 'rspec', '~> 3.7.0'
 end

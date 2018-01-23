@@ -33,38 +33,38 @@ describe Compendium::ContextWrapper do
 
     subject { described_class.wrap(w2, w1) }
 
-    it { should respond_to :test_val }
-    it { should respond_to :wrapped }
+    it { is_expected.to respond_to :test_val }
+    it { is_expected.to respond_to :wrapped }
 
-    its(:test_val) { should == 123 }
-    its(:wrapped) { should == true }
+    specify { expect(subject.test_val).to eq(123) }
+    specify { expect(subject.wrapped).to eq(true) }
 
     it "should not affect the original objects" do
       subject
-      w1.should_not respond_to :wrapped
-      w2.should_not respond_to :test_val
+      expect(w1).not_to respond_to :wrapped
+      expect(w2).not_to respond_to :test_val
     end
 
     it "should yield a block if given" do
-      described_class.wrap(w2, w1) { test_val }.should == 123
+      expect(described_class.wrap(w2, w1) { test_val }).to eq(123)
     end
 
     context "overriding methods" do
       subject { described_class.wrap(w4, w3) }
-      its(:wrapper_num) { should == 4 }
+      specify { expect(subject.wrapper_num).to eq(4) }
     end
 
     context "nested wrapping" do
       let(:inner) { described_class.wrap(w2, w1) }
       subject { described_class.wrap(inner, w3) }
 
-      it { should respond_to :test_val }
-      it { should respond_to :wrapped }
-      it { should respond_to :wrapper_num }
+      it { is_expected.to respond_to :test_val }
+      it { is_expected.to respond_to :wrapped }
+      it { is_expected.to respond_to :wrapper_num }
 
       it "should not extend the inner wrap" do
         subject
-        inner.should_not respond_to :wrapper_num
+        expect(inner).not_to respond_to :wrapper_num
       end
     end
   end

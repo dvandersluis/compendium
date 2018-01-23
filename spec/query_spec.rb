@@ -10,19 +10,19 @@ describe Compendium::Query do
       let(:r) { Compendium::Report.new }
       subject { described_class.new(r, :test, options, proc)}
 
-      its(:report) { should == r }
-      its(:name) { should == :test }
-      its(:options) { should == options }
-      its(:proc) { should == proc }
+      specify { expect(subject.report).to eq(r) }
+      specify { expect(subject.name).to eq(:test) }
+      specify { expect(subject.options).to eq(options) }
+      specify { expect(subject.proc).to eq(proc) }
     end
 
     context "when not supplying a report" do
       subject { described_class.new(:test, options, proc)}
 
-      its(:report) { should be_nil }
-      its(:name) { should == :test }
-      its(:options) { should == options }
-      its(:proc) { should == proc }
+      specify { expect(subject.report).to be_nil }
+      specify { expect(subject.name).to eq(:test) }
+      specify { expect(subject.options).to eq(options) }
+      specify { expect(subject.proc).to eq(proc) }
     end
   end
 
@@ -33,55 +33,55 @@ describe Compendium::Query do
     end
 
     before do
-      query.stub(:fetch_results) { |c| c }
+      allow(query).to receive(:fetch_results) { |c| c }
     end
 
     it "should return the result of the query" do
       results = query.run(nil)
-      results.should be_a Compendium::ResultSet
-      results.to_a.should == [{ 'value' => 1 }, { 'value' => 2 }]
+      expect(results).to be_a Compendium::ResultSet
+      expect(results.to_a).to eq([{ 'value' => 1 }, { 'value' => 2 }])
     end
 
     it "should mark the query as having ran" do
       query.run(nil)
-      query.should have_run
+      expect(query).to have_run
     end
 
     it "should not affect any cloned queries" do
       q2 = query.clone
       query.run(nil)
-      q2.should_not have_run
+      expect(q2).not_to have_run
     end
 
     it "should return an empty result set if running an query with no proc" do
       query = described_class.new(:blank, {}, nil)
-      query.run(nil).should be_empty
+      expect(query.run(nil)).to be_empty
     end
 
     it "should filter the result set if a filter is provided" do
       query.add_filter(-> data { data.reject{ |d| d[:value].odd? } })
-      query.run(nil).to_a.should == [{ 'value' => 2 }]
+      expect(query.run(nil).to_a).to eq([{ 'value' => 2 }])
     end
 
     it "should run multiple filters if given" do
       query.add_filter(-> data { data.reject{ |d| d[:value].odd? } })
       query.add_filter(-> data { data.reject{ |d| d[:value].even? } })
-      query.run(nil).should be_empty
+      expect(query.run(nil)).to be_empty
     end
 
     it 'should allow the result set to be a single hash when filters are present' do
       query = described_class.new(:test, {}, -> * { { value1: 1, value2: 2, value3: 3 } })
-      query.stub(:fetch_results) { |c| c }
+      allow(query).to receive(:fetch_results) { |c| c }
 
       query.add_filter(-> d { d })
       query.run(nil)
-      query.results.records.should == { value1: 1, value2: 2, value3: 3 }.with_indifferent_access
+      expect(query.results.records).to eq({ value1: 1, value2: 2, value3: 3 }.with_indifferent_access)
     end
 
     context 'ordering' do
       let(:cmd) do
         cmd = double('Command')
-        cmd.stub(order: cmd, reverse_order: cmd)
+        allow(cmd).to receive_messages(order: cmd, reverse_order: cmd)
         cmd
       end
 
@@ -92,18 +92,18 @@ describe Compendium::Query do
       before { query.options[:order] = 'col1' }
 
       it 'should order the query' do
-        cmd.should_receive(:order)
+        expect(cmd).to receive(:order)
         query.run(nil)
       end
 
       it 'should not reverse the order by default' do
-        cmd.should_not_receive(:reverse_order)
+        expect(cmd).not_to receive(:reverse_order)
         query.run(nil)
       end
 
       it 'should reverse order if the query is given reverse: true' do
         query.options[:reverse] = true
-        cmd.should_receive(:reverse_order)
+        expect(cmd).to receive(:reverse_order)
         query.run(nil)
       end
     end
@@ -117,31 +117,31 @@ describe Compendium::Query do
 
       subject { report.queries[:test] }
 
-      before { described_class.any_instance.stub(:fetch_results) { |c| c } }
+      before { allow_any_instance_of(described_class).to receive(:fetch_results) { |instance, c| c } }
 
       it "should return its results" do
-        subject.run(nil).should == [1, 2, 3]
+        expect(subject.run(nil)).to eq([1, 2, 3])
       end
 
       it "should not affect the report" do
         subject.run(nil)
-        report.queries[:test].results.should be_nil
+        expect(report.queries[:test].results).to be_nil
       end
 
       it "should not affect future instances of the report" do
         subject.run(nil)
-        report.new.queries[:test].results.should be_nil
+        expect(report.new.queries[:test].results).to be_nil
       end
     end
   end
 
   describe "#nil?" do
     it "should return true if the query's proc is nil" do
-      Compendium::Query.new(:test, {}, nil).should be_nil
+      expect(Compendium::Query.new(:test, {}, nil)).to be_nil
     end
 
     it "should return false if the query's proc is not nil" do
-      Compendium::Query.new(:test, {}, ->{}).should_not be_nil
+      expect(Compendium::Query.new(:test, {}, ->{})).not_to be_nil
     end
   end
 
@@ -150,14 +150,14 @@ describe Compendium::Query do
     subject { described_class.new(:test, {}, -> * {}) }
 
     it "should initialize a new Chart presenter if the query has no results" do
-      subject.stub(empty?: true)
-      Compendium::Presenters::Chart.should_receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
+      allow(subject).to receive_messages(empty?: true)
+      expect(Compendium::Presenters::Chart).to receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
       subject.render_chart(template)
     end
 
     it "should initialize a new Chart presenter if the query has results" do
-      subject.stub(empty?: false)
-      Compendium::Presenters::Chart.should_receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
+      allow(subject).to receive_messages(empty?: false)
+      expect(Compendium::Presenters::Chart).to receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
       subject.render_chart(template)
     end
   end
@@ -167,13 +167,13 @@ describe Compendium::Query do
     subject { described_class.new(:test, {}, -> * {}) }
 
     it "should return nil if the query has no results" do
-      subject.stub(empty?: true)
-      subject.render_table(template).should be_nil
+      allow(subject).to receive_messages(empty?: true)
+      expect(subject.render_table(template)).to be_nil
     end
 
     it "should initialize a new Table presenter if the query has results" do
-      subject.stub(empty?: false)
-      Compendium::Presenters::Table.should_receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
+      allow(subject).to receive_messages(empty?: false)
+      expect(Compendium::Presenters::Table).to receive(:new).with(template, subject).and_return(double("Presenter").as_null_object)
       subject.render_table(template)
     end
   end
@@ -184,7 +184,7 @@ describe Compendium::Query do
     before { subject.report = report }
 
     it "should build a URL using its report's URL" do
-      report.should_receive(:url).with(query: :test)
+      expect(report).to receive(:url).with(query: :test)
       subject.url
     end
   end

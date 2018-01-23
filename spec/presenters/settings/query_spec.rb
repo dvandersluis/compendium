@@ -12,7 +12,7 @@ describe Compendium::Presenters::Settings::Query do
         s.foo :quux
       end
 
-      subject.foo.should == :quux
+      expect(subject.foo).to eq(:quux)
     end
 
     it 'should allow the block parameter to be skipped' do
@@ -20,7 +20,7 @@ describe Compendium::Presenters::Settings::Query do
         foo :quux
       end
 
-      subject.foo.should == :quux
+      expect(subject.foo).to eq(:quux)
     end
   end
 end

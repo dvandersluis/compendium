@@ -10,11 +10,11 @@ describe Compendium::Presenters::Base do
   subject { TestPresenter.new(template, :test) }
 
   it "should allow the object name to be overridden" do
-    subject.test_obj.should == :test
+    expect(subject.test_obj).to eq(:test)
   end
 
   it "should delegate missing methods to the template object" do
-    template.should_receive(:delegated?)
-    subject.should be_delegated
+    expect(template).to receive(:delegated?)
+    expect(subject).to be_delegated
   end
 end

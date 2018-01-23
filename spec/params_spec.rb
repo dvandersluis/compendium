@@ -16,17 +16,17 @@ describe Compendium::Params do
 
   it "should only allow keys that are given as options" do
     @params = { starting_on: '2013-10-15', foo: :bar }
-    subject.keys.should_not include :foo
+    expect(subject.keys).not_to include :foo
   end
 
   it "should set missing options to their default value" do
     @params = {}
-    subject.starting_on.should == Date.today
+    expect(subject.starting_on).to eq(Date.today)
   end
 
   it "should set missing options to nil if there is no default value" do
     @params = {}
-    subject.ending_on.should be_nil
+    expect(subject.ending_on).to be_nil
   end
 
   describe "#validations" do
@@ -40,8 +40,8 @@ describe Compendium::Params do
         subject.valid?
       end
 
-      it { should_not be_valid }
-      its('errors.keys') { should include :ending_on }
+      it { is_expected.not_to be_valid }
+      specify { expect(subject.errors.keys).to include :ending_on }
     end
 
     context 'numericality' do
@@ -51,8 +51,8 @@ describe Compendium::Params do
         subject.valid?
       end
 
-      it { should_not be_valid }
-      its('errors.keys') { should include :number }
+      it { is_expected.not_to be_valid }
+      specify { expect(subject.errors.keys).to include :number }
     end
   end
 end

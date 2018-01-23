@@ -7,6 +7,6 @@ describe Compendium::Option do
 
   it "should set up type predicates from the type option" do
     o = described_class.new(name: :option, type: :date)
-    o.should be_date
+    expect(o).to be_date
   end
 end

@@ -3,13 +3,13 @@ require 'compendium/report'
 describe Compendium::Report do
   subject { described_class }
 
-  its(:queries) { should be_empty }
-  its(:options) { should be_empty }
+  specify { expect(subject.queries).to be_empty }
+  specify { expect(subject.options).to be_empty }
 
   it "should not do anything when run" do
     report = subject.new
     report.run
-    report.results.should be_empty
+    expect(report.results).to be_empty
   end
 
   context "with multiple instances" do
@@ -23,14 +23,14 @@ describe Compendium::Report do
     subject { report_class.new }
     let(:report2) { report_class.new }
 
-    its(:queries) { should_not equal report2.queries }
-    its(:queries) { should_not equal report_class.queries }
-    its(:metrics) { should_not equal report2.metrics }
+    specify { expect(subject.queries).to_not equal report2.queries }
+    specify { expect(subject.queries).to_not equal report_class.queries }
+    specify { expect(subject.metrics).to_not equal report2.metrics }
   end
 
   describe ".report_name" do
     subject { TestReport = Class.new(described_class) }
-    its(:report_name) { should == :test }
+    specify { expect(subject.report_name).to eq(:test) }
   end
 
   describe "#run" do
@@ -54,35 +54,35 @@ describe Compendium::Report do
       let!(:report2) { report_class.new }
 
       before do
-        Compendium::Query.any_instance.stub(:fetch_results) { |c| c }
+        allow_any_instance_of(Compendium::Query).to receive(:fetch_results) { |instance, c| c }
         subject.run
       end
 
-      its('test_results.records') { should == [Date.new(2010, 10, 10), Date.new(2011, 11, 11)] }
+      specify { expect(subject.test_results.records).to eq [Date.new(2010, 10, 10), Date.new(2011, 11, 11)] }
 
       it "should allow metric results to be accessed through a query" do
-        subject.test.metrics[:lambda_metric].result.should == Date.new(2011, 11, 11)
+        expect(subject.test.metrics[:lambda_metric].result).to eq(Date.new(2011, 11, 11))
       end
 
       it "should run its metrics defined as a lambda" do
-        subject.metrics[:lambda_metric].result.should == Date.new(2011, 11, 11)
+        expect(subject.metrics[:lambda_metric].result).to eq(Date.new(2011, 11, 11))
       end
 
       it "should run its metrics defined as a block" do
-        subject.metrics[:block_metric].result.should == Date.new(2011, 11, 11)
+        expect(subject.metrics[:block_metric].result).to eq(Date.new(2011, 11, 11))
       end
 
       it "should run its implicit metrics" do
-        subject.metrics[:implicit_metric].result.should == 3
+        expect(subject.metrics[:implicit_metric].result).to eq(3)
       end
 
       it "should not affect other instances of the report class" do
-        report2.test.results.should be_nil
-        report2.metrics[:lambda_metric].result.should be_nil
+        expect(report2.test.results).to be_nil
+        expect(report2.metrics[:lambda_metric].result).to be_nil
       end
 
       it "should not affect the class collections" do
-        report_class.test.results.should be_nil
+        expect(report_class.test.results).to be_nil
       end
 
       context "with through queries" do
@@ -96,16 +96,16 @@ describe Compendium::Report do
 
         subject { report_class.new(first: true) }
 
-        its('through.results') { should == [100] }
+        specify { expect(subject.through.results).to eq([100]) }
 
         it "should not mark other instances' queries as ran" do
-          report2.test.should_not have_run
+          expect(report2.test).not_to have_run
         end
 
         it "should not affect other instances" do
-          report2.queries.each { |q| q.stub(:fetch_results) { |c| c } }
+          report2.queries.each { |q| allow(q).to receive(:fetch_results) { |c| c } }
           report2.run
-          report2.through.results.should == [1600]
+          expect(report2.through.results).to eq([1600])
         end
       end
     end
@@ -130,55 +130,55 @@ describe Compendium::Report do
 
       it "should run all queries if nothing is specified" do
         subject.run(nil)
-        subject.first.should have_run
-        subject.second.should have_run
+        expect(subject.first).to have_run
+        expect(subject.second).to have_run
       end
 
       it "should only run queries specified by :only" do
         subject.run(nil, only: :first)
-        subject.first.should have_run
-        subject.second.should_not have_run
+        expect(subject.first).to have_run
+        expect(subject.second).not_to have_run
       end
 
       it "should allow multiple queries to be specified by :only" do
         report_class.query(:third) {}
         subject.run(nil, only: [:first, :third])
-        subject.first.should have_run
-        subject.second.should_not have_run
-        subject.third.should have_run
+        expect(subject.first).to have_run
+        expect(subject.second).not_to have_run
+        expect(subject.third).to have_run
       end
 
       it "should not run through queries related to a query specified by only if not also specified" do
         report_class.query(:through, through: :first) {}
         subject.run(nil, only: :first)
-        subject.through.should_not have_run
+        expect(subject.through).not_to have_run
       end
 
       it "should run through queries related to a query specified by only if also specified" do
         report_class.query(:through, through: :first) {}
         subject.run(nil, only: [:first, :through])
-        subject.through.should have_run
+        expect(subject.through).to have_run
       end
 
       it "should not run queries specified by :except" do
         subject.run(nil, except: :first)
-        subject.first.should_not have_run
-        subject.second.should have_run
+        expect(subject.first).not_to have_run
+        expect(subject.second).to have_run
       end
 
       it "should allow multiple queries to be specified by :except" do
         report_class.query(:third) {}
         subject.run(nil, except: [:first, :third])
-        subject.first.should_not have_run
-        subject.second.should have_run
-        subject.third.should_not have_run
+        expect(subject.first).not_to have_run
+        expect(subject.second).to have_run
+        expect(subject.third).not_to have_run
       end
 
       it "should not run through queries excepted related to a query even if the main query is not excepted" do
         report_class.query(:through, through: :first) {}
         subject.run(nil, except: :through)
-        subject.through.should_not have_run
-        subject.first.should have_run
+        expect(subject.through).not_to have_run
+        expect(subject.first).to have_run
       end
     end
   end
@@ -196,15 +196,15 @@ describe Compendium::Report do
       Object.send(:remove_const, :ThreeReport)
     end
 
-    it { should respond_to(:one?) }
-    it { should respond_to(:two?) }
-    it { should_not respond_to(:three?) }
+    it { is_expected.to respond_to(:one?) }
+    it { is_expected.to respond_to(:two?) }
+    it { is_expected.not_to respond_to(:three?) }
 
-    it { should_not be_one }
-    it { should_not be_two }
+    it { is_expected.not_to be_one }
+    it { is_expected.not_to be_two }
 
-    specify { OneReport.should be_one }
-    specify { TwoReport.should be_two }
+    specify { expect(OneReport).to be_one }
+    specify { expect(TwoReport).to be_two }
   end
 
   describe "parameters" do
@@ -212,12 +212,12 @@ describe Compendium::Report do
     let(:report_class2) { Class.new(report_class) }
 
     it "should include ancestors params" do
-      report_class.params_class.ancestors.should include subject.params_class
+      expect(report_class.params_class.ancestors).to include subject.params_class
     end
 
     it "should inherit validations" do
       report_class.params_class.validates :foo, presence: true
-      report_class2.params_class.validators_on(:foo).should_not be_nil
+      expect(report_class2.params_class.validators_on(:foo)).not_to be_nil
     end
   end
 
@@ -231,13 +231,13 @@ describe Compendium::Report do
 
       it "should return true if there are no validation failures" do
         r = report_class.new(id: 5)
-        r.should be_valid
+        expect(r).to be_valid
       end
 
       it "should return false if there are validation failures" do
         r = report_class.new(id: nil)
-        r.should_not be_valid
-        r.errors.keys.should include :id
+        expect(r).not_to be_valid
+        expect(r.errors.keys).to include :id
       end
     end
 
@@ -254,13 +254,13 @@ describe Compendium::Report do
 
       it "should return true if there are no validation failures" do
         r = report_class.new(number: 4)
-        r.should be_valid
+        expect(r).to be_valid
       end
 
       it "should return false if there are validation failures" do
         r = report_class.new(number: 5)
-        r.should_not be_valid
-        r.errors.keys.should include :number
+        expect(r).not_to be_valid
+        expect(r.errors.keys).to include :number
       end
     end
   end
@@ -284,16 +284,16 @@ describe Compendium::Report do
     let(:subclass3) { Class.new(subclass1) }
 
     it 'should add filters to the specified query' do
-      subclass1.main_query.filters.should include filter_proc
+      expect(subclass1.main_query.filters).to include filter_proc
     end
 
     it 'should add filters by inheritence' do
-      subclass3.main_query.filters.should_not be_empty
+      expect(subclass3.main_query.filters).not_to be_empty
     end
 
     it 'should not bleed filters from a subclass into other subclasses' do
       subclass1
-      subclass2.main_query.filters.should be_empty
+      expect(subclass2.main_query.filters).to be_empty
     end
   end
 
@@ -308,15 +308,15 @@ describe Compendium::Report do
     subject { report_class.new }
 
     it 'should return true if there is an export for the given type' do
-      subject.exports?(:csv).should be_true
+      expect(subject.exports?(:csv)).to be_truthy
     end
 
     it 'should return false if there is no export for the given type explicitly' do
-      subject.exports?(:pdf).should be_false
+      expect(subject.exports?(:pdf)).to be_falsey
     end
 
     it 'should return false if there is no export for the given type implicitly' do
-      subject.exports?(:xls).should be_false
+      expect(subject.exports?(:xls)).to be_falsey
     end
   end
 end

@@ -7,65 +7,65 @@ describe Compendium::Presenters::Chart do
   let(:results) { Compendium::ResultSet.new([]) }
 
   before do
-    described_class.any_instance.stub(:provider) { double('ChartProvider') }
-    described_class.any_instance.stub(:initialize_chart_provider)
+    allow_any_instance_of(described_class).to receive(:provider) { double('ChartProvider') }
+    allow_any_instance_of(described_class).to receive(:initialize_chart_provider)
   end
 
   describe '#initialize' do
     context 'when all params are given' do
       subject{ described_class.new(template, query, :pie, :container) }
 
-      its(:data) { should == results.records }
-      its(:container) { should == :container }
+      specify { expect(subject.data).to eq(results.records) }
+      specify { expect(subject.container).to eq(:container) }
     end
 
     context 'when container is not given' do
       subject{ described_class.new(template, query, :pie) }
 
-      its(:data) { should == results.records }
-      its(:container) { should == 'test_query' }
+      specify { expect(subject.data).to eq(results.records) }
+      specify { expect(subject.container).to eq('test_query') }
     end
 
     context "when options are given" do
-      before { results.stub(:records) { { one: [] } } }
+      before { allow(results).to receive(:records) { { one: [] } } }
       subject{ described_class.new(template, query, :pie, index: :one) }
 
-      its(:data) { should == results.records[:one] }
-      its(:container) { should == 'test_query' }
+      specify { expect(subject.data).to eq(results.records[:one]) }
+      specify { expect(subject.container).to eq('test_query') }
     end
 
     context "when the query has not been run" do
-      before { query.stub(ran?: false, url: '/path/to/query.json') }
+      before { allow(query).to receive_messages(ran?: false, url: '/path/to/query.json') }
 
       subject{ described_class.new(template, query, :pie, params: { foo: 'bar' }) }
 
-      its(:data) { should == '/path/to/query.json' }
-      its(:params) { should == { report: { foo: 'bar' } } }
+      specify { expect(subject.data).to eq('/path/to/query.json') }
+      specify { expect(subject.params).to eq({ report: { foo: 'bar' } }) }
 
       context "when CSRF protection is enabled" do
-        before { template.stub(protect_against_forgery?: true) }
+        before { allow(template).to receive_messages(protect_against_forgery?: true) }
 
-        its(:params) { should include authenticity_token: "ABCDEFGHIJ" }
+        specify { expect(subject.params).to include authenticity_token: "ABCDEFGHIJ" }
       end
 
       context "when CSRF protection is disabled" do
-        its(:params) { should_not include authenticity_token: "ABCDEFGHIJ" }
+        specify { expect(subject.params).to_not include authenticity_token: "ABCDEFGHIJ" }
       end
     end
   end
 
   describe '#remote?' do
     it 'should be true if options[:remote] is set to true' do
-      described_class.new(template, query, :pie, remote: true).should be_remote
+      expect(described_class.new(template, query, :pie, remote: true)).to be_remote
     end
 
     it 'should be true if the query has not been run yet' do
-      query.stub(run?: false)
+      allow(query).to receive_messages(run?: false)
       described_class.new(template, query, :pie).should_be_remote
     end
 
     it 'should be false otherwise' do
-      described_class.new(template, query, :pie).should_not be_remote
+      expect(described_class.new(template, query, :pie)).not_to be_remote
     end
   end
 end

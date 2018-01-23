@@ -32,6 +32,11 @@ module Compendium::Presenters
       chart_provider.render(@template, @container)
     end
 
+    # You can force the chart to render remote data, even if the query has already run by passing the remote: true option
+    def remote?
+      !query.ran? || options.fetch(:remote, false)
+    end
+
   private
 
     def provider
@@ -55,11 +60,6 @@ module Compendium::Presenters
       end
 
       params
-    end
-
-    # You can force the chart to render remote data, even if the query has already run by passing the remote: true option
-    def remote?
-      !query.ran? || options.fetch(:remote, false)
     end
 
     def protected_against_csrf?

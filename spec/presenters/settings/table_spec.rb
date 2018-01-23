@@ -9,13 +9,15 @@ describe Compendium::Presenters::Settings::Table do
   subject { table.settings }
 
   context 'default settings' do
-    its(:number_format) { should == '%0.2f' }
-    its(:table_class) { should == 'results' }
-    its(:header_class) { should == 'headings' }
-    its(:row_class) { should == 'data' }
-    its(:totals_class) { should == 'totals' }
-    its(:display_nil_as) { should be_nil }
-    its(:skipped_total_cols) { should be_empty }
+    it 'should return default values' do
+      expect(subject.number_format).to eq '%0.2f'
+      expect(subject.table_class).to eq('results')
+      expect(subject.header_class).to eq('headings')
+      expect(subject.row_class).to eq('data')
+      expect(subject.totals_class).to eq('totals')
+      expect(subject.display_nil_as).to be_nil
+      expect(subject.skipped_total_cols).to be_empty
+    end
   end
 
   context 'overriding default settings' do
@@ -28,10 +30,12 @@ describe Compendium::Presenters::Settings::Table do
       end
     end
 
-    its(:number_format) { should == '%0.1f' }
-    its(:table_class) { should == 'report_table' }
-    its(:header_class) { should == 'report_heading' }
-    its(:display_nil_as) { should == 'N/A' }
+    it 'should have overriden settings' do
+      expect(subject.number_format).to eq('%0.1f')
+      expect(subject.table_class).to eq('report_table')
+      expect(subject.header_class).to eq('report_heading')
+      expect(subject.display_nil_as).to eq('N/A')
+    end
   end
 
   describe '#update' do
@@ -40,25 +44,25 @@ describe Compendium::Presenters::Settings::Table do
         s.number_format '%0.3f'
       end
 
-      subject.number_format.should == '%0.3f'
+      expect(subject.number_format).to eq('%0.3f')
     end
   end
 
   describe '#skip_total_for' do
     it 'should add columns to the setting' do
       subject.skip_total_for :foo, :bar
-      subject.skipped_total_cols.should == [:foo, :bar]
+      expect(subject.skipped_total_cols).to eq([:foo, :bar])
     end
 
     it 'should be callable multiple times' do
       subject.skip_total_for :foo, :bar
       subject.skip_total_for :quux
-      subject.skipped_total_cols.should == [:foo, :bar, :quux]
+      expect(subject.skipped_total_cols).to eq([:foo, :bar, :quux])
     end
 
     it 'should not care about type' do
       subject.skip_total_for 'foo'
-      subject.skipped_total_cols.should == [:foo]
+      expect(subject.skipped_total_cols).to eq([:foo])
     end
   end
 end
