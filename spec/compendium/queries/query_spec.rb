@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'compendium/query'
+require 'compendium/queries/query'
 
-describe Compendium::Query do
+describe Compendium::Queries::Query do
   describe "#initialize" do
     let(:options) { double("Options") }
     let(:proc) { double("Proc") }
@@ -137,11 +137,11 @@ describe Compendium::Query do
 
   describe "#nil?" do
     it "should return true if the query's proc is nil" do
-      expect(Compendium::Query.new(:test, {}, nil)).to be_nil
+      expect(Compendium::Queries::Query.new(:test, {}, nil)).to be_nil
     end
 
     it "should return false if the query's proc is not nil" do
-      expect(Compendium::Query.new(:test, {}, ->{})).not_to be_nil
+      expect(Compendium::Queries::Query.new(:test, {}, ->{})).not_to be_nil
     end
   end
 

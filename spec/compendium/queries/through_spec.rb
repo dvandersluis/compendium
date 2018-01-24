@@ -1,6 +1,6 @@
-require 'compendium/through_query'
+require 'compendium/queries/through'
 
-describe Compendium::ThroughQuery do
+describe Compendium::Queries::Through do
   describe "#initialize" do
     let(:options) { double("Options") }
     let(:proc) { double("Proc") }
@@ -29,9 +29,9 @@ describe Compendium::ThroughQuery do
   end
 
   describe "#run" do
-    let(:parent1) { Compendium::Query.new(:parent1, {}, -> * { }) }
-    let(:parent2) { Compendium::Query.new(:parent2, {}, -> * { }) }
-    let(:parent3) { Compendium::Query.new(:parent3, {}, -> * { [[1, 2, 3]] }) }
+    let(:parent1) { Compendium::Queries::Query.new(:parent1, {}, -> * { }) }
+    let(:parent2) { Compendium::Queries::Query.new(:parent2, {}, -> * { }) }
+    let(:parent3) { Compendium::Queries::Query.new(:parent3, {}, -> * { [[1, 2, 3]] }) }
 
     before { allow(parent3).to receive(:execute_query) { |cmd| cmd } }
 

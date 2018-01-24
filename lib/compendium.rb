@@ -7,19 +7,15 @@ require 'active_support/core_ext'
 module Compendium
   autoload :AbstractChartProvider,  'compendium/abstract_chart_provider'
   autoload :ChartProvider,          'compendium/abstract_chart_provider'
-  autoload :CollectionQuery,        'compendium/collection_query'
   autoload :ContextWrapper,         'compendium/context_wrapper'
-  autoload :CountQuery,             'compendium/count_query'
   autoload :DSL,                    'compendium/dsl'
   autoload :Metric,                 'compendium/metric'
   autoload :Option,                 'compendium/option'
   autoload :Params,                 'compendium/params'
   autoload :ParamTypes,             'compendium/param_types'
-  autoload :Query,                  'compendium/query'
+  autoload :Queries,                'compendium/queries'
   autoload :ResultSet,              'compendium/result_set'
   autoload :Report,                 'compendium/report'
-  autoload :SumQuery,               'compendium/sum_query'
-  autoload :ThroughQuery,           'compendium/through_query'
 
   def self.reports
     @reports ||= []

@@ -1,6 +1,8 @@
 module Compendium
   CompendiumError = Class.new(StandardError)
 
-  InvalidCommand = Class.new(CompendiumError)
-  CannotRedefineQueryType = Class.new(CompendiumError)
+  module Queries
+    InvalidCommand = Class.new(CompendiumError)
+    CannotRedefineType = Class.new(CompendiumError)
+  end
 end

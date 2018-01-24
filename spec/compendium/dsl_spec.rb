@@ -89,14 +89,14 @@ describe Compendium::DSL do
       end
 
       it 'should not allow replacing a query with a different type' do
-        expect { subject.query :test, count: true }.to raise_error { Compendium::CannotRedefineQueryType }
-        expect(subject.test).to be_instance_of Compendium::Query
+        expect { subject.query :test, count: true }.to raise_error { Compendium::Queries::CannotRedefineType }
+        expect(subject.test).to be_instance_of Compendium::Queries::Query
       end
 
       it 'should allow replacing a query with the same type' do
         subject.query :another_test, count: true, &proc2
         expect(subject.another_test.proc).to eq(proc2)
-        expect(subject.another_test).to be_instance_of Compendium::CountQuery
+        expect(subject.another_test).to be_instance_of Compendium::Queries::Count
       end
     end
 
@@ -104,7 +104,7 @@ describe Compendium::DSL do
       before { report_class.query :through, through: :test }
       subject { report_class.queries[:through] }
 
-      specify { is_expected.to be_a Compendium::ThroughQuery }
+      specify { is_expected.to be_a Compendium::Queries::Through }
       specify { expect(subject.through).to eq([:test]) }
     end
 
@@ -114,14 +114,14 @@ describe Compendium::DSL do
       context "that is an enumerable" do
         before { report_class.query :collection, collection: [] }
 
-        it { is_expected.to be_a Compendium::CollectionQuery }
+        it { is_expected.to be_a Compendium::Queries::Collection }
       end
 
       context "that is a symbol" do
         let(:query) { double("Query") }
 
         before do
-          allow_any_instance_of(Compendium::Query).to receive(:get_associated_query).with(:query).and_return(query)
+          allow_any_instance_of(Compendium::Queries::Query).to receive(:get_associated_query).with(:query).and_return(query)
           report_class.query :collection, collection: :query
         end
 
@@ -129,7 +129,7 @@ describe Compendium::DSL do
       end
 
       context "that is a query" do
-        let(:query) { Compendium::Query.new(:query, {}, ->{}) }
+        let(:query) { Compendium::Queries::Query.new(:query, {}, ->{}) }
         before { report_class.query :collection, collection: query }
 
         specify { expect(subject.collection).to eq(query) }
@@ -141,13 +141,13 @@ describe Compendium::DSL do
 
       context "set to true" do
         before { report_class.query :counted, count: true }
-        it { is_expected.to be_a Compendium::CountQuery }
+        it { is_expected.to be_a Compendium::Queries::Count }
       end
 
       context "set to false" do
         before { report_class.query :counted, count: false }
-        it { is_expected.to be_a Compendium::Query }
-        it { is_expected.not_to be_a Compendium::CountQuery }
+        it { is_expected.to be_a Compendium::Queries::Query }
+        it { is_expected.not_to be_a Compendium::Queries::Count }
       end
     end
 
@@ -157,14 +157,14 @@ describe Compendium::DSL do
       context 'set to a truthy value' do
         before { report_class.query :summed, sum: :assoc_count }
 
-        it { is_expected.to be_a Compendium::SumQuery }
+        it { is_expected.to be_a Compendium::Queries::Sum }
         specify { expect(subject.column).to eq(:assoc_count) }
       end
 
       context 'set to false' do
         before { report_class.query :summed, sum: false }
-        it { is_expected.to be_a Compendium::Query }
-        it { is_expected.not_to be_a Compendium::SumQuery }
+        it { is_expected.to be_a Compendium::Queries::Query }
+        it { is_expected.not_to be_a Compendium::Queries::Sum }
       end
     end
   end

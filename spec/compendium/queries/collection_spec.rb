@@ -1,11 +1,11 @@
 require 'spec_helper'
-require 'compendium/collection_query'
+require 'compendium/queries/collection'
 
-describe Compendium::CollectionQuery do
+describe Compendium::Queries::Collection do
   let(:collection) { { one: 1, two: 2, three: 3 } }
   subject { described_class.new(:collection_query, { collection: collection }, -> _, key, item { [item * 2] }) }
 
-  before { allow_any_instance_of(Compendium::Query).to receive(:execute_query) { |instance, cmd| cmd } }
+  before { allow_any_instance_of(Compendium::Queries::Query).to receive(:execute_query) { |instance, cmd| cmd } }
 
   describe "#run" do
     context do
@@ -29,7 +29,7 @@ describe Compendium::CollectionQuery do
     end
 
     context "when given another query" do
-      let(:q) { Compendium::Query.new(:q, {}, -> * { { one: 1, two: 2, three: 3 } }) }
+      let(:q) { Compendium::Queries::Query.new(:q, {}, -> * { { one: 1, two: 2, three: 3 } }) }
       subject { described_class.new(:collection, { collection: q }, -> _, key, item { [ item * 2 ] }) }
 
       before { subject.run(nil) if RSpec.current_example.metadata.fetch(:run_query, true) }

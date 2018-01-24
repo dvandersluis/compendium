@@ -1,14 +1,14 @@
 require 'spec_helper'
-require 'compendium/sum_query'
-require 'compendium/report'
+require 'compendium'
+require 'compendium/queries/count'
 
-class SingleSummer
-  def sum(col)
+class SingleCounter
+  def count
     1792
   end
 end
 
-class MultipleSummer
+class MultipleCounter
   def order(*)
     @order = true
     self
@@ -19,7 +19,7 @@ class MultipleSummer
     self
   end
 
-  def sum(col)
+  def count
     results = { 1 => 340, 2 => 204, 3 => 983 }
 
     if @order
@@ -32,30 +32,30 @@ class MultipleSummer
   end
 end
 
-describe Compendium::SumQuery do
-  subject { described_class.new(:counted_query, :col, { sum: :col }, -> * { @counter }) }
+describe Compendium::Queries::Count do
+  subject { described_class.new(:counted_query, { count: true }, -> * { @counter }) }
 
   it 'should have a default order' do
-    expect(subject.options[:order]).to eq('SUM(col)')
+    expect(subject.options[:order]).to eq('COUNT(*)')
     expect(subject.options[:reverse]).to eq(true)
   end
 
   describe "#run" do
-    it "should call sum on the proc result" do
-      @counter = SingleSummer.new
-      expect(@counter).to receive(:sum).with(:col).and_return(1234)
+    it "should call count on the proc result" do
+      @counter = SingleCounter.new
+      expect(@counter).to receive(:count).and_return(1234)
       subject.run(nil, self)
     end
 
-    it "should return the sum" do
-      @counter = SingleSummer.new
+    it "should return the count" do
+      @counter = SingleCounter.new
       expect(subject.run(nil, self)).to eq([1792])
     end
 
     context 'when given a hash' do
-      before { @counter = MultipleSummer.new }
+      before { @counter = MultipleCounter.new }
 
-      it "should return a hash if given" do
+      it "should return a hash" do
         expect(subject.run(nil, self)).to eq({ 3 => 983, 1 => 340, 2 => 204 })
       end
 
@@ -69,9 +69,9 @@ describe Compendium::SumQuery do
       end
     end
 
-    it "should raise an error if the proc does not respond to sum" do
+    it "should raise an error if the proc does not respond to count" do
       @counter = Class.new
-      expect { subject.run(nil, self) }.to raise_error Compendium::InvalidCommand
+      expect { subject.run(nil, self) }.to raise_error Compendium::Queries::InvalidCommand
     end
   end
 end

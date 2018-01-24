@@ -5,7 +5,7 @@ require 'compendium/option'
 module Compendium
   module DSL
     def self.extended(klass)
-      klass.inheritable_attr :queries, default: ::Collection[Query]
+      klass.inheritable_attr :queries, default: ::Collection[Queries::Query]
       klass.inheritable_attr :options, default: ::Collection[Option]
       klass.inheritable_attr :exporters, default: {}
     end
@@ -121,21 +121,21 @@ module Compendium
 
     def define_query(name, opts, &block)
       params = [name.to_sym, opts, block]
-      query_type = Query
+      query_type = Queries::Query
 
       if opts.key?(:collection)
-        query_type = CollectionQuery
+        query_type = Queries::Collection
       elsif opts.key?(:through)
         # Ensure each through query is defined
         through = [opts[:through]].flatten
         through.each { |q| raise ArgumentError, "query #{q} is not defined" unless self.queries.include?(q.to_sym) }
 
-        query_type = ThroughQuery
+        query_type = Queries::Through
         params.insert(1, through)
       elsif opts.fetch(:count, false)
-        query_type = CountQuery
+        query_type = Queries::Count
       elsif opts.fetch(:sum, false)
-        query_type = SumQuery
+        query_type = Queries::Sum
         params.insert(1, opts[:sum])
       end
 
@@ -145,7 +145,7 @@ module Compendium
       metrics[name] = opts[:metric] if opts.key?(:metric)
 
       if queries[name]
-        raise CannotRedefineQueryType unless queries[name].instance_of?(query_type)
+        raise Queries::CannotRedefineType unless queries[name].instance_of?(query_type)
         queries.delete(name)
       end
 

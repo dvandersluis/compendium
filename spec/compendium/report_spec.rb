@@ -54,7 +54,7 @@ describe Compendium::Report do
       let!(:report2) { report_class.new }
 
       before do
-        allow_any_instance_of(Compendium::Query).to receive(:fetch_results) { |instance, c| c }
+        allow_any_instance_of(Compendium::Queries::Query).to receive(:fetch_results) { |instance, c| c }
         subject.run
       end
 
