@@ -65,4 +65,18 @@ describe Compendium::Presenters::Settings::Table do
       expect(subject.skipped_total_cols).to eq([:foo])
     end
   end
+
+  describe '#override_heading' do
+    it 'should override a given heading' do
+      subject.override_heading :one, 'First Column'
+      expect(subject.headings).to eq('one' => 'First Column', 'two' => :two)
+    end
+
+    it 'should override multiple headings with a block' do
+      subject.override_heading do |col|
+        col.to_s * 2
+      end
+      expect(subject.headings).to eq('one' => 'oneone', 'two' => 'twotwo')
+    end
+  end
 end
