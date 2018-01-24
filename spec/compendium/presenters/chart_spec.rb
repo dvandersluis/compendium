@@ -13,14 +13,14 @@ describe Compendium::Presenters::Chart do
 
   describe '#initialize' do
     context 'when all params are given' do
-      subject{ described_class.new(template, query, :pie, :container) }
+      subject { described_class.new(template, query, :pie, :container) }
 
       specify { expect(subject.data).to eq(results.records) }
       specify { expect(subject.container).to eq(:container) }
     end
 
     context 'when container is not given' do
-      subject{ described_class.new(template, query, :pie) }
+      subject { described_class.new(template, query, :pie) }
 
       specify { expect(subject.data).to eq(results.records) }
       specify { expect(subject.container).to eq('test_query') }
@@ -28,7 +28,7 @@ describe Compendium::Presenters::Chart do
 
     context "when options are given" do
       before { allow(results).to receive(:records) { { one: [] } } }
-      subject{ described_class.new(template, query, :pie, index: :one) }
+      subject { described_class.new(template, query, :pie, index: :one) }
 
       specify { expect(subject.data).to eq(results.records[:one]) }
       specify { expect(subject.container).to eq('test_query') }
@@ -37,7 +37,7 @@ describe Compendium::Presenters::Chart do
     context "when the query has not been run" do
       before { allow(query).to receive_messages(ran?: false, url: '/path/to/query.json') }
 
-      subject{ described_class.new(template, query, :pie, params: { foo: 'bar' }) }
+      subject { described_class.new(template, query, :pie, params: { foo: 'bar' }) }
 
       specify { expect(subject.data).to eq('/path/to/query.json') }
       specify { expect(subject.params).to eq({ report: { foo: 'bar' } }) }

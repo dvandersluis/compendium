@@ -46,4 +46,3 @@ describe Compendium::Presenters::Option do
     end
   end
 end
-

@@ -13,6 +13,7 @@ module Compendium
   autoload :Option,                 'compendium/option'
   autoload :Params,                 'compendium/params'
   autoload :ParamTypes,             'compendium/param_types'
+  autoload :Presenters,             'compendium/presenters'
   autoload :Queries,                'compendium/queries'
   autoload :ResultSet,              'compendium/result_set'
   autoload :Report,                 'compendium/report'
@@ -25,7 +26,7 @@ module Compendium
   #   Compendium.configure do |config|
   #     config.chart_provider = :AmCharts
   #   end
-  def self.configure(&block)
+  def self.configure
     yield @config ||= Compendium::Configuration.new
   end
 

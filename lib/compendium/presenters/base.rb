@@ -1,5 +1,11 @@
 module Compendium::Presenters
   class Base
+    def self.presents(name)
+      define_method(name) do
+        @object
+      end
+    end
+
     def initialize(template, object)
       @object = object
       @template = template
@@ -10,12 +16,6 @@ module Compendium::Presenters
     end
 
   private
-
-    def self.presents(name)
-      define_method(name) do
-        @object
-      end
-    end
 
     def method_missing(*args, &block)
       return @template.send(*args, &block) if @template.respond_to?(args.first)
