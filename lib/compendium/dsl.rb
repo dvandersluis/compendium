@@ -1,9 +1,11 @@
 require 'collection_of'
 require 'inheritable_attr'
 require 'compendium/option'
+require 'compendium/queries/query'
+require 'active_support/core_ext/class/attribute'
 
 module Compendium
-  module DSL
+  module DSL # rubocop:disable Metrics/ModuleLength
     def self.extended(klass)
       klass.inheritable_attr :queries, default: ::Collection[Queries::Query]
       klass.inheritable_attr :options, default: ::Collection[Option]
@@ -49,7 +51,7 @@ module Compendium
         # ie. if you need a metric that counts a column, there's no need to explicitly create a query
         # and just pass it into a metric
         query = define_query("__metric_#{name}", {}, &block)
-        query.add_metric(name, -> result { result.first }, opts)
+        query.add_metric(name, -> (result) { result.first }, opts)
       end
     end
 
@@ -112,7 +114,7 @@ module Compendium
 
   private
 
-    def each_query(query_names, &block)
+    def each_query(query_names)
       query_names.each do |query_name|
         raise ArgumentError, "query #{query_name} is not defined" unless queries.key?(query_name)
         yield queries[query_name]
@@ -121,31 +123,24 @@ module Compendium
 
     def define_query(name, opts, &block)
       params = [name.to_sym, opts, block]
-      query_type = Queries::Query
 
-      if opts.key?(:collection)
-        query_type = Queries::Collection
-      elsif opts.key?(:through)
+      if opts.key?(:through)
         # Ensure each through query is defined
         through = [opts[:through]].flatten
-        through.each { |q| raise ArgumentError, "query #{q} is not defined" unless self.queries.include?(q.to_sym) }
+        through.each { |q| raise ArgumentError, "query #{q} is not defined" unless queries.include?(q.to_sym) }
 
-        query_type = Queries::Through
         params.insert(1, through)
-      elsif opts.fetch(:count, false)
-        query_type = Queries::Count
       elsif opts.fetch(:sum, false)
-        query_type = Queries::Sum
         params.insert(1, opts[:sum])
       end
 
-      query = query_type.new(*params)
+      query = query_type(opts).new(*params)
       query.report = self
 
       metrics[name] = opts[:metric] if opts.key?(:metric)
 
       if queries[name]
-        raise Queries::CannotRedefineType unless queries[name].instance_of?(query_type)
+        raise Queries::CannotRedefineType unless queries[name].instance_of?(query.class)
         queries.delete(name)
       end
 
@@ -154,9 +149,23 @@ module Compendium
       query
     end
 
+    def query_type(opts)
+      if opts.key?(:collection)
+        Queries::Collection
+      elsif opts.key?(:through)
+        Queries::Through
+      elsif opts.fetch(:count, false)
+        Queries::Count
+      elsif opts.fetch(:sum, false)
+        Queries::Sum
+      else
+        Queries::Query
+      end
+    end
+
     def add_params_validations(name, validations)
       return if validations.blank?
-      self.params_class.validates name, validations
+      params_class.validates name, validations
     end
   end
 end

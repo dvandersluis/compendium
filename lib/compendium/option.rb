@@ -3,13 +3,14 @@ require 'active_support/string_inquirer'
 
 module Compendium
   class Option
-    attr_accessor :name, :type, :default, :choices, :options
+    attr_reader :type
+    attr_accessor :name, :default, :choices, :options
 
     delegate :boolean?, :date?, :dropdown?, :radio?, :scalar?, to: :type
-    delegate :merge, :merge!, :[], to: :@options
+    delegate :merge, :merge!, :[], :[]=, to: :@options
 
     def initialize(hash = {})
-      raise ArgumentError, "name must be provided" unless hash.key?(:name)
+      raise ArgumentError, 'name must be provided' unless hash.key?(:name)
 
       @name = hash.delete(:name).to_sym
       @default = hash.delete(:default)

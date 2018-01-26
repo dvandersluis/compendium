@@ -1,7 +1,7 @@
 require 'compendium/presenters/csv'
 
 describe Compendium::Presenters::CSV do
-  let(:results) { double('Results', records: [{ group: 'A', one: 1, two: 2 }, { group: 'B', one: 3, two: 4 }], keys: [:group, :one, :two]) }
+  let(:results) { double('Results', records: [{ group: 'A', one: 1, two: 2 }, { group: 'B', one: 3, two: 4 }], keys: %i(group one two)) }
   let(:query) { double('Query', results: results, options: {}, table_settings: nil) }
   let(:presenter) { described_class.new(query) }
 
@@ -17,7 +17,7 @@ describe Compendium::Presenters::CSV do
     end
 
     it "should use the query's table settings" do
-      allow(query).to receive(:table_settings).and_return(-> * { number_format '%0.0f' })
+      allow(query).to receive(:table_settings).and_return(-> (*) { number_format '%0.0f' })
       expect(presenter.render).to eq("group,one,two\nA,1,2\nB,3,4\n")
     end
 

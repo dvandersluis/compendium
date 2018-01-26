@@ -19,9 +19,9 @@ module Compendium
           instance_exec(self, &block)
         end
 
-        def method_missing(name, *args, &block)
+        def method_missing(name, *args, &_block)
           if block_given?
-            @settings[name] = block.call(*args)
+            @settings[name] = yield(*args)
           elsif !args.empty?
             @settings[name] = args.length == 1 ? args.first : args
           elsif name.to_s.end_with?('?')
@@ -30,6 +30,10 @@ module Compendium
           else
             @settings[name]
           end
+        end
+
+        def respond_to_missing?(*)
+          true
         end
       end
     end

@@ -1,6 +1,7 @@
 module Compendium
   module ReportsHelper
   private
+
     def expose(*args)
       klass = args.pop if args.last.is_a?(Class)
       klass ||= "Compendium::Presenters::#{args.first.class}".constantize
@@ -14,9 +15,7 @@ module Compendium
     end
 
     def render_if_exists(options = {})
-      if lookup_context.template_exists?(options[:partial] || options[:template], options[:path], options.key?(:partial))
-        render(options)
-      end
+      render(options) if lookup_context.template_exists?(options[:partial] || options[:template], options[:path], options.key?(:partial))
     end
   end
 end

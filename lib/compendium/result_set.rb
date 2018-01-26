@@ -2,10 +2,11 @@ require 'active_support/core_ext/module/delegation'
 
 module Compendium
   class ResultSet
-    delegate :first, :last, :to_a, :empty?, :each, :map, :inject, :select, :detect, :[], :count, :length, :size, :==, to: :records
+    include Enumerable
+    delegate :each, :empty?, :length, :size, :==, to: :records
 
     attr_reader :records
-    alias :all :records
+    alias_method :all, :records
 
     def initialize(records)
       @records = if records.respond_to?(:map)
@@ -25,7 +26,7 @@ module Compendium
 
     def as_json(options = {})
       return records unless records.first.respond_to?(:except)
-      records.map{ |r| r.except(*options[:except]) }
+      records.map { |r| r.except(*options[:except]) }
     end
   end
 end

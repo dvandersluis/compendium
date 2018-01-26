@@ -14,10 +14,9 @@ module Compendium
       def run(params, context = self)
         collection_values = get_collection_values(context, params)
 
-        results = collection_values.inject({}) do |r, (key, value)|
+        results = collection_values.each_with_object({}) do |(key, value), r|
           res = collect_results(context, params, key, value)
           r[key] = res unless res.empty?
-          r
         end
 
         # A CollectionQuery's results will be a ResultSet of ResultSets

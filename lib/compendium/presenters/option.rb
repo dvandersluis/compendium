@@ -1,7 +1,9 @@
+require 'active_support/core_ext/string/output_safety'
+
 module Compendium
   module Presenters
     class Option < Base
-      MISSING_CHOICES_ERROR = "choices must be specified"
+      MISSING_CHOICES_ERROR = 'choices must be specified'.freeze
 
       presents :option
       delegate :hidden?, to: :option
@@ -11,67 +13,39 @@ module Compendium
       end
 
       def label(form)
-        if option.note?
-          key = option.note == true ? :"#{option.name}_note" : option.note
-          note = t("options.#{key}", cascade: { offset: 2 })
-        end
+        return label_with_accessible_tooltip(form) if option.note? && defined?(AccessibleTooltip)
 
-        if option.note? && defined?(AccessibleTooltip)
-          title = t("options.#{option.name}_note_title", default: '', cascade: { offset: 2 })
-          tooltip = accessible_tooltip(:help, label: name, title: title) { note }
-          return form.label option.name, tooltip
-        else
-          label = case option.type.to_sym
-            when :boolean, :radio
-              name
-
-            else
-              form.label option.name, name
-          end
-
-          out = ActiveSupport::SafeBuffer.new
-          out << content_tag(:span, label, class: 'option-label')
-          out << content_tag(:div, note, class: 'option-note') if option.note?
-          out
-        end
+        out = ActiveSupport::SafeBuffer.new
+        out << content_tag(:span, label_content(form), class: 'option-label')
+        out << content_tag(:div, note_text, class: 'option-note') if option.note?
+        out
       end
 
       def note
-        if option.note?
-          key = option.note === true ? :"#{option.name}_note" : option.note
-          content_tag(:div, t(key), class: 'option-note')
-        end
+        return unless option.note?
+        content_tag(:div, t(note_key), class: 'option-note')
       end
 
       def input(ctx, form)
         out = ActiveSupport::SafeBuffer.new
 
-        case option.type.to_sym
+        raise ArgumentError, MISSING_CHOICES_ERROR if missing_choices?
+
+        # rubocop:disable Layout/EmptyLinesAroundArguments
+        out << case option.type.to_sym
           when :scalar
-            out << scalar_field(form)
+            scalar_field(form)
 
           when :date
-            out << date_field(form)
+            date_field(form)
 
           when :dropdown
-            raise ArgumentError, MISSING_CHOICES_ERROR unless option.choices
-
-            choices = option.choices
-            choices = ctx.instance_exec(&choices) if choices.respond_to?(:call)
-            out << dropdown(form, choices, option.options)
+            dropdown_field(form, ctx)
 
           when :boolean, :radio
-            choices = if option.radio?
-              raise ArgumentError, MISSING_CHOICES_ERROR unless option.choices
-              option.choices
-            else
-              %w(true false)
-            end
-
-            choices.each.with_index { |choice, index| out << radio_button(form, choice, index) }
+            radio_fields(form)
         end
-
-        out
+        # rubocop:enable Layout/EmptyLinesAroundArguments
       end
 
       def hidden_field(form)
@@ -79,6 +53,20 @@ module Compendium
       end
 
     private
+
+      def note_key
+        return unless option.note?
+        option.note == true ? :"#{option.name}_note" : option.note
+      end
+
+      def note_text
+        return unless option.note?
+        t("options.#{note_key}", cascade: { offset: 2 })
+      end
+
+      def missing_choices?
+        !option.choices && (option.radio? || option.dropdown?)
+      end
 
       def date_field(form, include_time = false)
         content_tag('div', class: 'option-date') do
@@ -96,10 +84,18 @@ module Compendium
         end
       end
 
-      def dropdown(form, choices = {}, options = {})
+      def dropdown_field(form, ctx)
+        choices = option.choices
+        choices = ctx.instance_exec(&choices) if choices.respond_to?(:call)
+
         content_tag('div', class: 'option-dropdown') do
-          form.select option.name, choices, options.symbolize_keys
+          form.select option.name, choices, option.options.symbolize_keys
         end
+      end
+
+      def radio_fields(form)
+        choices = option.radio? ? option.choices : %w(true false)
+        choices.each.with_object(ActiveSupport::SafeBuffer.new).with_index { |(choice, out), index| out << radio_button(form, choice, index) }
       end
 
       def radio_button(form, label, value)
@@ -107,6 +103,22 @@ module Compendium
           div_content = ActiveSupport::SafeBuffer.new
           div_content << form.radio_button(option.name, value)
           div_content << form.label(option.name, t(label), value: value)
+        end
+      end
+
+      def label_with_accessible_tooltip(form)
+        title = t("options.#{option.name}_note_title", default: '', cascade: { offset: 2 })
+        tooltip = accessible_tooltip(:help, label: name, title: title) { note_text }
+        form.label option.name, tooltip
+      end
+
+      def label_content(form)
+        case option.type.to_sym
+          when :boolean, :radio
+            name
+
+          else
+            form.label option.name, name
         end
       end
     end

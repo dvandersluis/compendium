@@ -15,7 +15,7 @@ module Compendium
             csv << row.map { |key, val| formatted_value(key, val) }
           end
 
-          if has_totals_row?
+          if totals_row?
             totals[totals.keys.first] = translate(:total)
             csv << totals.map do |key, val|
               formatted_value(key, val) unless settings.skipped_total_cols.include?(key.to_sym)

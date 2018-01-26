@@ -1,0 +1,104 @@
+inherit_from: .rubocop_todo.yml
+
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+  IndentOneStep: true
+
+Layout/ElseAlignment:
+  Enabled: false
+
+Layout/SpaceBeforeBlockBraces:
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: space
+
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  EnforcedStyle: no_space
+
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: no_space
+  SpaceBeforeBlockParameters: true
+
+Lint/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Lint/UnusedMethodArgument:
+  Exclude:
+    - 'lib/compendium/abstract_chart_provider.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+  Max: 25
+
+Metrics/ClassLength:
+  Max: 100
+
+Metrics/ModuleLength:
+  Max: 100
+
+Metrics/LineLength:
+  Max: 150
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/BarePercentLiterals:
+  EnforcedStyle: percent_q
+
+Style/BlockDelimiters:
+  EnforcedStyle: line_count_based
+
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+
+Style/DateTime:
+  Exclude:
+    - 'spec/compendium/param_types/date_spec.rb'
+
+Style/Documentation:
+  Enabled: false
+
+Style/FormatString:
+  EnforcedStyle: sprintf
+
+Style/FormatStringToken:
+  EnforcedStyle: unannotated
+
+Style/HashSyntax:
+  Exclude:
+    - 'Rakefile'
+
+Style/IfUnlessModifier:
+  Exclude:
+    - 'Gemfile'
+
+Style/MethodMissing:
+  Exclude:
+    - 'lib/compendium/presenters/settings/query.rb'
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    default: '()'
+    '%i': '()'
+    '%I': '()'
+    '%w': '()'
+    '%W': '()'
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/StabbyLambdaParentheses:
+  EnforcedStyle: require_parentheses
+
+Style/SymbolArray:
+  MinSize: 3

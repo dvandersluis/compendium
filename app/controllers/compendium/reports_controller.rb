@@ -19,7 +19,7 @@ module Compendium
         end
 
         format.any do
-          template = template_exists?(@prefix, get_template_prefixes) ? @prefix : 'run'
+          template = template_exists?(@prefix, template_prefixes) ? @prefix : 'run'
           render action: template, locals: { report: @report }
         end
       end
@@ -33,11 +33,7 @@ module Compendium
 
       respond_to do |format|
         format.csv do
-          filename = @report.report_name.to_s.parameterize + '-' + Time.current.strftime('%Y%m%d%H%I%S')
-          response.headers['Content-Disposition'] = 'attachment; filename="' + filename + '.csv"'
-
-          query = @report.queries[@report.exporters[:csv]]
-          render text: query.render_csv
+          render_csv
         end
 
         format.any do
@@ -65,11 +61,10 @@ module Compendium
     def find_query
       return unless params[:query]
       @query = @report.queries[params[:query]]
+      return unless @query
 
-      unless @query
-        flash[:error] = t(:invalid_report_query, scope: 'compendium.reports')
-        redirect_to action: :setup, report_name: params[:report_name]
-      end
+      flash[:error] = t(:invalid_report_query, scope: 'compendium.reports')
+      redirect_to action: :setup, report_name: params[:report_name]
     end
 
     def render_setup(opts = {})
@@ -89,16 +84,24 @@ module Compendium
       @report.run(self, @query ? { only: @query.name } : {})
     end
 
-    def get_template_prefixes
+    def template_prefixes
       paths = []
       klass = self.class
 
-      begin
+      while klass != ActionController::Base
         paths << klass.name.underscore.gsub(/_controller$/, '')
         klass = klass.superclass
-      end while(klass != ActionController::Base)
+      end
 
       paths
+    end
+
+    def render_csv
+      filename = @report.report_name.to_s.parameterize + '-' + Time.current.strftime('%Y%m%d%H%I%S')
+      response.headers['Content-Disposition'] = 'attachment; filename="' + filename + '.csv"'
+
+      query = @report.queries[@report.exporters[:csv]]
+      render text: query.render_csv
     end
   end
 end

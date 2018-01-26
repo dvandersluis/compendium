@@ -20,7 +20,7 @@ module Compendium
           skipped_total_cols  []
         end
 
-        def set_headings(headings)
+        def set_headings(headings) # rubocop:disable Naming/AccessorMethodName
           headings.map!(&:to_sym)
           @headings = Hash[headings.zip(headings)].with_indifferent_access
         end

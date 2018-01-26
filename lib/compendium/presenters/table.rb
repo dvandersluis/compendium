@@ -15,10 +15,7 @@ module Compendium
         @settings.update(&query.table_settings) if query.table_settings
         yield @settings if block_given?
 
-        if has_totals_row?
-          @totals = @records.pop
-          totals[totals.keys.first] = translate(:total)
-        end
+        setup_totals if totals_row?
       end
 
       def render
@@ -30,7 +27,7 @@ module Compendium
             records.each { |row| tbody << build_row(row, settings.row_class, &data_proc) }
             tbody
           end
-          table << content_tag(:tfoot, build_row(totals, @settings.totals_class, :th, &totals_proc)) if has_totals_row?
+          table << content_tag(:tfoot, build_row(totals, @settings.totals_class, :th, &totals_proc)) if totals_row?
           table
         end
       end
@@ -41,7 +38,7 @@ module Compendium
         @settings.headings
       end
 
-      def has_totals_row?
+      def totals_row?
         query.options.fetch(:totals, false)
       end
 
@@ -77,23 +74,26 @@ module Compendium
       def formatted_value(k, v)
         if @settings.formatters[k]
           @settings.formatters[k].call(v)
-        else
-          if v.numeric?
-            if v.zero? && @settings.display_zero_as?
-              @settings.display_zero_as
-            else
-              sprintf(@settings.number_format, v)
-            end
-          elsif v.nil?
-            @settings.display_nil_as
+        elsif v.numeric?
+          if v.zero? && @settings.display_zero_as?
+            @settings.display_zero_as
+          else
+            sprintf(@settings.number_format, v)
           end
+        elsif v.nil?
+          @settings.display_nil_as
         end || v
       end
 
       def translate(v, opts = {})
         opts.reverse_merge!(scope: settings.i18n_scope) if settings.i18n_scope?
-        opts[:default] = -> * { I18n.t(v, scope: 'compendium') }
+        opts[:default] = -> (*) { I18n.t(v, scope: 'compendium') }
         I18n.t(v, opts)
+      end
+
+      def setup_totals
+        @totals = @records.pop
+        totals[totals.keys.first] = translate(:total)
       end
 
       def settings_class

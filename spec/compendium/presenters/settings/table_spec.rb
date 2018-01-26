@@ -57,7 +57,7 @@ describe Compendium::Presenters::Settings::Table do
     it 'should be callable multiple times' do
       subject.skip_total_for :foo, :bar
       subject.skip_total_for :quux
-      expect(subject.skipped_total_cols).to eq([:foo, :bar, :quux])
+      expect(subject.skipped_total_cols).to eq(%i(foo bar quux))
     end
 
     it 'should not care about type' do

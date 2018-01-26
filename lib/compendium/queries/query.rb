@@ -8,6 +8,10 @@ require 'collection_of'
 module Compendium
   module Queries
     class Query
+      autoload :Render, 'compendium/queries/query/render'
+
+      include Render
+
       attr_reader :name, :results, :metrics, :filters
       attr_accessor :options, :proc, :report, :table_settings
 
@@ -32,7 +36,7 @@ module Compendium
           # If running a query directly from a class rather than an instance, the class's query should
           # not be affected/modified, so run the query without a reference back to the report.
           # Otherwise, if the class is subsequently instantiated, the instance will already have results.
-          dup.tap{ |q| q.report = nil }.run(params, context)
+          dup.tap { |q| q.report = nil }.run(params, context)
         else
           collect_results(context, params)
           collect_metrics(context)
@@ -43,7 +47,7 @@ module Compendium
 
       # Get a URL for this query (format: :json set by default)
       def url(params = {})
-        report.url(params.merge(query: self.name))
+        report.url(params.merge(query: name))
       end
 
       def add_metric(name, proc, options = {})
@@ -52,26 +56,6 @@ module Compendium
 
       def add_filter(filter)
         @filters << filter
-      end
-
-      def render_table(template, *options, &block)
-        Compendium::Presenters::Table.new(template, self, *options, &block).render unless empty?
-      end
-
-      def render_csv(&block)
-        Compendium::Presenters::CSV.new(self, &block).render unless empty?
-      end
-
-      # Allow access to the chart object without having to explicitly render it
-      def chart(template, *options, &block)
-        # Access the actual chart object
-        Compendium::Presenters::Chart.new(template, self, *options, &block)
-      end
-
-      def render_chart(template, *options, &block)
-        # A query can be rendered regardless of if it has data or not
-        # Rendering a chart with no result set builds a chart scaffold which can be updated through AJAX
-        chart(template, *options, &block).render
       end
 
       def ran?
@@ -101,11 +85,11 @@ module Compendium
       end
 
       def collect_metrics(context)
-        metrics.each{ |m| m.run(context, results) } unless results.empty?
+        metrics.each { |m| m.run(context, results) } unless results.empty?
       end
 
       def fetch_results(command)
-        (options.fetch(:collect, nil) == :active_record) ? command : execute_command(command)
+        options.fetch(:collect, nil) == :active_record ? command : execute_command(command)
       end
 
       def filter_results(results, params)
@@ -114,14 +98,14 @@ module Compendium
         if results.respond_to? :with_indifferent_access
           results = results.with_indifferent_access
         else
-          results.map! &:with_indifferent_access
+          results.map!(&:with_indifferent_access)
         end
 
         filters.each do |f|
-          if f.arity == 2
-            results = f.call(results, params)
+          results = if f.arity == 2
+            f.call(results, params)
           else
-            results = f.call(results)
+            f.call(results)
           end
         end
 

@@ -28,21 +28,21 @@ module Compendium
       end
     end
 
-    def method_missing(name, *args, &block)
+    def method_missing(name, *args, &block) # rubocop:disable Metrics/CyclomaticComplexity
       method = name.to_s
 
       case method
-        when %r{.=$}
+        when /.=$/
           super unless args.length == 1
           return self[method[0...-1]] = args.first
 
-        when %r{.\?$}
+        when /.\?$/
           super unless args.empty?
-          return self.key?(method[0...-1].to_sym)
+          return key?(method[0...-1].to_sym)
 
-        when %r{^_.}
+        when /^_./
           super unless args.empty?
-          return self[method[1..-1]] if self.key?(method[1..-1].to_sym)
+          return self[method[1..-1]] if key?(method[1..-1].to_sym)
 
         else
           return self[method] if key?(method) || !respond_to?(method)
@@ -55,11 +55,11 @@ module Compendium
       method = name.to_s
 
       case method
-        when %r{.[=?]$}
-          return true if self.key?(method[0...-1])
+        when /.[=?]$/
+          return true if key?(method[0...-1])
 
-        when %r{^_.}
-          return true if self.key?(method[1..-1])
+        when /^_./
+          return true if key?(method[1..-1])
       end
 
       super

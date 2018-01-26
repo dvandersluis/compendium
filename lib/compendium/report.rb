@@ -1,4 +1,5 @@
 require 'compendium/dsl'
+require 'compendium/context_wrapper'
 
 module Compendium
   class Report
@@ -18,16 +19,16 @@ module Compendium
         # Each Report object has its own Params class so that validations can be added without affecting other
         # reports. However, validations also need to be inherited, so when inheriting a report, subclass its
         # params_class
-        report.params_class = Class.new(self.params_class)
-        report.params_class.class_eval %Q{
+        report.params_class = Class.new(params_class)
+        report.params_class.class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def self.model_name
             ActiveModel::Name.new(Compendium::Params, Compendium, "compendium.params.#{report.name.underscore rescue 'report'}")
           end
-        }
+        RUBY
       end
 
       def report_name
-        name.underscore.gsub(/_report$/,'').to_sym
+        name.underscore.gsub(/_report$/, '').to_sym
       end
 
       # Get a URL for this report (format: :json set by default)
@@ -57,8 +58,8 @@ module Compendium
     private
 
       def path_helper(params)
-        raise ActionController::RoutingError, "compendium_reports_run_path must be defined" unless route_helper_defined?
-        Rails.application.routes.url_helpers.compendium_reports_run_path(self.report_name, params.reverse_merge(format: :json))
+        raise ActionController::RoutingError, 'compendium_reports_run_path must be defined' unless route_helper_defined?
+        Rails.application.routes.url_helpers.compendium_reports_run_path(report_name, params.reverse_merge(format: :json))
       end
 
       def route_helper_defined?
@@ -92,17 +93,17 @@ module Compendium
         queries
       end
 
-      queries_to_run.each{ |q| self.results[q.name] = q.run(params, ContextWrapper.wrap(context, self)) }
+      queries_to_run.each { |q| results[q.name] = q.run(params, ContextWrapper.wrap(context, self)) }
 
       self
     end
 
     def metrics
-      Collection[Metric, queries.map{ |q| q.metrics.to_a }.flatten]
+      Collection[Metric, queries.map { |q| q.metrics.to_a }.flatten]
     end
 
     def exports?(type)
-      return exporters[type.to_sym]
+      exporters[type.to_sym]
     end
 
   private
@@ -115,14 +116,17 @@ module Compendium
       return queries[name] if queries.keys.include?(name)
       return results[prefix] if name.to_s.end_with?('_results') && queries.keys.include?(prefix)
       return params[name] if options.keys.include?(name)
-      return !!params[prefix] if name.to_s.end_with?('?') && options.keys.include?(prefix)
+      return params[prefix] if name.to_s.end_with?('?') && options.keys.include?(prefix)
       super
     end
 
     def respond_to_missing?(name, include_private = false)
-      prefix = name.to_s.sub(/_results\Z/, '').to_sym
+      prefix = name.to_s.sub(/(?:_results|\?)\Z/, '').to_sym
+
       return true if queries.keys.include?(name)
       return true if name.to_s.end_with?('_results') && queries.keys.include?(prefix)
+      return true if options.keys.include?(name)
+      return true if name.to_s.end_with?('?') && options.keys.include?(prefix)
       super
     end
   end
