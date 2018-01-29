@@ -3,13 +3,12 @@ require 'compendium/params'
 require 'compendium/metric'
 require 'compendium/presenters/chart'
 require 'compendium/presenters/table'
+require 'compendium/queries/query/render'
 require 'collection_of'
 
 module Compendium
   module Queries
     class Query
-      autoload :Render, 'compendium/queries/query/render'
-
       include Render
 
       attr_reader :name, :results, :metrics, :filters
@@ -23,6 +22,8 @@ module Compendium
         @name, @options, @proc = args
         @metrics = ::Collection[Compendium::Metric]
         @filters = ::Collection[Proc]
+
+        options.assert_valid_keys(*valid_keys)
       end
 
       def initialize_clone(*)
@@ -75,6 +76,10 @@ module Compendium
 
     private
 
+      def valid_keys
+        %i(collection order reverse execute_sql totals)
+      end
+
       def collect_results(context, *params)
         command = context.instance_exec(*params, &proc) if proc
         command = order_command(command) if options[:order]
@@ -89,7 +94,7 @@ module Compendium
       end
 
       def fetch_results(command)
-        options.fetch(:collect, nil) == :active_record ? command : execute_command(command)
+        options.fetch(:execute_sql, true) ? execute_sql_command(command) : command
       end
 
       def filter_results(results, params)
@@ -120,7 +125,7 @@ module Compendium
         command
       end
 
-      def execute_command(command)
+      def execute_sql_command(command)
         return [] if command.nil?
         command = command.to_sql if command.respond_to?(:to_sql)
         execute_query(command)

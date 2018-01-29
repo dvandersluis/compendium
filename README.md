@@ -34,8 +34,8 @@ class MyReport < Compendium::Report
     end
   end
 
-  # Define a query which collects data by using AR directly
-  query :on_hand_inventory, collect: :active_record do |params|
+  # Define a query which doesn't execute SQL (for instance if you want to return AR models)
+  query :on_hand_inventory, execute_sql: false do |params|
     Items.where(in_stock: true)
   end
 

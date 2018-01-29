@@ -14,6 +14,10 @@ module Compendium
 
     private
 
+      def valid_keys
+        super.concat([:through])
+      end
+
       def collect_results(context, params)
         results = collect_through_query_results(params, context)
 

@@ -14,7 +14,7 @@ module Compendium
 
     private
 
-      def execute_command(command)
+      def execute_sql_command(command)
         return [] if command.nil?
         raise InvalidCommand unless command.respond_to?(:count)
         command.count

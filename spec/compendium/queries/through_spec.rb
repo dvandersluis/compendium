@@ -2,7 +2,7 @@ require 'compendium/queries/through'
 
 describe Compendium::Queries::Through do
   describe '#initialize' do
-    let(:options) { double('Options') }
+    let(:options) { double('Options', assert_valid_keys: true) }
     let(:proc) { double('Proc') }
     let(:through) { double('Query') }
 

@@ -19,7 +19,11 @@ module Compendium
 
     private
 
-      def execute_command(command)
+      def valid_keys
+        super.concat([:sum])
+      end
+
+      def execute_sql_command(command)
         return [] if command.nil?
         raise InvalidCommand unless command.respond_to?(:sum)
         command.sum(column)

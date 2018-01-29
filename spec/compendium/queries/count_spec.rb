@@ -33,7 +33,7 @@ class MultipleCounter
 end
 
 describe Compendium::Queries::Count do
-  subject { described_class.new(:counted_query, { count: true }, -> (*) { @counter }) }
+  subject { described_class.new(:counted_query, {}, -> (*) { @counter }) }
 
   it 'should have a default order' do
     expect(subject.options[:order]).to eq('COUNT(*)')
