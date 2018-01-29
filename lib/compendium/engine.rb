@@ -1,8 +1,15 @@
-require 'compendium/engine/mount'
+require 'rails/engine'
 
 module Compendium
-  if defined?(Rails)
-    class Engine < ::Rails::Engine
+  class Engine < Rails::Engine
+    config.generators do |g|
+      g.test_framework :rspec
+    end
+  end
+
+  class ExportRouter
+    def matches?(request)
+      request.params[:export].present?
     end
   end
 end
