@@ -1,9 +1,9 @@
 module Compendium
   module Queries
-    autoload :Query,        'compendium/queries/query'
-    autoload :Collection,   'compendium/queries/collection'
-    autoload :Count,        'compendium/queries/count'
-    autoload :Sum,          'compendium/queries/sum'
-    autoload :Through,      'compendium/queries/through'
+    require 'compendium/queries/query'
+    require 'compendium/queries/collection'
+    require 'compendium/queries/count'
+    require 'compendium/queries/sum'
+    require 'compendium/queries/through'
   end
 end
