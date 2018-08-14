@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "compendium"
+
+begin
+  require "pry"
+  Pry.start
+rescue LoadError
+  require "irb"
+  IRB.start(__FILE__)
+end

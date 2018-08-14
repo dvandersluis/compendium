@@ -23,6 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'rails', '>= 3.0.0'
   gem.add_dependency 'sass-rails', '>= 3.0.0'
 
+  gem.add_development_dependency 'pry'
   gem.add_development_dependency 'rake', '> 11.0.1'
   gem.add_development_dependency 'rspec', '~> 3.8.0'
   gem.add_development_dependency 'rubocop', '~> 0.58'
