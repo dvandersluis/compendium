@@ -67,28 +67,28 @@ module Compendium
         end
       end
 
-      def formatted_heading(v)
-        v.is_a?(Symbol) ? translate(v) : v
+      def formatted_heading(heading)
+        heading.is_a?(Symbol) ? translate(heading) : heading
       end
 
-      def formatted_value(k, v)
-        if @settings.formatters[k]
-          @settings.formatters[k].call(v)
-        elsif v.numeric?
-          if v.zero? && @settings.display_zero_as?
+      def formatted_value(name, value)
+        if @settings.formatters[name]
+          @settings.formatters[name].call(value)
+        elsif value.numeric?
+          if value.zero? && @settings.display_zero_as?
             @settings.display_zero_as
           else
-            sprintf(@settings.number_format, v)
+            sprintf(@settings.number_format, value)
           end
-        elsif v.nil?
+        elsif value.nil?
           @settings.display_nil_as
-        end || v
+        end || value
       end
 
-      def translate(v, opts = {})
+      def translate(value, opts = {})
         opts.reverse_merge!(scope: settings.i18n_scope) if settings.i18n_scope?
-        opts[:default] = -> (*) { I18n.t(v, scope: 'compendium') }
-        I18n.t(v, opts)
+        opts[:default] = -> (*) { I18n.t(value, scope: 'compendium') }
+        I18n.t(value, opts)
       end
 
       def setup_totals

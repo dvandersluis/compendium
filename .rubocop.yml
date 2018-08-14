@@ -10,6 +10,9 @@ Layout/CaseIndentation:
 Layout/ElseAlignment:
   Enabled: false
 
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
 Layout/SpaceBeforeBlockBraces:
   EnforcedStyle: space
   EnforcedStyleForEmptyBraces: space
@@ -24,9 +27,6 @@ Layout/SpaceInsideBlockBraces:
   EnforcedStyle: space
   EnforcedStyleForEmptyBraces: no_space
   SpaceBeforeBlockParameters: true
-
-Lint/EndAlignment:
-  EnforcedStyleAlignWith: variable
 
 Lint/UnusedMethodArgument:
   Exclude:
@@ -79,7 +79,7 @@ Style/IfUnlessModifier:
   Exclude:
     - 'Gemfile'
 
-Style/MethodMissing:
+Style/MethodMissingSuper:
   Exclude:
     - 'lib/compendium/presenters/settings/query.rb'
 

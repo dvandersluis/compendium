@@ -113,20 +113,20 @@ module Compendium
     def method_missing(name, *args, &block)
       prefix = name.to_s.sub(/(?:_results|\?)\Z/, '').to_sym
 
-      return queries[name] if queries.keys.include?(name)
-      return results[prefix] if name.to_s.end_with?('_results') && queries.keys.include?(prefix)
-      return params[name] if options.keys.include?(name)
-      return params[prefix] if name.to_s.end_with?('?') && options.keys.include?(prefix)
+      return queries[name] if queries.key?(name)
+      return results[prefix] if name.to_s.end_with?('_results') && queries.key?(prefix)
+      return params[name] if options.key?(name)
+      return params[prefix] if name.to_s.end_with?('?') && options.key?(prefix)
       super
     end
 
     def respond_to_missing?(name, include_private = false)
       prefix = name.to_s.sub(/(?:_results|\?)\Z/, '').to_sym
 
-      return true if queries.keys.include?(name)
-      return true if name.to_s.end_with?('_results') && queries.keys.include?(prefix)
-      return true if options.keys.include?(name)
-      return true if name.to_s.end_with?('?') && options.keys.include?(prefix)
+      return true if queries.key?(name)
+      return true if name.to_s.end_with?('_results') && queries.key?(prefix)
+      return true if options.key?(name)
+      return true if name.to_s.end_with?('?') && options.key?(prefix)
       super
     end
   end

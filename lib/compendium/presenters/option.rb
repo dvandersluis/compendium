@@ -31,7 +31,6 @@ module Compendium
 
         raise ArgumentError, MISSING_CHOICES_ERROR if missing_choices?
 
-        # rubocop:disable Layout/EmptyLinesAroundArguments
         out << case option.type.to_sym
           when :scalar
             scalar_field(form)
@@ -45,7 +44,6 @@ module Compendium
           when :boolean, :radio
             radio_fields(form)
         end
-        # rubocop:enable Layout/EmptyLinesAroundArguments
       end
 
       def hidden_field(form)

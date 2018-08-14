@@ -31,7 +31,7 @@ module Compendium
     # query :main_query
     # main_query { collect_records_here }
     def method_missing(name, *args, &block)
-      if queries.keys.include?(name.to_sym)
+      if queries.key?(name.to_sym)
         query = queries[name.to_sym]
         query.proc = block if block_given?
         query.options = args.extract_options!
@@ -42,7 +42,7 @@ module Compendium
     end
 
     def respond_to_missing?(name, *args)
-      return true if queries.keys.include?(name)
+      return true if queries.key?(name)
       super
     end
 
