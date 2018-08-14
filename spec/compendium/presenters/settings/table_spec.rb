@@ -1,7 +1,6 @@
-require 'spec_helper'
 require 'compendium/presenters/table'
 
-describe Compendium::Presenters::Settings::Table do
+RSpec.describe Compendium::Presenters::Settings::Table do
   let(:results) { double('Results', records: [{ one: 1, two: 2 }, { one: 3, two: 4 }], keys: [:one, :two]) }
   let(:query) { double('Query', results: results, options: {}, table_settings: nil) }
   let(:table) { Compendium::Presenters::Table.new(nil, query) }
@@ -9,7 +8,7 @@ describe Compendium::Presenters::Settings::Table do
   subject { table.settings }
 
   context 'default settings' do
-    it 'should return default values' do
+    it 'returns the default values' do
       expect(subject.number_format).to eq '%0.2f'
       expect(subject.table_class).to eq('results')
       expect(subject.header_class).to eq('headings')
@@ -30,7 +29,7 @@ describe Compendium::Presenters::Settings::Table do
       end
     end
 
-    it 'should have overriden settings' do
+    it 'has overriden settings' do
       expect(subject.number_format).to eq('%0.1f')
       expect(subject.table_class).to eq('report_table')
       expect(subject.header_class).to eq('report_heading')
@@ -39,7 +38,7 @@ describe Compendium::Presenters::Settings::Table do
   end
 
   describe '#update' do
-    it 'should override previous settings' do
+    it 'overrides previous settings' do
       subject.update do |s|
         s.number_format '%0.3f'
       end
@@ -49,30 +48,30 @@ describe Compendium::Presenters::Settings::Table do
   end
 
   describe '#skip_total_for' do
-    it 'should add columns to the setting' do
+    it 'adds columns to the setting' do
       subject.skip_total_for :foo, :bar
       expect(subject.skipped_total_cols).to eq([:foo, :bar])
     end
 
-    it 'should be callable multiple times' do
+    it 'is callable multiple times' do
       subject.skip_total_for :foo, :bar
       subject.skip_total_for :quux
       expect(subject.skipped_total_cols).to eq(%i(foo bar quux))
     end
 
-    it 'should not care about type' do
+    it 'does not care about type' do
       subject.skip_total_for 'foo'
       expect(subject.skipped_total_cols).to eq([:foo])
     end
   end
 
   describe '#override_heading' do
-    it 'should override a given heading' do
+    it 'overrides the given heading' do
       subject.override_heading :one, 'First Column'
       expect(subject.headings).to eq('one' => 'First Column', 'two' => :two)
     end
 
-    it 'should override multiple headings with a block' do
+    it 'overrides multiple headings with a block' do
       subject.override_heading do |col|
         col.to_s * 2
       end

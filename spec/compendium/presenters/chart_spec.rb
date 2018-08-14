@@ -1,7 +1,6 @@
-require 'spec_helper'
 require 'compendium/presenters/chart'
 
-describe Compendium::Presenters::Chart do
+RSpec.describe Compendium::Presenters::Chart do
   let(:template) do
     double(
       'Template',
@@ -34,7 +33,8 @@ describe Compendium::Presenters::Chart do
     end
 
     context 'when options are given' do
-      before { allow(results).to receive(:records) { { one: [] } } }
+      before { allow(results).to receive(:records).and_return(one: []) }
+
       subject { described_class.new(template, query, :pie, index: :one) }
 
       specify { expect(subject.data).to eq(results.records[:one]) }
@@ -62,17 +62,17 @@ describe Compendium::Presenters::Chart do
   end
 
   describe '#remote?' do
-    it 'should be true if options[:remote] is set to true' do
+    it 'returns true if options[:remote] is set to true' do
       expect(described_class.new(template, query, :pie, remote: true)).to be_remote
     end
 
-    it 'should be true if the query has not been run yet' do
+    it 'returns true if the query has not been run yet' do
       allow(query).to receive_messages(run?: false)
       described_class.new(template, query, :pie).should_be_remote
     end
 
-    it 'should be false otherwise' do
-      expect(described_class.new(template, query, :pie)).not_to be_remote
+    it 'returns false otherwise' do
+      expect(described_class.new(template, query, :pie)).to_not be_remote
     end
   end
 end

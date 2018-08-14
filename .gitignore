@@ -3,6 +3,7 @@
 .bundle
 .config
 .idea
+.rspec_status
 .yardoc
 Gemfile.lock
 InstalledFiles

@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'compendium'
 require 'compendium/queries/count'
 
@@ -32,46 +31,49 @@ class MultipleCounter
   end
 end
 
-describe Compendium::Queries::Count do
-  subject { described_class.new(:counted_query, {}, -> (*) { @counter }) }
+RSpec.describe Compendium::Queries::Count do
+  subject { described_class.new(:counted_query, {}, -> (*) { counter }) }
 
-  it 'should have a default order' do
+  it 'has a default order' do
     expect(subject.options[:order]).to eq('COUNT(*)')
     expect(subject.options[:reverse]).to eq(true)
   end
 
   describe '#run' do
-    it 'should call count on the proc result' do
-      @counter = SingleCounter.new
-      expect(@counter).to receive(:count).and_return(1234)
+    let(:counter) { SingleCounter.new }
+
+    it 'calls count on the proc result' do
+      expect(counter).to receive(:count).and_return(1234)
       subject.run(nil, self)
     end
 
-    it 'should return the count' do
-      @counter = SingleCounter.new
+    it 'returns the count' do
       expect(subject.run(nil, self)).to eq([1792])
     end
 
     context 'when given a hash' do
-      before { @counter = MultipleCounter.new }
+      let(:counter) { MultipleCounter.new }
 
-      it 'should return a hash' do
+      it 'returns a hash' do
         expect(subject.run(nil, self)).to eq(3 => 983, 1 => 340, 2 => 204)
       end
 
-      it 'should be ordered in descending order' do
+      it 'is ordered in descending order' do
         expect(subject.run(nil, self).keys).to eq([3, 1, 2])
       end
 
-      it 'should use the given options' do
+      it 'uses the given options' do
         subject.options[:reverse] = false
         expect(subject.run(nil, self).keys).to eq([2, 1, 3])
       end
     end
 
-    it 'should raise an error if the proc does not respond to count' do
-      @counter = Class.new
-      expect { subject.run(nil, self) }.to raise_error Compendium::Queries::InvalidCommand
+    context 'when the proc does not respond to count' do
+      let(:counter) { Class.new }
+
+      it 'raises an error if the proc does not respond to count' do
+        expect { subject.run(nil, self) }.to raise_error Compendium::Queries::InvalidCommand
+      end
     end
   end
 end

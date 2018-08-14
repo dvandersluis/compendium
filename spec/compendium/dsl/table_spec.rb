@@ -1,8 +1,7 @@
-require 'spec_helper'
 require 'compendium'
 require 'compendium/dsl'
 
-describe Compendium::DSL::Table do
+RSpec.describe Compendium::DSL::Table do
   subject do
     Class.new do
       extend Compendium::DSL
@@ -12,17 +11,17 @@ describe Compendium::DSL::Table do
   describe '#table' do
     let(:table_proc) { -> { display_nil_as 'na' } }
 
-    it 'should add table settings to the given query' do
+    it 'adds table settings to the given query' do
       subject.query :test
       subject.table :test, &table_proc
       expect(subject.queries[:test].table_settings).to eq(table_proc)
     end
 
-    it 'should raise an error if there is no query of the given name' do
+    it 'raises an error if there is no query of the given name' do
       expect { subject.table :test, &table_proc }.to raise_error(ArgumentError, 'query test is not defined')
     end
 
-    it 'should allow table settings to be applied to multiple queries at once' do
+    it 'allows table settings to be applied to multiple queries at once' do
       subject.query :query1
       subject.query :query2
       subject.table :query1, :query2, &table_proc

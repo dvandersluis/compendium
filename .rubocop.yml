@@ -1,4 +1,5 @@
 inherit_from: .rubocop_todo.yml
+require: rubocop-rspec
 
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
@@ -45,6 +46,39 @@ Metrics/ModuleLength:
 
 Metrics/LineLength:
   Max: 150
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/ExpectChange:
+  EnforcedStyle: block
+
+RSpec/LeadingSubject:
+  Enabled: false
+
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+
+RSpec/SubjectStub:
+  Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method

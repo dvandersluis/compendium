@@ -1,8 +1,7 @@
-require 'spec_helper'
 require 'compendium'
 require 'compendium/dsl'
 
-describe Compendium::DSL::Metric do
+RSpec.describe Compendium::DSL::Metric do
   subject do
     Class.new do
       extend Compendium::DSL
@@ -17,20 +16,20 @@ describe Compendium::DSL::Metric do
       subject.metric :test_metric, metric_proc, through: :test
     end
 
-    it 'should add a metric to the given query' do
+    it 'adds a metric to the given query' do
       expect(subject.queries[:test].metrics.first.name).to eq(:test_metric)
     end
 
-    it 'should set the metric command' do
+    it 'sets the metric command' do
       expect(subject.queries[:test].metrics.first.command).to eq(metric_proc)
     end
 
     context 'when through is specified' do
-      it 'should raise an error if specified for an invalid query' do
+      it 'raises an error if specified for an invalid query' do
         expect { subject.metric :test_metric, metric_proc, through: :fake }.to raise_error ArgumentError, 'query fake is not defined'
       end
 
-      it 'should allow metrics to be defined with a block' do
+      it 'allows metrics to be defined with a block' do
         subject.metric :block_metric, through: :test do
           123
         end
@@ -38,7 +37,7 @@ describe Compendium::DSL::Metric do
         expect(subject.queries[:test].metrics[:block_metric].run(self, nil)).to eq(123)
       end
 
-      it 'should allow metrics to be defined with a lambda' do
+      it 'allows metrics to be defined with a lambda' do
         subject.metric :block_metric, -> (*) { 123 }, through: :test
         expect(subject.queries[:test].metrics[:block_metric].run(self, nil)).to eq(123)
       end
@@ -49,7 +48,7 @@ describe Compendium::DSL::Metric do
 
       specify { expect(subject.queries).to include :__metric_no_through_metric }
 
-      it 'should return the result of the query as the result of the metric' do
+      it 'returns the result of the query as the result of the metric' do
         expect(subject.queries[:__metric_no_through_metric].metrics[:no_through_metric].run(self, [123])).to eq(123)
       end
     end
