@@ -84,7 +84,7 @@ If validation is set up on any options, calling `valid?` on the report will vali
 
 ```ruby
 class MyReport < Compendium::Report
-  options :starting_on, :date, validates: { presence: true }
+  option :starting_on, :date, validates: { presence: true }
 end
 
 r = MyReport.new
@@ -144,7 +144,13 @@ end
 
 #### Collection Queries
 
-Sometimes you'll want to run a collection over a collection of data; for this, you can use a **collection query**. A collection query will perform the same query for each element of a hash or array, or for each result of a query. A collection is specified via `collection: [...]`, `collection: { ... }` or `collection: query` (note not a symbol but an actual query object).
+Sometimes you'll want to run the same query over a collection of data; for this, you can use a **collection query**. A collection query will perform the same query for each element of a hash or array, or for each result of a query. A collection is specified via `collection:`, where the value is an array, hash, proc, or `Queries::Query`.
+
+```ruby
+query :popular_orders, collection: popular_items do |params, id|
+  Orders.where(item_id: id)
+end
+```
 
 ### Tying into your Rails application
 
