@@ -2,18 +2,15 @@ module Compendium
   module DSL
     module Option
       # Define a parameter for the report
-      def option(name, *args)
-        opts = args.extract_options!
-        type = args.shift
-
-        add_params_validations(name, opts.delete(:validates))
+      def option(name, type, default: nil, validates: nil, **opts)
+        add_params_validations(name, validates)
 
         if options[name]
-          options[name].type = type if type
-          options[name].default = opts.delete(:default) if opts.key?(:default)
+          options[name].type = type
+          options[name].default = default if default
           options[name].merge!(opts)
         else
-          options << Compendium::Option.new(opts.merge(name: name, type: type))
+          options << Compendium::Option.new(opts.merge(name: name, type: type, default: default))
         end
       end
 

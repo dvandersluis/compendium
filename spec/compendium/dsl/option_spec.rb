@@ -17,9 +17,8 @@ RSpec.describe Compendium::DSL::Option do
     specify { expect(subject.options[:starting_on]).to be_date }
 
     it 'allows previously defined options to be redefined' do
-      subject.option :starting_on, :boolean
-      expect(subject.options[:starting_on]).to be_boolean
-      expect(subject.options[:starting_on]).to_not be_date
+      expect { subject.option :starting_on, :boolean }.to change { subject.options[:starting_on].type }.
+        from('date').to('boolean')
     end
 
     it 'allows overriding default value' do
@@ -29,13 +28,13 @@ RSpec.describe Compendium::DSL::Option do
     end
 
     it 'adds validations' do
-      subject.option :foo, validates: { presence: true }
+      subject.option :foo, :scalar, validates: { presence: true }
       expect(subject.params_class.validators_on(:foo)).to_not be_empty
     end
 
     it 'does not add validations if no validates option is given' do
       expect(subject.params_class).to_not receive :validates
-      subject.option :foo
+      subject.option :foo, :scalar
     end
 
     it 'does not bleed overridden options into the superclass' do
@@ -43,6 +42,10 @@ RSpec.describe Compendium::DSL::Option do
       r.option :starting_on, :boolean
       r.option :new, :date
       expect(subject.options[:starting_on]).to be_date
+    end
+
+    it 'requires a type be given' do
+      expect { subject.option :foo }.to raise_error(ArgumentError)
     end
   end
 end

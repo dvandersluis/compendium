@@ -9,14 +9,13 @@ module Compendium
     delegate :boolean?, :date?, :dropdown?, :radio?, :scalar?, to: :type
     delegate :merge, :merge!, :[], :[]=, to: :@options
 
-    def initialize(hash = {})
-      raise ArgumentError, 'name must be provided' unless hash.key?(:name)
+    def initialize(name:, type:, default: nil, choices: nil, **options)
+      @name = name.to_sym
+      @default = default
+      @choices = choices
+      @options = options.with_indifferent_access
 
-      @name = hash.delete(:name).to_sym
-      @default = hash.delete(:default)
-      @choices = hash.delete(:choices)
-      self.type = hash.delete(:type)
-      @options = hash.with_indifferent_access
+      self.type = type
     end
 
     def type=(type)

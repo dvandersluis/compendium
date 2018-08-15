@@ -10,7 +10,7 @@ RSpec.describe Compendium::Presenters::Option do
 
   let(:form) { double('Form') }
   let(:ctx) { double('Context') }
-  let(:option) { Compendium::Option.new(name: :test_option) }
+  let(:option) { Compendium::Option.new(name: :test_option, type: :scalar) }
 
   subject { described_class.new(template, option) }
 
