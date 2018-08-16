@@ -1,113 +1,31 @@
+AllCops:
+  TargetRubyVersion: 2.4
+
+inherit_gem:
+  rubocop_defaults: .rubocop.yml
+
 inherit_from: .rubocop_todo.yml
-require: rubocop-rspec
 
-Layout/AccessModifierIndentation:
-  EnforcedStyle: outdent
-
-Layout/CaseIndentation:
-  EnforcedStyle: end
-  IndentOneStep: true
-
-Layout/ElseAlignment:
-  Enabled: false
-
-Layout/EndAlignment:
-  EnforcedStyleAlignWith: variable
-
-Layout/SpaceBeforeBlockBraces:
-  EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: space
-
-Layout/SpaceInLambdaLiteral:
-  EnforcedStyle: require_space
-
-Layout/SpaceInsideArrayLiteralBrackets:
-  EnforcedStyle: no_space
-
-Layout/SpaceInsideBlockBraces:
-  EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: no_space
-  SpaceBeforeBlockParameters: true
+inherit_mode:
+  merge:
+  - Exclude
 
 Lint/UnusedMethodArgument:
   Exclude:
     - 'lib/compendium/abstract_chart_provider.rb'
 
-Metrics/BlockLength:
-  Exclude:
-    - spec/**/*
-  Max: 25
-
-Metrics/ClassLength:
-  Max: 100
-
-Metrics/ModuleLength:
-  Max: 100
-
-Metrics/LineLength:
-  Max: 150
-
-RSpec/ContextWording:
-  Enabled: false
-
 RSpec/ExampleLength:
   Max: 10
-
-RSpec/ExpectChange:
-  EnforcedStyle: block
-
-RSpec/LeadingSubject:
-  Enabled: false
-
-RSpec/MessageSpies:
-  EnforcedStyle: receive
-
-RSpec/MultipleExpectations:
-  Enabled: false
-
-RSpec/NamedSubject:
-  Enabled: false
-
-RSpec/NestedGroups:
-  Max: 5
-
-RSpec/NotToNot:
-  EnforcedStyle: to_not
-
-RSpec/SubjectStub:
-  Enabled: false
-
-RSpec/VerifiedDoubles:
-  Enabled: false
-
-Style/Alias:
-  EnforcedStyle: prefer_alias_method
-
-Style/BarePercentLiterals:
-  EnforcedStyle: percent_q
-
-Style/BlockDelimiters:
-  EnforcedStyle: line_count_based
-
-Style/BracesAroundHashParameters:
-  EnforcedStyle: context_dependent
 
 Style/DateTime:
   Exclude:
     - 'spec/compendium/param_types/date_spec.rb'
-
-Style/Documentation:
-  Enabled: false
 
 Style/FormatString:
   EnforcedStyle: sprintf
 
 Style/FormatStringToken:
   EnforcedStyle: unannotated
-
-Style/HashSyntax:
-  Exclude:
-    - 'Rakefile'
 
 Style/IfUnlessModifier:
   Exclude:
@@ -117,22 +35,8 @@ Style/MethodMissingSuper:
   Exclude:
     - 'lib/compendium/presenters/settings/query.rb'
 
-Style/PercentLiteralDelimiters:
-  PreferredDelimiters:
-    default: '()'
-    '%i': '()'
-    '%I': '()'
-    '%w': '()'
-    '%W': '()'
-
-Style/RegexpLiteral:
-  EnforcedStyle: mixed
-
 Style/RescueModifier:
   Enabled: false
-
-Style/StabbyLambdaParentheses:
-  EnforcedStyle: require_parentheses
 
 Style/SymbolArray:
   MinSize: 3
