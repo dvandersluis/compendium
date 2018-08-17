@@ -8,5 +8,5 @@ group :development do
 end
 
 if RUBY_VERSION >= '2.4'
-  gem 'json', github: 'flori/json', branch: 'v1.8'
+  gem 'json', '>= 1.8.3'
 end
