@@ -17,6 +17,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
+  gem.required_ruby_version = '>= 2.2'
+
   gem.add_dependency 'collection_of', '1.0.6'
   gem.add_dependency 'compass-rails', '>= 1.0.0'
   gem.add_dependency 'inheritable_attr', '>= 1.0.0'
@@ -26,6 +28,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'pry'
   gem.add_development_dependency 'rake', '> 11.0.1'
   gem.add_development_dependency 'rspec', '~> 3.8.0'
-  gem.add_development_dependency 'rubocop', '0.74'
-  gem.add_development_dependency 'rubocop-rspec', '1.35'
+  gem.add_development_dependency 'rubocop'
+  gem.add_development_dependency 'rubocop-rspec'
 end

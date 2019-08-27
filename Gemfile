@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
+  gem 'rubocop', '0.74'
+  gem 'rubocop-rspec', '1.35'
   gem 'rubocop_defaults', git: 'https://github.com/dvandersluis/rubocop_defaults.git'
 end
 
