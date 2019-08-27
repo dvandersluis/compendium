@@ -12,8 +12,8 @@ RSpec.describe Compendium::DSL::Metric do
     let(:metric_proc) { -> { :metric } }
 
     before do
-      subject.query :test
-      subject.metric :test_metric, metric_proc, through: :test
+      subject.query(:test)
+      subject.metric(:test_metric, metric_proc, through: :test)
     end
 
     it 'adds a metric to the given query' do
@@ -26,11 +26,11 @@ RSpec.describe Compendium::DSL::Metric do
 
     context 'when through is specified' do
       it 'raises an error if specified for an invalid query' do
-        expect { subject.metric :test_metric, metric_proc, through: :fake }.to raise_error ArgumentError, 'query fake is not defined'
+        expect { subject.metric(:test_metric, metric_proc, through: :fake) }.to raise_error ArgumentError, 'query fake is not defined'
       end
 
       it 'allows metrics to be defined with a block' do
-        subject.metric :block_metric, through: :test do
+        subject.metric(:block_metric, through: :test) do
           123
         end
 
@@ -38,7 +38,7 @@ RSpec.describe Compendium::DSL::Metric do
       end
 
       it 'allows metrics to be defined with a lambda' do
-        subject.metric :block_metric, -> (*) { 123 }, through: :test
+        subject.metric(:block_metric, -> (*) { 123 }, through: :test)
         expect(subject.queries[:test].metrics[:block_metric].run(self, nil)).to eq(123)
       end
     end

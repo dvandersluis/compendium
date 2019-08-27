@@ -27,7 +27,7 @@ module Compendium
 
       def add_params_validations(name, validations)
         return if validations.blank?
-        params_class.validates name, validations
+        params_class.validates(name, validations)
       end
     end
   end

@@ -20,7 +20,7 @@ module Compendium
         # reports. However, validations also need to be inherited, so when inheriting a report, subclass its
         # params_class
         report.params_class = Class.new(params_class)
-        report.params_class.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        report.params_class.class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
           def self.model_name
             ActiveModel::Name.new(Compendium::Params, Compendium, "compendium.params.#{report.name.underscore rescue 'report'}")
           end

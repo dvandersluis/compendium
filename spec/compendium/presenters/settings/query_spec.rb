@@ -8,7 +8,7 @@ RSpec.describe Compendium::Presenters::Settings::Query do
 
     it 'overrides previous settings' do
       subject.update do |s|
-        s.foo :quux
+        s.foo(:quux)
       end
 
       expect(subject.foo).to eq(:quux)

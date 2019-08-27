@@ -10,6 +10,9 @@ inherit_mode:
   merge:
   - Exclude
 
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
 Lint/UnusedMethodArgument:
   Exclude:
     - 'lib/compendium/abstract_chart_provider.rb'
@@ -30,6 +33,15 @@ Style/FormatStringToken:
 Style/IfUnlessModifier:
   Exclude:
     - 'Gemfile'
+
+Style/MethodCallWithArgsParentheses:
+  IgnoredMethods:
+    - '[]'
+    - describe
+    - require
+    - require_relative
+    - to
+    - to_not
 
 Style/MethodMissingSuper:
   Exclude:

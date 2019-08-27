@@ -8,6 +8,7 @@ module ActiveRecord
     module Quoting
       def quote_with_simple_delegator(value, column = nil)
         return value.quoted_id if value.respond_to?(:quoted_id)
+
         value = value.__getobj__ if value.is_a?(SimpleDelegator)
         quote_without_simple_delegator(value, column)
       end

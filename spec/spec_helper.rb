@@ -10,7 +10,7 @@ RSpec.configure do |config|
   config.order = :random
   Kernel.srand(config.seed)
 
-  config.mock_with :rspec do |mocks|
+  config.mock_with(:rspec) do |mocks|
     mocks.yield_receiver_to_any_instance_implementation_blocks = true
     mocks.verify_partial_doubles = true
   end

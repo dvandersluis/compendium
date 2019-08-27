@@ -26,10 +26,10 @@ RSpec.describe Compendium::DSL::Query do
     end
 
     context 'when the query was previously defined' do
-      before { subject.query :test_query }
+      before { subject.query(:test_query) }
 
       it 'allows previously defined queries to be redefined by name' do
-        subject.test_query foo: :bar
+        subject.test_query(foo: :bar)
         expect(subject.queries[:test_query].options).to eq(foo: :bar)
       end
 
@@ -40,8 +40,8 @@ RSpec.describe Compendium::DSL::Query do
 
     context 'when overriding an existing query' do
       before do
-        subject.query :test, &proc2
-        subject.query :another_test, count: true
+        subject.query(:test, &proc2)
+        subject.query(:another_test, count: true)
       end
 
       it 'replaces the existing query' do
@@ -57,19 +57,19 @@ RSpec.describe Compendium::DSL::Query do
       end
 
       it 'does not allow replacing a query with a different type' do
-        expect { subject.query :test, count: true }.to raise_error(Compendium::Queries::CannotRedefineType)
+        expect { subject.query(:test, count: true) }.to raise_error(Compendium::Queries::CannotRedefineType)
         expect(subject.test).to be_instance_of Compendium::Queries::Query
       end
 
       it 'allows replacing a query with the same type' do
-        subject.query :another_test, count: true, &proc2
+        subject.query(:another_test, count: true, &proc2)
         expect(subject.another_test.proc).to eq(proc2)
         expect(subject.another_test).to be_instance_of Compendium::Queries::Count
       end
     end
 
     context 'when given a through option' do
-      before { report_class.query :through, through: :test }
+      before { report_class.query(:through, through: :test) }
 
       subject { report_class.queries[:through] }
 
@@ -81,7 +81,7 @@ RSpec.describe Compendium::DSL::Query do
       subject { report_class.queries[:collection] }
 
       context 'that is an enumerable' do
-        before { report_class.query :collection, collection: [] }
+        before { report_class.query(:collection, collection: []) }
 
         it { is_expected.to be_a Compendium::Queries::Collection }
       end
@@ -91,7 +91,7 @@ RSpec.describe Compendium::DSL::Query do
 
         before do
           allow_any_instance_of(Compendium::Queries::Query).to receive(:get_associated_query).with(:query).and_return(query)
-          report_class.query :collection, collection: :query
+          report_class.query(:collection, collection: :query)
         end
 
         specify { expect(subject.collection).to eq(:query) }
@@ -100,7 +100,7 @@ RSpec.describe Compendium::DSL::Query do
       context 'that is a query' do
         let(:query) { Compendium::Queries::Query.new(:query, {}, -> {}) }
 
-        before { report_class.query :collection, collection: query }
+        before { report_class.query(:collection, collection: query) }
 
         specify { expect(subject.collection).to eq(query) }
       end
@@ -110,13 +110,13 @@ RSpec.describe Compendium::DSL::Query do
       subject { report_class.queries[:counted] }
 
       context 'set to true' do
-        before { report_class.query :counted, count: true }
+        before { report_class.query(:counted, count: true) }
 
         it { is_expected.to be_a Compendium::Queries::Count }
       end
 
       context 'set to false' do
-        before { report_class.query :counted, count: false }
+        before { report_class.query(:counted, count: false) }
 
         it { is_expected.to be_a Compendium::Queries::Query }
         it { is_expected.to_not be_a Compendium::Queries::Count }
@@ -127,14 +127,14 @@ RSpec.describe Compendium::DSL::Query do
       subject { report_class.queries[:summed] }
 
       context 'set to a truthy value' do
-        before { report_class.query :summed, sum: :assoc_count }
+        before { report_class.query(:summed, sum: :assoc_count) }
 
         it { is_expected.to be_a Compendium::Queries::Sum }
         specify { expect(subject.column).to eq(:assoc_count) }
       end
 
       context 'set to false' do
-        before { report_class.query :summed, sum: false }
+        before { report_class.query(:summed, sum: false) }
 
         it { is_expected.to be_a Compendium::Queries::Query }
         it { is_expected.to_not be_a Compendium::Queries::Sum }

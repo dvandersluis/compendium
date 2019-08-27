@@ -29,7 +29,7 @@ RSpec.describe Compendium::Report do
   end
 
   describe '.report_name' do
-    subject { TestReport = Class.new(described_class) }
+    subject { stub_const('TestReport', Class.new(described_class)) }
 
     specify { expect(subject.report_name).to eq(:test) }
   end
@@ -190,15 +190,9 @@ RSpec.describe Compendium::Report do
 
   context 'class name predicates' do
     before do
-      OneReport = Class.new(described_class)
-      TwoReport = Class.new(described_class)
-      ThreeReport = Class.new
-    end
-
-    after do
-      Object.send(:remove_const, :OneReport)
-      Object.send(:remove_const, :TwoReport)
-      Object.send(:remove_const, :ThreeReport)
+      stub_const('OneReport', Class.new(described_class))
+      stub_const('TwoReport', Class.new(described_class))
+      stub_const('ThreeReport', Class.new)
     end
 
     it { is_expected.to respond_to(:one?) }
@@ -221,7 +215,7 @@ RSpec.describe Compendium::Report do
     end
 
     it 'inherits validations' do
-      report_class.params_class.validates :foo, presence: true
+      report_class.params_class.validates(:foo, presence: true)
       expect(report_class2.params_class.validators_on(:foo)).to_not be_nil
     end
   end

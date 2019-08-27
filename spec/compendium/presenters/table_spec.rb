@@ -13,7 +13,7 @@ RSpec.describe Compendium::Presenters::Table do
     end
 
     it 'uses the table class given in settings' do
-      table.settings.table_class 'report_table'
+      table.settings.table_class('report_table')
 
       expect(template).to receive(:content_tag).with(:table, class: 'report_table')
       table.render
@@ -32,7 +32,7 @@ RSpec.describe Compendium::Presenters::Table do
     end
 
     it 'uses the overridden heading class if given' do
-      table.settings.header_class 'report_header'
+      table.settings.header_class('report_header')
 
       expect(template).to receive(:content_tag).with(:tr, class: 'report_header')
       table.render
@@ -44,7 +44,7 @@ RSpec.describe Compendium::Presenters::Table do
     end
 
     it 'uses the overridden row class if given' do
-      table.settings.row_class 'report_row'
+      table.settings.row_class('report_row')
 
       expect(template).to receive(:content_tag).with(:tr, class: 'report_row').twice
       table.render
@@ -73,7 +73,7 @@ RSpec.describe Compendium::Presenters::Table do
 
     it 'uses the totals class if that setting is overridden' do
       query.options[:totals] = true
-      table.settings.totals_class 'report_totals'
+      table.settings.totals_class('report_totals')
 
       expect(template).to receive(:content_tag).with(:tr, class: 'report_totals')
       table.render

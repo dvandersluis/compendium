@@ -35,7 +35,7 @@ RSpec.describe Compendium::Params do
       subject { report_class.new({}, options) }
 
       before do
-        report_class.validates :ending_on, presence: true
+        report_class.validates(:ending_on, presence: true)
         subject.valid?
       end
 
@@ -47,7 +47,7 @@ RSpec.describe Compendium::Params do
       subject { report_class.new({ number: 'abcd' }, options) }
 
       before do
-        report_class.validates :number, numericality: true
+        report_class.validates(:number, numericality: true)
         subject.valid?
       end
 

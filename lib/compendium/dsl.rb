@@ -22,9 +22,9 @@ module Compendium
     include Table
 
     def self.extended(klass)
-      klass.inheritable_attr :queries, default: ::Collection[Queries::Query]
-      klass.inheritable_attr :options, default: ::Collection[Compendium::Option]
-      klass.inheritable_attr :exporters, default: {}
+      klass.inheritable_attr(:queries, default: ::Collection[Queries::Query])
+      klass.inheritable_attr(:options, default: ::Collection[Compendium::Option])
+      klass.inheritable_attr(:exporters, default: {})
     end
 
     # Allow defined queries to be redefined by name, eg:

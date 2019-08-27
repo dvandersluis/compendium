@@ -60,6 +60,7 @@ module Compendium
 
     def find_query
       return unless params[:query]
+
       @query = @report.queries[params[:query]]
       return unless @query
 

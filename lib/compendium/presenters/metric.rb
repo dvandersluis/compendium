@@ -27,7 +27,7 @@ module Compendium
       end
 
       def render
-        @template.render 'compendium/reports/metric', metric: self
+        @template.render('compendium/reports/metric', metric: self)
       end
     end
   end

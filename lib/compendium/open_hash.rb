@@ -15,10 +15,10 @@ module Compendium
   protected
 
     def convert_value(value)
-      if value.is_a? Hash
+      if value.is_a?(Hash)
         Params[value].tap do |oh|
           oh.each do |k, v|
-            oh[k] = convert_value(v) if v.is_a? Hash
+            oh[k] = convert_value(v) if v.is_a?(Hash)
           end
         end
       elsif value.is_a?(Array)

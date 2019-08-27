@@ -22,10 +22,10 @@ RSpec.describe Compendium::Presenters::Settings::Table do
   context 'overriding default settings' do
     let(:table) do
       Compendium::Presenters::Table.new(nil, query) do |t|
-        t.number_format '%0.1f'
-        t.table_class 'report_table'
-        t.header_class 'report_heading'
-        t.display_nil_as 'N/A'
+        t.number_format('%0.1f')
+        t.table_class('report_table')
+        t.header_class('report_heading')
+        t.display_nil_as('N/A')
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe Compendium::Presenters::Settings::Table do
   describe '#update' do
     it 'overrides previous settings' do
       subject.update do |s|
-        s.number_format '%0.3f'
+        s.number_format('%0.3f')
       end
 
       expect(subject.number_format).to eq('%0.3f')
@@ -49,25 +49,25 @@ RSpec.describe Compendium::Presenters::Settings::Table do
 
   describe '#skip_total_for' do
     it 'adds columns to the setting' do
-      subject.skip_total_for :foo, :bar
+      subject.skip_total_for(:foo, :bar)
       expect(subject.skipped_total_cols).to eq([:foo, :bar])
     end
 
     it 'is callable multiple times' do
-      subject.skip_total_for :foo, :bar
-      subject.skip_total_for :quux
+      subject.skip_total_for(:foo, :bar)
+      subject.skip_total_for(:quux)
       expect(subject.skipped_total_cols).to eq(%i(foo bar quux))
     end
 
     it 'does not care about type' do
-      subject.skip_total_for 'foo'
+      subject.skip_total_for('foo')
       expect(subject.skipped_total_cols).to eq([:foo])
     end
   end
 
   describe '#override_heading' do
     it 'overrides the given heading' do
-      subject.override_heading :one, 'First Column'
+      subject.override_heading(:one, 'First Column')
       expect(subject.headings).to eq('one' => 'First Column', 'two' => :two)
     end
 

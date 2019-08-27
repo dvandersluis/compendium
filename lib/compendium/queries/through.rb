@@ -50,7 +50,7 @@ module Compendium
       end
 
       def any_results?(results)
-        results = results.values if results.is_a? Hash
+        results = results.values if results.is_a?(Hash)
         results.all?(&:blank?)
       end
     end

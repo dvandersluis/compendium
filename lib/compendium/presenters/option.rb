@@ -47,7 +47,7 @@ module Compendium
       end
 
       def hidden_field(form)
-        form.hidden_field option.name
+        form.hidden_field(option.name)
       end
 
     private
@@ -69,16 +69,16 @@ module Compendium
       def date_field(form, include_time = false)
         content_tag('div', class: 'option-date') do
           if defined?(CalendarDateSelect)
-            form.calendar_date_select option.name, time: include_time, popup: 'force'
+            form.calendar_date_select(option.name, time: include_time, popup: 'force')
           else
-            form.text_field option.name
+            form.text_field(option.name)
           end
         end
       end
 
       def scalar_field(form)
         content_tag('div', class: 'option-scalar') do
-          form.text_field option.name
+          form.text_field(option.name)
         end
       end
 
@@ -87,7 +87,7 @@ module Compendium
         choices = ctx.instance_exec(&choices) if choices.respond_to?(:call)
 
         content_tag('div', class: 'option-dropdown') do
-          form.select option.name, choices, option.options.symbolize_keys
+          form.select(option.name, choices, option.options.symbolize_keys)
         end
       end
 
@@ -107,7 +107,7 @@ module Compendium
       def label_with_accessible_tooltip(form)
         title = t("options.#{option.name}_note_title", default: '', cascade: { offset: 2 })
         tooltip = accessible_tooltip(:help, label: name, title: title) { note_text }
-        form.label option.name, tooltip
+        form.label(option.name, tooltip)
       end
 
       def label_content(form)
@@ -116,7 +116,7 @@ module Compendium
             name
 
           else
-            form.label option.name, name
+            form.label(option.name, name)
         end
       end
     end
