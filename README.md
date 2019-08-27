@@ -4,7 +4,7 @@ Ruby on Rails framework for making reporting easy.
 
 ## Usage
 
-Compendium is a reporting framework for Rails which makes it easy to create and render reports (with charts and tables).
+Compendium is a reporting framework for Rails which makes it easy to create and render reports (with charts and tables). Compendium requires at least Ruby version 2.2.
 
 A Compendium report is a subclass of `Compendium::Report`. Reports can be defined using the simple DSL:
 
