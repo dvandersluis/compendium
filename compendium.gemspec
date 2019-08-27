@@ -18,11 +18,11 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency 'rails', '>= 3.0.0', '< 4'
+  gem.add_dependency 'rails', '>= 3.0.0'
   gem.add_dependency 'sass-rails', '>= 3.0.0'
   gem.add_dependency 'compass-rails', '>= 1.0.0'
   gem.add_dependency 'collection_of', '1.0.6'
   gem.add_dependency 'inheritable_attr', '>= 1.0.0'
-  gem.add_development_dependency 'rake', '> 11.0.1', '< 12'
+  gem.add_development_dependency 'rake', '> 11.0.1'
   gem.add_development_dependency 'rspec', '~> 3.7.0'
 end
