@@ -1,7 +1,6 @@
 require 'collection_of'
 require 'inheritable_attr'
 require 'compendium/option'
-require 'active_support/core_ext/class/attribute'
 
 module Compendium
   module DSL

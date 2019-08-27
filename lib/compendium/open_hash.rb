@@ -1,7 +1,7 @@
 require 'active_support/hash_with_indifferent_access'
 
 module Compendium
-  class OpenHash < ::ActiveSupport::HashWithIndifferentAccess
+  class OpenHash < ::HashWithIndifferentAccess
     class << self
       def [](hash = {})
         new(hash)

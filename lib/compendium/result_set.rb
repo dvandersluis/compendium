@@ -1,5 +1,4 @@
 require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/hash/indifferent_access'
 
 module Compendium
   class ResultSet

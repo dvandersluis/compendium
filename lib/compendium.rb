@@ -2,6 +2,7 @@ require 'compendium/engine'
 require 'compendium/errors'
 require 'compendium/version'
 require 'active_support/configurable'
+require 'active_support/core_ext'
 
 module Compendium
   autoload :AbstractChartProvider,  'compendium/abstract_chart_provider'

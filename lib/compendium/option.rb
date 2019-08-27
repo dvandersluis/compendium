@@ -1,7 +1,5 @@
 require 'compendium/open_hash'
 require 'active_support/string_inquirer'
-require 'active_support/core_ext/hash/indifferent_access'
-require 'active_support/core_ext/module/delegation'
 
 module Compendium
   class Option

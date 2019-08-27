@@ -12,7 +12,7 @@ describe Compendium::ResultSet do
     context "when given an array of hashes" do
       let(:results) { [{one: 1}, {two: 2}] }
       it { is_expected.to eq([{"one" => 1}, {"two" => 2}]) }
-      specify { expect(subject.first).to be_a ActiveSupport::HashWithIndifferentAccess }
+      specify { expect(subject.first).to be_a HashWithIndifferentAccess }
     end
 
     context "when given a hash" do

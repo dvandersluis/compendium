@@ -1,7 +1,3 @@
-require 'active_support/core_ext/class/attribute_accessors'
-require 'active_support/core_ext/hash/slice'
-require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/string/inflections'
 require 'compendium/dsl'
 
 module Compendium

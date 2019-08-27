@@ -1,7 +1,5 @@
 require 'compendium/open_hash'
 require 'compendium/param_types'
-require 'active_support/core_ext/string/inflections'
-require 'active_support/core_ext/object/blank'
 require 'active_model'
 
 module Compendium

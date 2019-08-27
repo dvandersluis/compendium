@@ -1,5 +1,4 @@
 require 'compendium/presenters/query'
-require 'active_support/core_ext/array/extract_options'
 
 module Compendium::Presenters
   class Chart < Query
